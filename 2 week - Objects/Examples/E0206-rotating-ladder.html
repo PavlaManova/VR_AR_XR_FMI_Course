@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0206: Въртяща се стълба</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+			var geometryA = new THREE.CylinderGeometry( 4, 4, 80 );
+			var geometryB = new THREE.CylinderGeometry( 1, 1, 30 );
+			
+			// групов обект, добавен към сцената
+			var ladder = new THREE.Group();
+			scene.add( ladder );
+			
+			var left = new THREE.Mesh( geometryA, material );
+			left.position.set( -15, 0, 0 );
+			ladder.add( left ); // добавяме към груповия обект
+			
+			var right = new THREE.Mesh( geometryA, material );
+			right.position.set( 15, 0, 0 );
+			ladder.add( right ); // добавяме към груповия обект
+
+			// вече не ни трябва масив от стъпала
+			var step;
+			for( var i=0; i<5; i++ )
+			{
+				step = new THREE.Mesh( geometryB, material );
+				step.position.set( 0, -30+15*i, 0 );
+				step.rotation.set( 0, 0, Math.PI/2 );
+				ladder.add( step ); // добавяме към груповия обект
+			}
+			
+			function animate( t )
+			{
+				// въртим само груповия обект
+				ladder.rotation.set( t/2, t/3, t/4 );
+			}
+		</script>
+	</body>
+</html>
+
+

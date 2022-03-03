@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0210: Равнини</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+			
+			// плочките са с размери 15х15 (а стандартните
+			// фаянсови плочки са 20х20, но е без значение)
+			var geometry = new THREE.PlaneGeometry( 15, 15 );
+
+			// брой плочки
+			var n = 20; 
+			
+			// ъгъл между две съседни плочки
+			var alpha = 2*Math.PI/n; 
+			
+			// масив от всички плочки
+			var planes = [];
+			for (var i=0; i<n; i++)
+			{
+				planes[i] = new THREE.Mesh( geometry, material );
+				scene.add( planes[i] );
+			}
+			
+			function animate( t )
+			{
+				// всяка плочка е на ъгъл alpha*номера, но като
+				// добавим времето t, плочките се въртят в кръг
+				for (var i=0; i<n; i++)
+				{
+					// реален ъгъл на плочка
+					var a = alpha*i+t/3;
+					
+					// координати на плочка
+					var x = 60*Math.sin(a);
+					var z = 60*Math.cos(a);
+					planes[i].position.set( x, 0, z );
+					
+					// въртене на плочката: първият ъгъл
+					// е въртене около кръста, а вторият
+					// е завъртане по протежение на кръга
+					planes[i].rotation.set( t+3*a, a, 0 );
+				}
+			}
+		</script>
+	</body>
+</html>
+
+

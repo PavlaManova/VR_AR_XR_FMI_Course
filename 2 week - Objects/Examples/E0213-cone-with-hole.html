@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0213: Продупчен пресечен конус</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+
+			// целият конус
+			var cone = new THREE.Group();
+			scene.add( cone );
+
+			// горна шайба
+			var topRing = new THREE.Mesh(
+				new THREE.RingGeometry( 10, 20, 64 ),
+				material );
+			topRing.position.set( 0, 0, 20 );
+					
+			// долна шайба, завъртаме я да гледа надолу
+			var bottomRing = new THREE.Mesh(
+				new THREE.RingGeometry( 10, 40, 64 ),
+				material );
+			bottomRing.position.set( 0, 0, -20 );
+			bottomRing.rotation.set( 0, Math.PI, 0 );
+			
+			// вътрешна стена, отворен цилиндър със 
+			// собствен материал с рисуване на опакото 
+			var innerWall = new THREE.Mesh(
+				new THREE.CylinderGeometry( 10, 10, 40, 64, 1, true ),
+				new THREE.MeshLambertMaterial()
+				);
+			innerWall.material.side = THREE.BackSide;
+			innerWall.rotation.set( Math.PI/2, 0, 0 );
+				
+			// външна стена, отворен цилиндър с различни
+			// размери на основите (т.е. е пресечен конус)
+			var outerWall = new THREE.Mesh(
+				new THREE.CylinderGeometry( 20, 40, 40, 64, 1, true ),
+				material
+				);
+			outerWall.rotation.set( Math.PI/2, 0, 0 );
+				
+			// добавяме четирите подобекта наведнъж
+			cone.add( topRing, bottomRing, innerWall, outerWall );
+			
+			function animate( t )
+			{
+				cone.rotation.set( t/2, t/3, t/4 );
+			}
+		</script>
+	</body>
+</html>
+
+

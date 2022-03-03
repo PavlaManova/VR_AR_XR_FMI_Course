@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0208: Верига</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+			
+			// верига
+			var chain = new THREE.Group();
+			scene.add( chain );
+			
+			var geometry = new THREE.TorusGeometry( 21, 7, 24, 48 );
+
+			// първа халка
+			var node1 = new THREE.Mesh( geometry, material );
+			node1.position.set( -28, 0, 0 );
+			chain.add( node1 );
+			
+			// втора халка (в средата)
+			var node2 = new THREE.Mesh( geometry, material );
+			node2.rotation.set( Math.PI/2, 0, 0 );
+			chain.add( node2 );
+
+			// трета халка
+			var node3 = new THREE.Mesh( geometry, material );
+			node3.position.set( 28, 0, 0 );
+			chain.add( node3 );
+
+			function animate( t )
+			{
+				chain.rotation.set( t/2, t/3, t/4 );
+			}
+		</script>
+	</body>
+</html>
+
+

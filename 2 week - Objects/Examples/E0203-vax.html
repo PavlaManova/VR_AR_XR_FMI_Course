@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0203: Библиотека vax.js</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			// инциализираме моно режим през нашата библиотека
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+			var geometry = new THREE.BoxGeometry( 20, 30, 80 );
+			var brick = new THREE.Mesh( geometry, material );
+
+			scene.add( brick );			
+
+			// тази функция се вика автоматично за всеки кадър
+			// името "animate" е фиксирано във vax.js
+			function animate( t )
+			{
+				brick.rotation.set( t/3, t/4, t/5 );
+			}
+		</script>
+	</body>
+</html>
+
+

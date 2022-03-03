@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0205: Разглобена стълба</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="WebGL.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+			var geometryA = new THREE.CylinderGeometry( 4, 4, 80 );
+			var geometryB = new THREE.CylinderGeometry( 1, 1, 30 );
+			
+			var left = new THREE.Mesh( geometryA, material );
+			left.position.set( -15, 0, 0 );
+			scene.add( left );
+			
+			var right = new THREE.Mesh( geometryA, material );
+			right.position.set( 15, 0, 0 );
+			scene.add( right );
+
+			var steps = [];
+			for( var i=0; i<5; i++ )
+			{
+				steps[i] = new THREE.Mesh( geometryB, material );
+				steps[i].position.set( 0, -30+15*i, 0 );
+				steps[i].rotation.set( 0, 0, Math.PI/2 );
+				scene.add( steps[i] );
+			}
+			
+			function animate( t )
+			{
+				// въртене на всички части на стълбата
+				// с един и същ комплект от три ъгъла
+				left.rotation.set( t/2, t/3, t/4 );
+				right.rotation.set( t/2, t/3, t/4 );
+				for (var i=0; i<5; i++)
+					steps[i].rotation.set( t/2, t/3, t/4+Math.PI/2 );
+			}
+		</script>
+	</body>
+</html>
+
+

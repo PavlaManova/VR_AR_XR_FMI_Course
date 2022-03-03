@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0212: Въртящи се плочки</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+			var geometry = new THREE.BoxGeometry( 15, 15, 1 );
+
+			var n = 20;
+			var alpha = 2*Math.PI/n;
+			
+			var planes = [];
+
+			for (var i=0; i<n; i++)
+			{
+				planes[i] = new THREE.Mesh( geometry, material );
+				scene.add( planes[i] );
+			}
+			
+			function animate( t )
+			{
+				for (var i=0; i<n; i++)
+				{
+					var a = alpha*i+t/3;
+					var x = 60*Math.sin(a);
+					var z = 60*Math.cos(a);
+					planes[i].position.set( x, 0, z );
+					
+					// променяме реда на въртене, първо е по Y, 
+					// после по X, а по Z е без значение, щото е 0
+					planes[i].rotation.set( t+3*a, a, 0, 'YXZ' );
+				}
+			}
+		</script>
+	</body>
+</html>
+
+
