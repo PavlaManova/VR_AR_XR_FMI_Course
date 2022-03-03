@@ -47,11 +47,11 @@
 
       function frame(time)
       {
-        cube.rotation.set(0,2*Math.sin(time/1000),0);
+        cube.rotation.set(time/300,time/400,time/250);
 
         renderer.render(scene, camera);
       }
-      
+
     </script>
   </body>
 </html>
