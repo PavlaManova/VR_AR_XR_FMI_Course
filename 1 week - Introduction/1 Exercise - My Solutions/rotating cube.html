@@ -11,7 +11,7 @@
       if ( !THREE.WEBGL.isWebGLAvailable() )
   				alert( THREE.WEBGL.getWebGLErrorMessage() );
 
-      var renderer = new THREE.WebGLRenderer({antialis:true});
+      var renderer = new THREE.WebGLRenderer({antialias:true});
       renderer.setSize(window.innerWidth, window.innerHeight,true);
 
       // Add renderer to page end-to-end with no scrollbars
