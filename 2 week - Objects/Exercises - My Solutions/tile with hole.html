@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tile with hole</title>
+    <script src="three.min.js"></script>
+    <script src="WebGL.js"></script>
+  </head>
+  <body>
+    <script>
+      if ( !THREE.WEBGL.isWebGLAvailable() )
+        alert( THREE.WEBGL.getWebGLErrorMessage() );
+
+     var renderer = new THREE.WebGLRenderer({antialias:true});
+     renderer.setSize(window.innerWidth, window.innerHeight,true);
+
+     // Add renderer to page end-to-end with no scrollbars
+     document.body.appendChild(renderer.domElement);
+     document.body.style.margin=0;
+     document.body.style.overflow='hidden';
+
+     //scene
+     var scene = new THREE.Scene();
+     scene.background= new THREE.Color('white');
+
+     var aspect = window .innerWidth/window.innerHeight;
+
+     //camera
+     var camera = new THREE.PerspectiveCamera(60,aspect,1,100);
+     camera.position.set(10, 12, 16);
+     camera.lookAt(new THREE.Vector3(0,0,0));
+
+     //light
+     var light = new THREE.PointLight();
+     light.position.set(5,8,12);
+
+     scene.add(light);
+
+      //object
+      var geometryA = new THREE.BoxGeometry(8,5,1);
+      var geometryB = new THREE.BoxGeometry(1,3,1);
+      var geometryC = new THREE.BoxGeometry(7,1,1);
+      var geometryD = new THREE.BoxGeometry(5,2,1);
+      var material = new THREE.MeshLambertMaterial();
+
+      var plateA = new THREE.Mesh(geometryA, material);
+      var plateB = new THREE.Mesh(geometryB, material);
+      var plateC = new THREE.Mesh(geometryC, material);
+      var plateD = new THREE.Mesh(geometryD, material);
+
+      plateB.position.set(3.5,4,0);
+      plateC.position.set(-0.5,5,0);
+      plateD.position.set(-1.5,3.5,0);
+
+      var tile = new THREE.Group();
+      tile.add(plateA);
+      tile.add(plateB);
+      tile.add(plateC);
+      tile.add(plateD);
+      scene.add(tile);
+
+      renderer.setAnimationLoop(frame);
+
+      function frame(time)
+      {
+        var currSeconds=time/1000;
+        tile.rotation.set(currSeconds/3, currSeconds/4, currSeconds/5);
+        renderer.render(scene, camera);
+      }
+
+    </script>
+  </body>
+</html>
