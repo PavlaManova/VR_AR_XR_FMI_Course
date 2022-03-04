@@ -37,32 +37,37 @@
       scene.add(light);
 
       //object
-      var geometrySquare = new THREE.BoxGeometry(8,8,1);
-      var geometryCylinder= new THREE.geometryCylinder(4,4,1);
+      var cylinderGeometry= new THREE.CylinderGeometry(1,1,10);
+      var torusGeometry= new THREE.TorusGeometry(3, 1.2, 16, 100);
 
       var material = new THREE.MeshLambertMaterial();
+      var chain=new THREE.Group();
 
-      var result=new THREE.Group();
+      var leftTorus = new THREE.Mesh(torusGeometry, material);
+      var rightTorus = new THREE.Mesh(torusGeometry, material);
+      var wholeTube = new THREE.Mesh(cylinderGeometry, material);
+      var smallTubeA = new THREE.Mesh(cylinderGeometry, material);
+      smallTubeA.scale.set(0.5,0.5,0.5);
+      smallTubeA.position.set(0,-15,0);
+      var smallTubeB = new THREE.Mesh(cylinderGeometry, material);
+      smallTubeB.scale.set(0.5,0.5,0.5);
+      smallTubeA.position.set(0.5,-15,0);
 
-      var squarePlateA = new THREE.Mesh(geometrySquare, material);
-      var squarePlateB = new THREE.Mesh(geometrySquare, material);
-      squarePlateA.position.set(0,0,0);
-      squarePlateB.position.set()
-      result.add(squarePlate);
+      //rightTorus.position.set()
 
-      var edgeA=new THREE.Mesh(geometryCylinder,material);
-      edgeA.position.set()
-      var edgeB=new THREE.Mesh(geometryCylinder,material);
-      var edgeC=new THREE.Mesh(geometryCylinder,material);
-      var edgeD=new THREE.Mesh(geometryCylinder,material);
+      chain.add(leftTorus);
+      chain.add(rightTorus);
+      chain.add(wholeTube);
+      chain.add(smallTubeA);
+      chain.add(smallTubeB);
 
-      scene.add(result);
+      scene.add(chain);
       renderer.setAnimationLoop(frame);
 
       function frame(time)
       {
         var currSeconds=time/1000;
-        plateA.rotation.set(currSeconds/3, currSeconds/4, currSeconds/5);
+        chain.rotation.set(currSeconds/3, currSeconds/4, currSeconds/5);
         renderer.render(scene, camera);
       }
 
