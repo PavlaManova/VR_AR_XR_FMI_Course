@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Rotation with wiggle</title>
+    <script src="three.min.js"></script>
+    <script src="WebGL.js"></script>
+  </head>
+  <body>
+    <script>
+      if ( !THREE.WEBGL.isWebGLAvailable() )
+  				alert( THREE.WEBGL.getWebGLErrorMessage() );
+
+      var renderer = new THREE.WebGLRenderer({antialias:true});
+      renderer.setSize(window.innerWidth, window.innerHeight,true);
+
+      // Add renderer to page end-to-end with no scrollbars
+      document.body.appendChild(renderer.domElement);
+      document.body.style.margin=0;
+      document.body.style.overflow='hidden';
+
+      //scene
+      var scene = new THREE.Scene();
+      scene.background= new THREE.Color('white');
+
+      var aspect = window .innerWidth/window.innerHeight;
+
+      //camera
+      var camera = new THREE.PerspectiveCamera(60,aspect,1,100);
+      camera.position.set(10, 12, 16);
+      camera.lookAt(new THREE.Vector3(0,0,0));
+
+      //light
+      var light = new THREE.PointLight();
+      light.position.set(5,8,12);
+
+      scene.add(light);
+
+      //object
+      var geometry = new THREE.BoxGeometry(8,8,1);
+      var material = new THREE.MeshLambertMaterial();
+
+      var plateA = new THREE.Mesh(geometry, material);
+      //plateA.scale.set(15,15,1);
+      scene.add(plateA);
+
+      renderer.setAnimationLoop(frame);
+
+      function frame(time)
+      {
+        var currSeconds=time/1000;
+        plateA.rotation.set(currSeconds/3, currSeconds/4, currSeconds/5);
+        renderer.render(scene, camera);
+      }
+
+    </script>
+  </body>
+</html>
