@@ -27,7 +27,7 @@
 
       //camera
       var camera = new THREE.PerspectiveCamera(60,aspect,1,100);
-      camera.position.set(10, 12, 16);
+      camera.position.set(10, 12, 20);
       camera.lookAt(new THREE.Vector3(0,0,0));
 
       //light
@@ -37,8 +37,8 @@
       scene.add(light);
 
       //object
-      var cylinderGeometru= new THREE.CylinderGeometry(1,1,20);
-      var sphereGeometry= new THREE.SphereGeometry( 5,16, 16 );
+      var cylinderGeometru= new THREE.CylinderGeometry(0.7,0.7,20);
+      var sphereGeometry= new THREE.SphereGeometry(3, 16, 16 );
 
       var material = new THREE.MeshLambertMaterial();
 
