@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Rotation with wiggle</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <script src="three.min.js"></script>
     <script src="WebGL.js"></script>
   </head>
@@ -37,32 +38,44 @@
       scene.add(light);
 
       //object
-      var geometrySquare = new THREE.BoxGeometry(8,8,1);
-      var geometryCylinder= new THREE.geometryCylinder(4,4,1);
+      var geometryRectangle = new THREE.BoxGeometry(5,7,1);
+      var geometryCylinder= new THREE.CylinderGeometry(1,1,1,20);
 
       var material = new THREE.MeshLambertMaterial();
 
       var result=new THREE.Group();
 
-      var squarePlateA = new THREE.Mesh(geometrySquare, material);
-      var squarePlateB = new THREE.Mesh(geometrySquare, material);
-      squarePlateA.position.set(0,0,0);
-      squarePlateB.position.set()
-      result.add(squarePlate);
+      var rectPlateA = new THREE.Mesh(geometryRectangle, material);
+      var rectPlateB = new THREE.Mesh(geometryRectangle, material);
+      rectPlateB.rotation.set(0,0,Math.PI/2);
+
+      result.add(rectPlateA);
+      result.add(rectPlateB);
 
       var edgeA=new THREE.Mesh(geometryCylinder,material);
-      edgeA.position.set()
+      edgeA.rotation.set(Math.PI/2,0,0);
+      edgeA.position.set(-2.5,2.5,0);
       var edgeB=new THREE.Mesh(geometryCylinder,material);
+      edgeB.rotation.set(Math.PI/2,0,0);
+      edgeB.position.set(2.5,2.5,0);
       var edgeC=new THREE.Mesh(geometryCylinder,material);
+      edgeC.rotation.set(Math.PI/2,0,0);
+      edgeC.position.set(-2.5,-2.5,0);
       var edgeD=new THREE.Mesh(geometryCylinder,material);
+      edgeD.rotation.set(Math.PI/2,0,0);
+      edgeD.position.set(2.5,-2.5,0);
 
+      result.add(edgeA);
+      result.add(edgeB);
+      result.add(edgeC);
+      result.add(edgeD);
       scene.add(result);
       renderer.setAnimationLoop(frame);
 
       function frame(time)
       {
         var currSeconds=time/1000;
-        plateA.rotation.set(currSeconds/3, currSeconds/4, currSeconds/5);
+        result.rotation.set(currSeconds/3, currSeconds/4, currSeconds/5);
         renderer.render(scene, camera);
       }
 
