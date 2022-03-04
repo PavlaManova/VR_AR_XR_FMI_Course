@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Rotation with wiggle</title>
+    <script src="three.min.js"></script>
+    <script src="WebGL.js"></script>
+  </head>
+  <body>
+    <script>
+      if ( !THREE.WEBGL.isWebGLAvailable() )
+  				alert( THREE.WEBGL.getWebGLErrorMessage() );
+
+      var renderer = new THREE.WebGLRenderer({antialias:true});
+      renderer.setSize(window.innerWidth, window.innerHeight,true);
+
+      // Add renderer to page end-to-end with no scrollbars
+      document.body.appendChild(renderer.domElement);
+      document.body.style.margin=0;
+      document.body.style.overflow='hidden';
+
+      //scene
+      var scene = new THREE.Scene();
+      scene.background= new THREE.Color('white');
+
+      var aspect = window .innerWidth/window.innerHeight;
+
+      //camera
+      var camera = new THREE.PerspectiveCamera(60,aspect,1,100);
+      camera.position.set(10, 12, 16);
+      camera.lookAt(new THREE.Vector3(0,0,0));
+
+      //light
+      var light = new THREE.PointLight();
+      light.position.set(5,8,12);
+
+      scene.add(light);
+
+      //object
+      var cylinderGeometru= new THREE.CylinderGeometry(1,1,20);
+      var sphereGeometry= new THREE.SphereGeometry( 5,16, 16 );
+
+      var material = new THREE.MeshLambertMaterial();
+
+      var result=new THREE.Group();
+
+      var stick=new THREE.Mesh(cylinderGeometru, material);
+      var leftSphere = new THREE.Mesh(sphereGeometry,material);
+      var rightSphere = new THREE.Mesh(sphereGeometry,material);
+
+      leftSphere.scale.set(0.5,1,0.5);
+      rightSphere.scale.set(0.5,1,0.5);
+
+      leftSphere.position.set(0,-10,0);
+      rightSphere.position.set(0,10,0);
+
+      result.add(stick);
+      result.add(leftSphere);
+      result.add(rightSphere);
+
+
+      scene.add(result);
+      renderer.setAnimationLoop(frame);
+
+      function frame(time)
+      {
+        var currSeconds=time/1000;
+        result.rotation.set(currSeconds/3, currSeconds/4, currSeconds/5);
+        renderer.render(scene, camera);
+      }
+
+    </script>
+  </body>
+</html>
