@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Rotation with wiggle</title>
+    <title>Chain</title>
     <script src="three.min.js"></script>
     <script src="WebGL.js"></script>
   </head>
@@ -37,8 +37,8 @@
       scene.add(light);
 
       //object
-      var cylinderGeometry= new THREE.CylinderGeometry(1,1,10);
-      var torusGeometry= new THREE.TorusGeometry(3, 1.2, 16, 100);
+      var cylinderGeometry= new THREE.CylinderGeometry(1,1,10,16);
+      var torusGeometry = new THREE.TorusGeometry(3, 1, 16, 100, Math.PI);
 
       var material = new THREE.MeshLambertMaterial();
       var chain=new THREE.Group();
@@ -47,11 +47,24 @@
       var rightTorus = new THREE.Mesh(torusGeometry, material);
       var wholeTube = new THREE.Mesh(cylinderGeometry, material);
       var smallTubeA = new THREE.Mesh(cylinderGeometry, material);
-      smallTubeA.scale.set(0.5,0.5,0.5);
-      smallTubeA.position.set(0,-15,0);
       var smallTubeB = new THREE.Mesh(cylinderGeometry, material);
-      smallTubeB.scale.set(0.5,0.5,0.5);
-      smallTubeA.position.set(0.5,-15,0);
+
+      leftTorus.position.set(-5,0,0);
+      leftTorus.rotation.set(0, 0, Math.PI/2);
+
+      rightTorus.position.set(5, 0, 0);
+      rightTorus.rotation.set(0, 0, -Math.PI/2);
+
+      wholeTube.rotation.set(0, 0, Math.PI/2);
+      wholeTube.position.set(0,3,0);
+
+      smallTubeA.scale.set(1,0.5,1);
+      smallTubeA.position.set(-2.5,-3,0);
+      smallTubeA.rotation.set(0,0, Math.PI/2);
+
+      smallTubeB.scale.set(1,0.4,1);
+      smallTubeB.position.set(3,-3,0);
+      smallTubeB.rotation.set(0,0, Math.PI/2);
 
       //rightTorus.position.set()
 
