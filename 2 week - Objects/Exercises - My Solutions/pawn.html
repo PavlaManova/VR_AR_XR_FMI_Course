@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Rotation with wiggle</title>
+    <title>Pawn</title>
     <script src="three.min.js"></script>
     <script src="WebGL.js"></script>
   </head>
@@ -27,8 +27,8 @@
 
       //camera
       var camera = new THREE.PerspectiveCamera(60,aspect,1,100);
-      camera.position.set(10, 12, 16);
-      camera.lookAt(new THREE.Vector3(0,0,0));
+      camera.position.set(15, 17, 21);
+      camera.lookAt(new THREE.Vector3(5,0,0));
 
       //light
       var light = new THREE.PointLight();
@@ -37,9 +37,11 @@
       scene.add(light);
 
       //object
-      var cylinderGeometry= new THREE.CylinderGeometry(1,1,20);
-      var sphereGeometry= new THREE.SphereGeometry( 6, 32, 32 );
-      var sphereGeometryB= new THREE.SphereGeometry( 7, 32, 32 );
+      var cylinderGeometry= new THREE.CylinderGeometry(0.5, 3.5, 10, 60);
+      var sphereGeometry= new THREE.SphereGeometry(3, 32, 32 );
+      var sphereGeometryB= new THREE.SphereGeometry(3.5, 32, 32 );
+      var sphereGeometryC = new THREE.SphereGeometry(3, 32, 32, 0, 2*Math.PI, 0, Math.PI/2);
+      var circleGeometry = new THREE.CircleGeometry(6,32);
 
       var material = new THREE.MeshLambertMaterial();
 
@@ -47,13 +49,26 @@
 
       var head = new THREE.Mesh(sphereGeometry,material);
       var collar = new THREE.Mesh(sphereGeometryB,material);
+      var middle = new THREE.Mesh(cylinderGeometry, material);
+      var base = new THREE.Mesh(sphereGeometryC, material);
+      var bottom = new THREE.Mesh(circleGeometry, material);
 
       collar.scale.set(1,0.2,1);
-      collar.position.set(0,-4,0);
+      collar.position.set(0,-2,0);
+
+      middle.position.set(0,-4,0);
+
+      base.scale.set(2,0.7,2);
+      base.position.set(0,-10,0);
+
+      bottom.position.set(0,-10,0);
+      bottom.rotation.set(Math.PI/2,0,0);
 
       pawn.add(head);
       pawn.add(collar);
-
+      pawn.add(middle);
+      pawn.add(base);
+      pawn.add(bottom);
 
       scene.add(pawn);
       renderer.setAnimationLoop(frame);
