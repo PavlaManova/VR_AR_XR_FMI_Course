@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0207: Островърха ограда</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+
+			// един островърх панел (вертикална плоскост)
+			var panel = new THREE.Group();
+			
+			// долна част на панела - правоъгълник
+			var bottom = new THREE.Mesh( geometry, material );
+			bottom.scale.set( 10, 30, 1 );
+
+			// горна част на панела - квадрат, завъртян с връх нагоре
+			// (така се прави островърхността), и още ширината на
+			// правоъгълника е колкото диагонала на квадрата
+			var sharpie = new THREE.Mesh( geometry, material );
+			sharpie.scale.set( 5*Math.sqrt(2), 5*Math.sqrt(2), 1 );
+			sharpie.position.set( 0, 15, 0 );
+			sharpie.rotation.set( 0, 0, Math.PI/4 );
+
+			// сглобяваме един островърх панел
+			panel.add( bottom, sharpie );
+			
+			// създаваме стена от 11 панела един до друг
+			var fenceSide = new THREE.Group();
+			for (var i=0; i<11; i++)
+			{
+				var newPanel = panel.clone();
+				newPanel.position.set( 11*(i-5), -20, 0 );
+				fenceSide.add( newPanel );
+			}
+			
+			// добавяме горна хоризонтална греда
+			var bar = new THREE.Mesh( geometry, material );
+			bar.scale.set( 120, 4, 1 );
+			bar.position.set( 0, -10, -1 );
+			fenceSide.add( bar );
+			
+			// добавяме и долна хоризонтална греда
+			bar = bar.clone();
+			bar.position.set( 0, -30, -1 );
+			fenceSide.add( bar );
+			
+			// вече правим цялата четириъгълна ограда
+			var fence = new THREE.Group();
+			
+			// слагаме едната стена
+			fenceSide.position.set( 0, 0, 61 );
+			fence.add( fenceSide );
+			
+			// слагаме втората стена, срещуположна на
+			// първата и обърната навън
+			fenceSide = fenceSide.clone();
+			fenceSide.position.set( 0, 0, -61 );
+			fenceSide.rotation.set( 0, Math.PI, 0 );
+			fence.add( fenceSide );
+			
+			// слагаме третата стена, завъртяна на 90 градуса
+			fenceSide = fenceSide.clone();
+			fenceSide.position.set( 61, 0, 0 );
+			fenceSide.rotation.set( 0, Math.PI/2, 0 );
+			fence.add( fenceSide );
+			
+			// и накрая слагаме последната, четвърта стена
+			fenceSide = fenceSide.clone();
+			fenceSide.position.set( -61, 0, 0 );
+			fenceSide.rotation.set( 0, -Math.PI/2, 0 );
+			fence.add( fenceSide );
+			
+			// намаляваме малко целия размер на оградата, 
+			// че стана по-голям от очакваното
+			fence.scale.set( 0.8, 0.8, 0.8 );
+			
+			scene.add( fence );
+			
+			function animate( t )
+			{
+				fence.rotation.set( Math.sin(0.3*t)/10, t/3, Math.cos(0.4*t)/10 );
+			}
+		</script>
+	</body>
+</html>
+
+

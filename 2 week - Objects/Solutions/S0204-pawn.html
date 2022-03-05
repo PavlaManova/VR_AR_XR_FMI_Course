@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0204: Пешка</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+
+			// пешка
+			var pawn = new THREE.Group();
+			scene.add( pawn );
+			
+			// конусовидно тяло
+			var body = new THREE.Mesh( new THREE.CylinderGeometry( 1, 14, 50, 32 ), material );
+				
+			// сферична глава
+			var head = new THREE.Mesh( new THREE.SphereGeometry( 9, 24, 16 ), material );
+			head.position.set( 0, 25, 0 );
+				
+			// врат/яка от сплескана сфера
+			var neck = new THREE.Mesh( new THREE.SphereGeometry( 11, 24 ), material );
+			neck.position.set( 0, 16, 0 );
+			neck.scale.set( 1, 0.2, 1 );
+				
+			// полусферична основа
+			var legs = new THREE.Mesh( new THREE.SphereGeometry( 22, 24, 16, 0, 2*Math.PI, 0, Math.PI/2 ), material );
+			legs.scale.set( 1, 0.5, 1 );
+			legs.position.set( 0, -25, 0 );
+				
+			// окръжност. която запушва фигурата отдолу
+			var bottom = new THREE.Mesh( new THREE.CircleGeometry( 22, 24 ), material );
+			bottom.position.set( 0, -25, 0 );
+			bottom.rotation.set( Math.PI/2, 0, 0 );
+				
+			pawn.add( body, head, neck, legs, bottom );
+			
+			function animate( t )
+			{
+				pawn.rotation.set( t/2, t/3, t/4 );
+			}
+		</script>
+	</body>
+</html>
+
+

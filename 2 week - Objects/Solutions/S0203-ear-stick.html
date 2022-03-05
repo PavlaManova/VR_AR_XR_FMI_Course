@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0203: Клечка за уши</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+
+			// клечка за уши
+			var stick = new THREE.Group();
+			scene.add( stick );
+			
+			// самата клечка
+			var body = new THREE.Mesh( new THREE.CylinderGeometry( 2, 2, 60 ), material );
+
+			// едното памуче е сфера, издължена хоризонтално
+			var tipA = new THREE.Mesh( new THREE.SphereGeometry( 4, 16, 16 ), material );
+			tipA.scale.set( 1, 2, 1 );
+			tipA.position.set( 0, 30, 0 );
+						
+			// другото памуче е същата издължена сфера,
+			// но е в противоположния край на клечката
+			var tipB = new THREE.Mesh( tipA.geometry, material );
+			tipB.scale.set( 1, 2, 1 );
+			tipB.position.set( 0, -30, 0 );
+
+			stick.add( body, tipA, tipB );
+			
+			function animate( t )
+			{
+				stick.rotation.set( t/2, t/3, t/4 );
+			}
+		</script>
+	</body>
+</html>
+
+

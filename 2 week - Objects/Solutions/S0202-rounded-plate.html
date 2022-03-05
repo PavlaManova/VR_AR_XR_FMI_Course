@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0202: Заоблена плочка</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+			var geometryA = new THREE.BoxGeometry( 40, 3, 20 ); // правоъгълна форма
+			var geometryC = new THREE.CylinderGeometry( 10, 10, 3, 32 ); // закръглена форма
+
+			// плочка
+			var plate = new THREE.Group();
+			plate.scale.set( 1.5, 1.5, 1.5 );
+			scene.add( plate );
+			
+			// правоъгълни парчета за плънка, еднакви са,
+			// но едното е завъртяно на 90 градуса
+			var plateA = new THREE.Mesh( geometryA, material );
+			var plateB = new THREE.Mesh( geometryA, material );
+			plateB.rotation.y = Math.PI/2;
+
+			// четирите диска за четирите върха на плочката
+			var plateC = new THREE.Mesh( geometryC, material );
+			plateC.position.set( 10, 0, 10 );
+			var plateD = new THREE.Mesh( geometryC, material );
+			plateD.position.set( 10, 0, -10 );
+			var plateE = new THREE.Mesh( geometryC, material );
+			plateE.position.set( -10, 0, 10 );
+			var plateF = new THREE.Mesh( geometryC, material );
+			plateF.position.set( -10, 0, -10 );
+
+			// сглобяваме всички 6 елемента в една плочка
+			plate.add( plateA, plateB, plateC, plateD, plateE, plateF );
+			
+			function animate( t )
+			{
+				plate.rotation.set( t/2, t/3, t/4 );
+			}
+		</script>
+	</body>
+</html>
+
+

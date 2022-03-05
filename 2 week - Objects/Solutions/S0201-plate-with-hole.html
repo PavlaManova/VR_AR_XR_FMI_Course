@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0201: Плочка с дупка</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+
+			// групов обект за плочката, увеличен 1.5 пъти
+			var plate = new THREE.Group();
+			plate.scale.set( 1.5, 1.5, 1.5 );
+			scene.add( plate );
+			
+			// плочка А
+			var plateA = new THREE.Mesh( geometry, material );
+			plateA.position.set( 0, 5-25/2, 0 );
+			plateA.scale.set( 40, 25, 3 );
+
+			// плочка B
+			var plateB = new THREE.Mesh( geometry, material );
+			plateB.position.set( -5+25/2, 10, 0 );
+			plateB.scale.set( 25, 10, 3 );
+
+			// плочка C
+			var plateC = new THREE.Mesh( geometry, material );
+			plateC.position.set( -15-5/2, 5+15/2, 0 );
+			plateC.scale.set( 5, 15, 3 );
+			
+			// плочка D
+			var plateD = new THREE.Mesh( geometry, material );
+			plateD.position.set( 5/2, 15+5/2, 0 );
+			plateD.scale.set( 35, 5, 3 );
+
+			// пъхаме всички плочки в груповия обект
+			plate.add( plateA, plateB, plateC, plateD );
+			
+			function animate( t )
+			{
+				plate.rotation.set( t/2, t/3, t/4 );
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0210: Автомобилна гума</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+
+			// гума с джанта
+			var wheel = new THREE.Group();
+			wheel.scale.set( 0.8, 0.8, 2.4 );
+			scene.add( wheel );
+
+			// самата гума я правим от девет на брой 8-ъгълни тора
+			var geometry = new THREE.TorusGeometry( 50, 5, 9, 8 );
+			for (var i=0; i<9; i++)
+			{
+				var prot = new THREE.Mesh( geometry, material );
+				prot.rotation.set( 0, 0, 2*Math.PI/8*i/9 );
+				wheel.add( prot );
+			}
+
+			// спиците на джантата са от 9 3-ъгълни тора
+			var geometry = new THREE.TorusGeometry( 52, 2, 9, 3 );
+			for (var i=0; i<9; i++)
+			{
+				var tire = new THREE.Mesh( geometry, material );
+				tire.rotation.set( 0, 0, 2*Math.PI/3*i/9 );
+				wheel.add( tire );
+			}
+
+			// плътната част на джантата е от три тора,
+			// правим един, а другите два са негови клонинги
+			var tire = new THREE.Mesh( 
+				new THREE.TorusGeometry( 10, 3, 16, 32 ), 
+				material
+			);
+			tire.scale.set( 2, 2, 1/5 );
+			tire.position.set( 0, 0, 1 );
+			wheel.add( tire );
+			
+			// единият клонинг
+			tire = tire.clone();
+			tire.position.set( 0, 0, -1 );
+			wheel.add( tire );
+			
+			// другият клонинг
+			tire = tire.clone();
+			tire.scale.set( 2, 2, 1/2 );
+			tire.position.set( 0, 0, 0 );
+			wheel.add( tire );
+			
+			// болтовете са 6-ъгълни цилиндри (т.е. призми),
+			// дълги, че да се виждат от двата края на джантата
+			geometry = new THREE.CylinderGeometry( 3, 3, 11, 6 );
+			for (var i=0; i<8; i++)
+			{
+				var alpha = 2*Math.PI*i/8;
+				var bolt = new THREE.Mesh( geometry, material );
+				bolt.position.set( 19*Math.cos(alpha), 19*Math.sin(alpha), 0 );
+				bolt.scale.set( 1, 1/3, 1 );
+				bolt.rotation.set( Math.PI/2, alpha, 0 );
+				wheel.add( bolt );
+			}
+			
+			function animate( t )
+			{
+				wheel.rotation.set( 0, t/4, 1.2*t, 'YXZ' );
+			}
+		</script>
+	</body>
+</html>
+
+

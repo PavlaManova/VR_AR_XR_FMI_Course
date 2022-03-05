@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0205: Халка от верига</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+
+			// халка
+			var chainNode = new THREE.Group();
+			scene.add( chainNode );
+			
+			// единият заоблен край
+			var torusR = new THREE.Mesh( new THREE.TorusGeometry( 20, 10, 32, 32, Math.PI ), material );
+			torusR.position.set( 0, 20, 0 );
+			
+			// другият заоблен край, използва геометрията
+			// на първия заоблен край
+			var torusL = new THREE.Mesh( torusR.geometry, material );
+			torusL.position.set( 0, -20, 0 );
+			torusL.rotation.set( 0, 0, Math.PI );
+			
+			// дългата цилиндрична част
+			var cylinderA = new THREE.Mesh( new THREE.CylinderGeometry( 10, 10, 40, 32 ), material );
+			cylinderA.position.set( 20, 0, 0 );
+			
+			// едната къса цилиндрична част
+			var cylinderB = new THREE.Mesh( cylinderA.geometry, material );
+			cylinderB.position.set( -20, 11, 0 );
+			cylinderB.scale.set( 1, 9/20, 1 );
+			
+			// другата къса цилиндрична част
+			var cylinderC = new THREE.Mesh( cylinderA.geometry, material );
+			cylinderC.position.set( -20, -11, 0 );
+			cylinderC.scale.set( 1, 9/20, 1 );
+			
+			// сглобяване на халката	
+			chainNode.add( torusR, torusL, cylinderA, cylinderB, cylinderC );
+			
+			function animate( t )
+			{
+				chainNode.rotation.set( t/2, t/3, t/4 );
+			}
+		</script>
+	</body>
+</html>
+
+

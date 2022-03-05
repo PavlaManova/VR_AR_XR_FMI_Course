@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0206: Керамична чаша</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			var material = new THREE.MeshLambertMaterial();
+
+			// керамична чаша
+			var mug = new THREE.Group();
+			scene.add( mug );
+			
+			// горен ръб на чашата
+			var torusA = new THREE.Mesh( new THREE.TorusGeometry( 20, 2, 16, 48 ), material );
+			torusA.position.set( 0, 0, 20 );
+			
+			// долен ръб на чашата
+			var torusB = torusA.clone();
+			torusB.position.set( 0, 0, -20 );
+
+			// дъно на чашата
+			var bottom = new THREE.Mesh( new THREE.CylinderGeometry( 20, 20, 4, 48 ), material );
+			bottom.position.set( 0, 0, -20 );
+			bottom.rotation.set( Math.PI/2, 0, 0 );
+				
+			// вътрешна повърхност с обърнато лице и опако, понеже material е споделен, ако на
+			// него сложим опако, то ще е и на всички останали обекти, затова тук си правим
+			// нова инстанция на материала - същият като material, но обърнат наопаки
+			var inner = new THREE.Mesh(
+				new THREE.CylinderGeometry( 20-2, 20-2, 40, 48, 1, true ),
+				new THREE.MeshLambertMaterial()
+			);
+			inner.rotation.set( Math.PI/2, 0, 0 );
+			inner.material.side = THREE.BackSide;
+				
+			// външна повърхност
+			var outer = new THREE.Mesh( new THREE.CylinderGeometry( 20+2, 20+2, 40, 48, 1, true ), material );
+			outer.rotation.set( Math.PI/2, 0, 0 );
+				
+			// дръжка на чашата
+			var handle = new THREE.Mesh( new THREE.TorusGeometry( 12, 2, 16, 48 ), material );
+			handle.rotation.set( Math.PI/2, 0, 0, 'YXZ' );
+			handle.scale.set( 0.7, 1, 1.9 );
+			handle.position.set( 27+1, 0, 0 );
+			
+			mug.add( torusA, torusB, bottom, inner, outer, handle );
+			
+			
+			function animate( t )
+			{
+				mug.rotation.set( Math.PI*(Math.sin(0.6*t)-1)/2, t, 0, 'YXZ' );
+			}
+		</script>
+	</body>
+</html>
+
+

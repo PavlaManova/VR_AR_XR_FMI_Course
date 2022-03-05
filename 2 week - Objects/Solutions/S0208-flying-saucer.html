@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0208: Летяща чиния</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var material = new THREE.MeshLambertMaterial();
+			
+			// една сфера за всички обекти
+			var geometry = new THREE.SphereGeometry( 1, 60, 24 );
+
+			// летяща чиния
+			var ufo = new THREE.Group();
+			scene.add( ufo );
+			
+			// добавяне на 30 сфери, като се увеличава k се
+			// променят и размерите им - стават по-широки,
+			// но сплескани отгоре (първата сфера при k=1 си
+			// е истинска сфера)
+			var k = 1;
+			for (var i=0; i<30; i++)
+			{
+				var ball = new THREE.Mesh( geometry, material );
+				ball.scale.set( 25*k, 25/k, 25*k );
+				k = k*1.03;
+				ufo.add( ball );
+			}
+			
+			function animate( t )
+			{
+				ufo.rotation.set( t/2, t/3, t/4 );
+			}
+		</script>
+	</body>
+</html>
+
+
