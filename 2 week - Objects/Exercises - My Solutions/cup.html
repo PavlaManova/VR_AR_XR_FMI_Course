@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cup</title>
+    <script src="three.min.js"></script>
+    <script src="WebGL.js"></script>
+  </head>
+  <body>
+    <script>
+      if ( !THREE.WEBGL.isWebGLAvailable() )
+  				alert( THREE.WEBGL.getWebGLErrorMessage() );
+
+      var renderer = new THREE.WebGLRenderer({antialias:true});
+      renderer.setSize(window.innerWidth, window.innerHeight,true);
+
+      // Add renderer to page end-to-end with no scrollbars
+      document.body.appendChild(renderer.domElement);
+      document.body.style.margin=0;
+      document.body.style.overflow='hidden';
+
+      //scene
+      var scene = new THREE.Scene();
+      scene.background= new THREE.Color('white');
+
+      var aspect = window .innerWidth/window.innerHeight;
+
+      //camera
+      var camera = new THREE.PerspectiveCamera(60,aspect,1,100);
+      camera.position.set(10, 12, 16);
+      camera.lookAt(new THREE.Vector3(0,0,0));
+
+      //light
+      var light = new THREE.PointLight();
+      light.position.set(5,8,12);
+
+      scene.add(light);
+
+      //object
+      var cylinderGeometry= new THREE.CylinderGeometry(5, 5, 10, 36, 36, true);
+      var cylinderGeometryB= new THREE.CylinderGeometry(4, 4, 10, 36, 36, true);
+      var torusGeometry = new THREE.TorusGeometry(4.5, 0.5, 16, 100);
+      var partialTorusGeometry = new THREE.TorusGeometry(3, 1, 16, 100, 7*Math.PI/6);
+      var circleGeometry = new THREE.CircleGeometry(4.5,36);
+
+      var material = new THREE.MeshLambertMaterial();
+      var cup = new THREE.Group();
+
+      var body = new THREE.Mesh(cylinderGeometry, material);
+      var upperEdge = new THREE.Mesh(torusGeometry, material);
+      var holder = new THREE.Mesh(partialTorusGeometry, material);
+      var inside = new THREE.Mesh(cylinderGeometryB, new THREE.MeshLambertMaterial());
+      var bottomEdge = upperEdge.clone();
+      var bottom = new THREE.Mesh(circleGeometry, new THREE.MeshLambertMaterial());
+
+      inside.material.side = THREE.BackSide;
+
+      upperEdge.rotation.set(Math.PI/2, 0, 0);
+      upperEdge.position.set(0,5,0);
+
+      bottomEdge.rotation.set(Math.PI/2, 0, 0);
+      bottomEdge.position.set(0,-5,0);
+
+      //holder.position()
+      holder.scale.set(1, 0.6,1);
+      holder.rotation.set(0, 0, -Math.PI/2-Math.PI/20);
+      holder.position.set(5,0,0);
+
+      bottom.material.side=THREE.DoubleSide;
+      bottom.rotation.set(Math.PI/2, 0, 0);
+      bottom.position.set(0, -5.5, 0);
+
+      cup.add(body, inside);
+      cup.add(upperEdge, bottomEdge, bottom);
+      cup.add(holder);
+
+      scene.add(cup);
+      renderer.setAnimationLoop(frame);
+
+      function frame(time)
+      {
+        var currSeconds=time/1000;
+        cup.rotation.set(currSeconds/3, currSeconds/4, currSeconds/5);
+        renderer.render(scene, camera);
+      }
+
+    </script>
+  </body>
+</html>
