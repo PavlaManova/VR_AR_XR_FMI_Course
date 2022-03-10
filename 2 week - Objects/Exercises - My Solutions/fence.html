@@ -2,68 +2,108 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
     <title>Fence</title>
     <script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
     <script src="WebGL.js"></script>
   </head>
   <body>
     <script>
-      if ( !THREE.WEBGL.isWebGLAvailable() )
-  				alert( THREE.WEBGL.getWebGLErrorMessage() );
 
-      var renderer = new THREE.WebGLRenderer({antialias:true});
-      renderer.setSize(window.innerWidth, window.innerHeight,true);
-
-      // Add renderer to page end-to-end with no scrollbars
-      document.body.appendChild(renderer.domElement);
-      document.body.style.margin=0;
-      document.body.style.overflow='hidden';
-
-      //scene
-      var scene = new THREE.Scene();
-      scene.background= new THREE.Color('white');
-
-      var aspect = window .innerWidth/window.innerHeight;
-
-      //camera
-      var camera = new THREE.PerspectiveCamera(60,aspect,1,100);
-      camera.position.set(10, 12, 16);
-      camera.lookAt(new THREE.Vector3(0,0,0));
-
-      //light
-      var light = new THREE.PointLight();
-      light.position.set(5,8,12);
-
-      scene.add(light);
+      vaxInit();
 
       //object
-      var cylinderGeometry= new THREE.CylinderGeometry(5, 5, 10, 36, 36, true);
-      var cylinderGeometryB= new THREE.CylinderGeometry(4, 4, 10, 36, 36, true);
-      var torusGeometry = new THREE.TorusGeometry(4.5, 0.5, 16, 100);
-      var partialTorusGeometry = new THREE.TorusGeometry(3, 1, 16, 100, 7*Math.PI/6);
-      var circleGeometry = new THREE.CircleGeometry(4.5,36);
-
-      var boxGeometry = new THREE.BoxGeometry(5,5,1);
-      var boxGeometry2 = new THREE.BoxGeometry(5*Math.sqrt(2),5*Math.sqrt(2),1);
-      var material = new THREE.MeshLambertMaterial();
       var plank = new THREE.Group();
 
-      var cube = new THREE.Mesh(boxGeometry, material);
-      var cube2 = new THREE.Mesh(boxGeometry2, new THREE.MeshLambertMaterial());
-      cube2.position.set(2.5,2.5,0);
-      cube2.visible=false;
-      cube2.rotation.set(0,0,Math.PI/4);
+      var boxGeometry = new THREE.BoxGeometry(4, 10, 1);
+      var geometryT = new THREE.RingGeometry( 0, 3, 3);
+      var planeGeometry = new THREE.PlaneGeometry(1,4.8);
 
-      plank.add(cube, cube2);
+      var material = new THREE.MeshLambertMaterial();
+      var backSidedMaterial = new THREE.MeshLambertMaterial();
+      var doubleSidedMaterial = new THREE.MeshLambertMaterial();
 
-      scene.add(plank);
+      //components of plank
+      var frontTriangle = new THREE.Mesh( geometryT, material );
+      frontTriangle.position.set(-0.65,5,0.5);
+      frontTriangle.scale.set(0.89,1,1);
+
+      var backTriangle = new THREE.Mesh( geometryT, backSidedMaterial );
+      backTriangle.position.set(-0.65,5,-0.5);
+      backTriangle.scale.set(0.89,1,1);
+      backTriangle.material.side = THREE.BackSide;
+
+      var body = new THREE.Mesh(boxGeometry, material);
+
+      var tiltedRect = new THREE.Mesh(planeGeometry,material);
+      tiltedRect.rotation.set(-Math.PI/3.18,Math.PI/2,0,'YXZ');
+      tiltedRect.position.set(1/900,6.33,0);
+
+      var rectangle = new THREE.Mesh(planeGeometry,backSidedMaterial);
+      rectangle.position.set(-2,5.3,0);
+      rectangle.rotation.set(0, Math.PI/2,0);
+
+      plank.add(frontTriangle);
+      plank.add(backTriangle);
+      plank.add(body);
+      plank.add(tiltedRect);
+      plank.add(rectangle);
+
+
+      //fence side
+      var fenceSide = new THREE.Group();
+
+      //add 10 planks
+			for (var i=0; i<10; i++)
+			{
+				var singlePlank = plank.clone();
+				singlePlank.position.set( -20+6*i, 0, 0 );
+				fenceSide.add( singlePlank );
+			}
+
+      //add bottom horizontal plank
+      var horizontalPlank = new THREE.Mesh( boxGeometry, doubleSidedMaterial );
+			horizontalPlank.scale.set( 15, 1/5, 1 );
+			horizontalPlank.position.set(7, -2.5, 0.5);
+			fenceSide.add( horizontalPlank );
+
+      //add upper horizontal plank
+      var horizontalPlank = horizontalPlank.clone();
+      horizontalPlank.position.set(7, 2.5, 0.5);
+      fenceSide.add( horizontalPlank );
+
+      //fence
+      var fence = new THREE.Group();
+      fence.scale.set(0.6,0.6,0.6);
+
+      //first side
+      fenceSide.rotation.set(0,Math.PI,0);
+      fenceSide.position.set(0, 0, 0);
+			fence.add(fenceSide);
+
+      //second side
+      fenceSide = fenceSide.clone();
+			fenceSide.rotation.set(0, Math.PI/3, 0);
+			fenceSide.position.set(-45/Math.sqrt(3), 0, -41/2);
+			fence.add(fenceSide);
+
+      //third side
+      fenceSide = fenceSide.clone();
+			fenceSide.rotation.set(0, -Math.PI/3, 0);
+			fenceSide.position.set(5, 0, -33);
+			fence.add(fenceSide);
+
+      scene.add(fence);
       renderer.setAnimationLoop(frame);
 
       function frame(time)
       {
         var currSeconds=time/1000;
-        plank.rotation.set(currSeconds/3, currSeconds/4, currSeconds/5);
-        renderer.render(scene, camera);
+        fence.rotation.set( Math.sin(0.3*currSeconds)/10, currSeconds/3, Math.cos(0.4*currSeconds)/10 );
+			  renderer.render(scene, camera);
       }
 
     </script>
