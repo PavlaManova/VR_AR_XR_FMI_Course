@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0302: Окръжности на дъгата</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			var geometry = new THREE.CircleGeometry( 20, 60 );
+
+			// групов обект за шестте окръжности
+			var rainbow = new THREE.Group();
+			scene.add( rainbow );
+			
+			// централна окръжност
+			var circle = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 'black'} ) );
+			rainbow.add( circle );
+
+			function animate( t )
+			{
+				rainbow.rotation.set( 0, 0, t );
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0305: Метален кант</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			// куб
+			var material = new THREE.MeshPhongMaterial( {color:'sandybrown', shininess:150, emissive:'sandybrown', emissiveIntensity:0.5} );
+			var geometry = new THREE.BoxGeometry( 50, 50, 50 );
+			var cube = new THREE.Mesh( geometry, material );
+			scene.add( cube );
+			
+			function animate( t )
+			{
+				cube.rotation.set( Math.sin(t)/3, t, Math.sin(2*t)/3 );
+			}
+		</script>
+	</body>
+</html>
+
+

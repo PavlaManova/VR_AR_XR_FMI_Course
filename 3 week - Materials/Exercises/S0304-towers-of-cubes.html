@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0304: Кули от кубчета</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			// платформа
+			var platform = new THREE.Mesh(
+				new THREE.BoxGeometry( 100, 4, 100 ),
+				new THREE.MeshPhongMaterial( {color:'white', shininess:20} )
+			);
+			platform.position.y = -35;
+			scene.add( platform );
+			
+			// розов фон
+			scene.background = new THREE.Color( 'pink' );
+			
+			function animate( t )
+			{
+				scene.rotation.set( 0, t, 0 );
+			}
+		</script>
+	</body>
+</html>
+
+

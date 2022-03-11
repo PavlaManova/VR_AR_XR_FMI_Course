@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0303: Кръгова диаграма</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			// примерни входнни данни
+			var values = [23,38,33,18,10,29];
+			
+			// диаграма
+			var chart = new THREE.Group();
+			scene.add( chart );
+			
+			var geometry = new THREE.CylinderGeometry( 40, 40, 20, 60 );
+			var material = new THREE.MeshPhongMaterial( {
+				color: 'gray',
+				shininess: 30
+			} );
+			
+			chart.add( new THREE.Mesh( geometry, material ) );
+						
+			function animate( t )
+			{
+				chart.rotation.set( t/3, t, t/2 );
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0308: Меки сенки</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			// кубът
+			var cube = new THREE.Mesh(
+				new THREE.BoxGeometry( 50, 50, 50 ),
+				new THREE.MeshPhongMaterial( {
+					color: 'wheat',
+					shininess: 0,
+					emissive: 'tan',
+					emissiveIntensity: 0.1} )
+			);
+			scene.add( cube );
+			
+			var n = 12;
+			var geometry = new THREE.IcosahedronGeometry(2,2);
+			var material = new THREE.MeshPhongMaterial({color:'black',shininess:70});
+			for (var i=0; i<n; i++)
+			{
+				// топка
+				var ball = new THREE.Mesh( geometry, material );
+				ball.position.set( THREE.Math.randFloat(-20,20), THREE.Math.randFloat(-20,20), THREE.Math.randFloat(-20,20) );
+				switch( i%6 )
+				{
+					case 0: ball.position.x = +27; break;
+					case 1: ball.position.x = -27; break;
+					case 2: ball.position.y = +27; break;
+					case 3: ball.position.y = -27; break;
+					case 4: ball.position.z = +27; break;
+					case 5: ball.position.z = -27; break;
+				}
+				
+				cube.add( ball );
+			}
+			
+			
+			scene.add( new THREE.AmbientLight('orange',0.5) );
+
+			light.intensity = 0.5;
+			
+			function animate( t )
+			{
+				cube.rotation.set( t/8, t/5, t/7 );
+			}
+		</script>
+	</body>
+</html>
+
+

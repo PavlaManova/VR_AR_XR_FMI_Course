@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0307: Светлинен куб</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			scene.background = new THREE.Color( 'black' );
+			
+			// земя
+			var ground = new THREE.Mesh( 
+				new THREE.CylinderGeometry( 160, 160, 1 ),
+				new THREE.MeshPhongMaterial({
+					color: 'indigo',
+				})
+			);
+			ground.position.y = -20;
+			scene.add( ground );
+			
+			
+			// кубът
+			var cube = new THREE.Mesh(
+				new THREE.BoxGeometry( 34, 34, 34 ),
+				new THREE.MeshPhongMaterial( {color: 'white', shininess: 20} )
+			);
+			cube.position.y = 20;
+			scene.add( cube );
+			
+			// слагаме удобна гледна точка
+			camera.position.set( 100, 70, 0 );
+			camera.lookAt( scene.position );
+			
+			function animate( t )
+			{
+				scene.rotation.y = t/2;
+
+				// въртим куба
+				cube.rotation.set( t/4, t, t/3 );
+			}
+		</script>
+	</body>
+</html>
+
+

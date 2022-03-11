@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0301: Швейцарско знаме</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			var geometry = new THREE.BoxGeometry( 90, 60, 3 );
+			var material = new THREE.MeshLambertMaterial( {color: 'red'} );
+			var flag = new THREE.Mesh( geometry, material );
+			scene.add( flag );
+			
+			function animate( t )
+			{
+				flag.rotation.set( Math.sin(t/4)/3, t, Math.cos(t/4)/3 );
+			}
+		</script>
+	</body>
+</html>
+
+

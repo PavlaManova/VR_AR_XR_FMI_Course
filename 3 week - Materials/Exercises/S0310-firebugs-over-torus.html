@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0310: Светулки над тор</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			// тор
+			var torus = new THREE.Mesh(
+				new THREE.TorusGeometry( 40, 10, 15, 30 ),
+				new THREE.MeshPhongMaterial()
+			);
+			
+			// светулки
+			var geometry = new THREE.SphereGeometry( 1, 5, 5 );
+			var material = new THREE.MeshBasicMaterial({ color: 'yellow' });
+			
+			var n = 20;
+			
+			// n светулки
+			for (var i=0; i<n; i++)
+			{
+				var firebug = new THREE.Mesh( geometry, material );
+				firebug.position.setFromSphericalCoords( 30, 2*Math.PI/n*i, Math.PI/2 );
+				torus.add( firebug );
+			}
+			
+			scene.add( torus  );
+
+			function animate( t )
+			{
+				torus.rotation.set( 0, Math.PI*Math.sin(t/2), 0 );
+			}
+		</script>
+	</body>
+</html>
+
+

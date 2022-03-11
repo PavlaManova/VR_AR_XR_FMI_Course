@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>С0309: Урбанистична планета</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			// планета
+			var planet = new THREE.Mesh(
+				new THREE.IcosahedronGeometry( 30, 3 ),
+				new THREE.MeshPhongMaterial( {color: 'brown'} )
+			);
+			planet.rotation.y = 1;
+			scene.add( planet );
+			
+			// мини-слънце
+			var sun = new THREE.Mesh(
+				new THREE.IcosahedronGeometry( 1.5, 1 ),
+				new THREE.MeshBasicMaterial( {color: 'gold'} )
+			);
+			sun.position.set( 10, 5, 70 );
+			scene.add( sun );
+			
+			// сграда
+			var geometry = new THREE.BoxGeometry( 40, 10, 10 );
+			var material = new THREE.MeshPhongMaterial({
+					color: 'silver',
+					shininess: 100,
+					emissive: new THREE.Color('blue'),
+					emissiveIntensity: 0.3
+				});
+			var building = new THREE.Mesh( geometry, material );
+			building.position.set( -45, 0, 0 );
+			planet.add( building );
+		
+			function animate( t )
+			{
+			}
+		</script>
+	</body>
+</html>
+
+

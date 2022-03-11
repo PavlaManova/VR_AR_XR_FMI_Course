@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0301: Швейцарско знаме</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+
+			var geometry = new THREE.BoxGeometry( 90, 60, 3 );
+			var material = new THREE.MeshLambertMaterial( {color: 'red'} );
+			var flag = new THREE.Mesh( geometry, material );
+
+      var horizontalCross = new THREE.Mesh(geometry, material);
+      horizontalCross.scale.set( 0.5,0.5,0.5 );
+      //horizontalCross.color.set( 0xff0000 );
+
+			scene.add( flag );
+
+			function animate( t )
+			{
+				flag.rotation.set( Math.sin(t/4)/3, t, Math.cos(t/4)/3 );
+			}
+		</script>
+	</body>
+</html>
