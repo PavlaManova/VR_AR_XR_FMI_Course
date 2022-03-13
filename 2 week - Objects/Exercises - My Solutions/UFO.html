@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>UFO</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+
+			var geometry = new THREE.SphereGeometry(1, 60, 60);
+			var material = new THREE.MeshLambertMaterial();
+      var ufo = new THREE.Group();
+
+      //add 30 expanding spheres
+      var k=1;
+      for(var i=0; i<40; i++)
+      {
+        var segment = new THREE.Mesh(geometry, material);
+        segment.scale.set(20*k,20/k,20*k);
+        k*=1.02;
+        ufo.add(segment);
+      }
+
+			scene.add(ufo);
+
+			function animate( t )
+			{
+				ufo.rotation.set(t/3, t/4,t/4);
+			}
+		</script>
+	</body>
+</html>
