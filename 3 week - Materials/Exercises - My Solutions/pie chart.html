@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0303: Кръгова диаграма</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+
+			// примерни входнни данни
+			var values = [23,38,33,18,10,29];
+			var sum=0;
+			for(var i=0; i<values.length; i++)
+			{
+				sum+=values[i];
+			}
+
+			// диаграма
+			var chart = new THREE.Group();
+			scene.add( chart );
+
+			var geometry = new THREE.CylinderGeometry( 40, 40, 20, 60 );
+			var material = new THREE.MeshPhongMaterial( {
+				color: 'gray',
+				shininess: 30
+			} );
+
+			var previousEnd=0;
+			for(var i=0; i<values.length; i++)
+			{
+				var sector = new THREE.Mesh(
+					new THREE.CylinderGeometry( 40, 40, 20, 60,60, false,
+						previousEnd+2*Math.PI*40/values[i], previousEnd+4*Math.PI*40/values[i]),
+						new THREE.MeshPhongMaterial( {
+							color: 	generateRandomColor(),
+							shininess: 30
+						} )
+				);
+				previousEnd+=4*Math.PI*40/values[i];
+				chart.add(sector);
+			}
+			//chart.add( new THREE.Mesh( geometry, material ) );
+
+			function animate( t )
+			{
+				chart.rotation.set( t/3, t, t/2 );
+			}
+
+			function generateRandomColor(){
+    let maxVal = 0xFFFFFF; // 16777215
+    let randomNumber = Math.random() * maxVal;
+    randomNumber = Math.floor(randomNumber);
+    randomNumber = randomNumber.toString(16);
+    let randColor = randomNumber.padStart(6, 0);
+    return `#${randColor.toUpperCase()}`
+}
+		</script>
+	</body>
+</html>

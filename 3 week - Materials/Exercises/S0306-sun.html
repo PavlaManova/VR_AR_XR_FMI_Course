@@ -4,28 +4,28 @@
 	<head>
 		<title>S0306: Слънце</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="stats.min.js"></script>
 		<script src="vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
-		
+
 			// ---------------------------------------------
 			// Тук е само началото на решението. Може да го
 			// ползвате, ако искате да си спестите писането
 			// на периферен код. Ако силно желаете да имате
 			// опит с Three.js, по-добре започнете начисто.
-			// ---------------------------------------------		
-		
+			// ---------------------------------------------
+
 			vaxInit();
 
 			scene.background = new THREE.Color( 'black' );
-			
+
 			// форма - икосаедър
 			var geometry = new THREE.IcosahedronGeometry( 40, 10 );
 			var material = new THREE.MeshLambertMaterial({
@@ -35,6 +35,13 @@
 					})
 			var sun = new THREE.Mesh( geometry, material );
 			scene.add( sun );
+			for(var i=0; i<10; i++)
+			{
+				var help =new THREE.Mesh(
+					new THREE.IcosahedronGeometry( 40,1 ), material);
+					help.position.set(2*Math.sin(i),2*Math.sin(i),0);
+					sun.add(help);
+			}
 
 			function animate( t )
 			{
@@ -44,5 +51,3 @@
 		</script>
 	</body>
 </html>
-
-

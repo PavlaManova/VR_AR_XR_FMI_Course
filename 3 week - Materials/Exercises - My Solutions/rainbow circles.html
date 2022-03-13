@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0302: Окръжности на дъгата</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+
+			var geometry = new THREE.CircleGeometry( 20, 60 );
+
+			// групов обект за шестте окръжности
+			var rainbow = new THREE.Group();
+			scene.add( rainbow );
+
+			// централна окръжност
+			var circle = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 'indigo'} ) );
+			rainbow.add( circle );
+
+			var red = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 'red'} ) );
+			red.position.set(-40,0,0);
+
+			var orange = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 'orange'} ) );
+			orange.position.set(40,0,0);
+
+			var yellow = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial(
+				 {color: 'yellow'} ) );
+			orange.position.set(40,0,0);
+
+			var n = 2*Math.PI*40/6;
+			var green = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 'green'} ) );
+			orange.position.set(n,0,0);
+
+			var blue = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial(
+				 {color: 'blue'} ) );
+			orange.position.set(2*n,0,0);
+
+			var violet  = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial(
+				{color: 'violet'} ) );
+			orange.position.set(3*n,0,0);
+
+			rainbow.add(red, orange);
+
+			function animate( t )
+			{
+				rainbow.rotation.set( 0, 0, t );
+			}
+		</script>
+	</body>
+</html>
