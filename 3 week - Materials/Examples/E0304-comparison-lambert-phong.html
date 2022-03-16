@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0304: Сравнение на ламбертов и фонгов</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="TeapotGeometry.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// параметърът 3 генерира груба, ръбеста форма на чайник
+			var geometry = new THREE.TeapotGeometry( 25, 3 );
+
+			// материали за двата чайника
+			var materialA = new THREE.MeshLambertMaterial( {color: 'cornflowerblue'} );
+			var materialB = new THREE.MeshPhongMaterial( {color: 'cornflowerblue'} );
+
+			var teapotA = new THREE.Mesh( geometry, materialA );
+			var teapotB = new THREE.Mesh( geometry, materialB );
+			
+			teapotA.position.set( -40, 0, 0);
+			teapotB.position.set( 40, 0, 0);
+			
+			scene.add( teapotA, teapotB );
+
+			// усилена е светлината
+			light.intensity = 1.6;
+			
+			function animate( t )
+			{
+				teapotA.rotation.set( Math.sin(2*t)/2, t, Math.cos(3*t)/2 );
+				teapotB.rotation.set( Math.sin(2*t)/2, t, Math.cos(3*t)/2 );
+			}
+		</script>
+	</body>
+</html>
+
+

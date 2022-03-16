@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0303: Фонгов материал</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="TeapotGeometry.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var geometry = new THREE.TeapotGeometry( 30 );
+
+			// материалът е фонгов
+			var material = new THREE.MeshPhongMaterial( {color: 'cornflowerblue'} );
+
+			var teapot = new THREE.Mesh( geometry, material );
+			scene.add( teapot );
+			
+			function animate( t )
+			{
+				teapot.rotation.set( Math.sin(2*t)/2, t, Math.cos(3*t)/2 );
+			}
+		</script>
+	</body>
+</html>
+
+

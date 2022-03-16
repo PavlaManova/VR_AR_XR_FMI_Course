@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0312: Три точкови светлини</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="TeapotGeometry.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var geometry = new THREE.TeapotGeometry( 30 );
+			var material = new THREE.MeshPhongMaterial( {
+				color: 'lightgray', // сив цвят, за да си личат светлините
+				shininess: 200,
+				side: THREE.DoubleSide
+			} );
+			var teapot = new THREE.Mesh( geometry, material );
+
+			scene.add( teapot );
+			
+			// има една светлина в light, ще добавим още две
+			light.color = new THREE.Color( 'red' );
+			var light2 = new THREE.PointLight( 'green' );
+			var light3 = new THREE.PointLight( 'blue' );
+			scene.add( light2, light3 );
+			
+			function animate( t )
+			{
+				teapot.rotation.set( 0.4*Math.sin(t), t, 0.4*Math.cos(t/2) );
+
+				// първа светлина - върти се в кръг и осцилира нагоре-надолу
+				light.position.setFromSphericalCoords( 150, 1.2*t+1, 2*Math.sin(t) );
+				
+				// втора светлина - също се върти
+				light2.position.setFromSphericalCoords( 150, -1.5*t+2, Math.sin(t+1) );
+				
+				// трета светлина - и тя не остава назад
+				light3.position.setFromSphericalCoords( 150, 1.7*t+3, Math.sin(t-1) );
+			}
+		</script>
+	</body>
+</html>
+
+

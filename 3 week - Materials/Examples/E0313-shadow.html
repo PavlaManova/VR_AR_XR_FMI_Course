@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0313: Сянка</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="TeapotGeometry.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// златен чайник
+			var geometry = new THREE.TeapotGeometry( 20 );
+			var material = new THREE.MeshPhongMaterial( {
+				color: 'darkorange',
+				shininess: 100,
+				side: THREE.DoubleSide
+			} );
+			var teapot = new THREE.Mesh( geometry, material );
+
+			// земя
+			geometry = new THREE.BoxGeometry( 200, 2, 100 );
+			var material = new THREE.MeshPhongMaterial( {color: 'lightgreen'} );
+			var ground = new THREE.Mesh( geometry, material );
+			ground.position.set( 0, -60, 0 );
+
+			scene.add( teapot, ground );
+
+
+			// включваме обработката на сенки
+			renderer.shadowMap.enabled = true;
+			
+			// вдигаме камерата малко нагоре
+			camera.position.set( 0, 50, 150 );
+			camera.lookAt( teapot.position );
+
+			// вдигаме светлината и размера на сянката
+			light.position.set( 0, 200, 0 );
+			light.shadow.mapSize.width = 1024;
+			light.shadow.mapSize.height = 1024;
+			
+			// светлината ще прави сянка, чайникът създава
+			// сянка, а върху земята ще се рисува сянка
+			light.castShadow = true;
+			teapot.castShadow = true;
+			ground.receiveShadow = true;
+			
+			
+			function animate( t )
+			{
+				teapot.rotation.set( t, t, t );
+			}
+		</script>
+	</body>
+</html>
+
+

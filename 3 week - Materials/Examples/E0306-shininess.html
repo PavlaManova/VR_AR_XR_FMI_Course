@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0306: Лъскавина</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="TeapotGeometry.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			var geometry = new THREE.TeapotGeometry( 20, 8 );
+			
+			// материали с различна лъскавина
+			var materialA = new THREE.MeshPhongMaterial( {
+				color:'cornflowerblue',
+				shininess: 0
+			} );
+			var materialB = new THREE.MeshPhongMaterial( {
+				color:'cornflowerblue',
+				shininess: 50
+			} );
+			var materialC = new THREE.MeshPhongMaterial( {
+				color:'cornflowerblue',
+				shininess: 300
+			} );
+
+			var teapotA = new THREE.Mesh( geometry, materialA );
+			var teapotB = new THREE.Mesh( geometry, materialB );
+			var teapotC = new THREE.Mesh( geometry, materialC );
+			
+			teapotA.position.set( -55, 0, 0 );
+			teapotC.position.set( 55, 0, 0 );
+			
+			scene.add( teapotA, teapotB, teapotC );
+			
+			function animate( t )
+			{
+				teapotA.rotation.set( 1.2*Math.sin(t), t, 1.2*Math.cos(t/2) );
+				teapotB.rotation.copy( teapotA.rotation );
+				teapotC.rotation.copy( teapotA.rotation );
+			}
+		</script>
+	</body>
+</html>
+
+

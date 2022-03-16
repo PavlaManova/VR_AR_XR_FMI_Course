@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0314: Сенки от точкова светлина</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="TeapotGeometry.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// златен чайник
+			var geometry = new THREE.TeapotGeometry( 7, 4 );
+			var material = new THREE.MeshPhongMaterial( {
+				color: 'darkorange',
+				shininess: 100,
+				side: THREE.DoubleSide
+			} );
+			
+			// десет малки чайничета
+			for (var i=0; i<10; i++)
+			{
+				var teapot = new THREE.Mesh( geometry, material );
+				teapot.castShadow = true;
+				
+				var alpha = 2*Math.PI*i/10;
+				teapot.position.setFromSphericalCoords( 60, Math.PI/2, alpha );
+				teapot.rotation.set( 0, Math.PI/2+alpha, 0 );
+				scene.add( teapot );
+			}
+
+			// земя
+			geometry = new THREE.BoxGeometry( 300, 2, 300 );
+			var material = new THREE.MeshPhongMaterial( {color: 'lightgreen'} );
+			var ground = new THREE.Mesh( geometry, material );
+			ground.position.set( 0, -20, 0 );
+
+			scene.add( teapot, ground );
+
+
+			renderer.shadowMap.enabled = true;
+			
+			camera.position.set( 30, 50, 100 );
+			camera.lookAt( scene.position );
+
+			light.position.set( 0, 50, 0 );
+			light.shadow.mapSize.width = 1024;
+			light.shadow.mapSize.height = 1024;
+			
+			// светлината ще прави сянка, чайникът създава
+			// сянка, а върху земята ще се рисува сянка
+			light.castShadow = true;
+			ground.receiveShadow = true;
+			
+			// помощник за светлината
+			var lightHelper = new THREE.PointLightHelper( light, 5, 'orange' );
+			scene.add( lightHelper );
+			
+			function animate( t )
+			{
+				light.position.set( 0, 40+35*Math.sin(t), 0 );
+				lightHelper.update();
+			}
+		</script>
+	</body>
+</html>
+
+

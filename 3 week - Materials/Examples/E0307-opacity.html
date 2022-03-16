@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0307: Прозрачност</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="TeapotGeometry.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// голям син прозрачен чайник
+			var geometry = new THREE.TeapotGeometry( 30 );
+			var material = new THREE.MeshPhongMaterial( {
+				color: 'cornflowerblue', // син
+				side: THREE.DoubleSide,  // предни и задни стени
+				depthWrite: false,       // не запомня кой пиксел е отгоре или отдолу
+				transparent: true,	     // прозрачен материал
+				opacity: 0.6,		     // степен на прозрачност 40%
+				shininess: 200           // голяма лъскавина
+			} );
+
+			var teapotA = new THREE.Mesh( geometry, material );
+			
+			// малък червен прозрачен чайник
+			var material = new THREE.MeshPhongMaterial( {
+				color: 'red',
+				side: THREE.DoubleSide,
+				depthWrite: false,
+				transparent: true,
+				opacity: 0.3,
+				shininess: 200
+			} );
+			var teapotB = new THREE.Mesh( geometry, material );
+			teapotB.scale.set( 0.5, 0.5, 0.5 );
+
+			scene.add( teapotA, teapotB );
+			
+			function animate( t )
+			{
+				teapotA.rotation.set( 1.2*Math.sin(t), t, 1.2*Math.cos(t/2) );
+				teapotB.rotation.set( 1.2*Math.sin(t), -t, 1.2*Math.cos(t/2) );
+			}
+		</script>
+	</body>
+</html>
+
+

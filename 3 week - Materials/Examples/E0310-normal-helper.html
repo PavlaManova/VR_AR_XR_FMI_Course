@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0310: Помощни нормали</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="TeapotGeometry.js"></script>
+		<script src="VertexNormalsHelper.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var geometry = new THREE.TeapotGeometry( 30, 7, true, false );
+			var material = new THREE.MeshPhongMaterial({
+				color: 'indigo',
+				side: THREE.DoubleSide,
+				shininess: 100
+			});
+			
+			var teapot = new THREE.Mesh( geometry, material );
+
+			var helper = new THREE.VertexNormalsHelper( teapot, 5, 'fuchsia' );
+			
+			scene.add( teapot, helper );
+			
+			function animate( t )
+			{
+				teapot.rotation.set( 1.2*Math.sin(t/3), t, 1.2*Math.cos(t/2) );
+				helper.update(); // нужно, за да се настрои помощника към новата ориентация на чайника
+			}
+		</script>
+	</body>
+</html>
+
+

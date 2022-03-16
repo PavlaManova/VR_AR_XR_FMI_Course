@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0308: Прозрачност 2</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="TeapotGeometry.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var geometry = new THREE.TeapotGeometry( 30 );
+			
+			// задна част на голям син прозрачен чайник
+			var material = new THREE.MeshPhongMaterial( {
+				color: 'cornflowerblue',
+				side: THREE.BackSide,
+				depthWrite: false,
+				transparent: true,
+				opacity: 0.5,
+				shininess: 200
+			} );
+			var teapotAback = new THREE.Mesh( geometry, material );
+			teapotAback.renderOrder = 1;
+
+			// предна част на голям син прозрачен чайник
+			var material = new THREE.MeshPhongMaterial( {
+				color: 'cornflowerblue',
+				side: THREE.FrontSide,
+				depthWrite: false,
+				transparent: true,
+				opacity: 0.5,
+				shininess: 200
+			} );
+			var teapotAfront = new THREE.Mesh( geometry, material );
+			teapotAfront.renderOrder = 4;
+			
+			
+			
+			// задна част на малък червен прозрачен чайник
+			var material = new THREE.MeshPhongMaterial( {
+				color: 'red',
+				side: THREE.BackSide,
+				depthWrite: false,
+				transparent: true,
+				opacity: 0.3,
+				shininess: 200
+			} );
+			var teapotBback = new THREE.Mesh( geometry, material );
+			teapotBback.renderOrder = 2;
+			teapotBback.scale.set( 0.5, 0.5, 0.5 );
+
+			// предна част на малък червен прозрачен чайник
+			var material = new THREE.MeshPhongMaterial( {
+				color: 'red',
+				side: THREE.FrontSide,
+				depthWrite: false,
+				transparent: true,
+				opacity: 0.3,
+				shininess: 200
+			} );
+			var teapotBfront = new THREE.Mesh( geometry, material );
+			teapotBfront.renderOrder = 3;
+			teapotBfront.scale.set( 0.5, 0.5, 0.5 );
+
+			scene.add( teapotAfront, teapotAback, teapotBfront, teapotBback );
+			
+			function animate( t )
+			{
+				teapotAback.rotation.set( 1.2*Math.sin(t), t, 1.2*Math.cos(t/2) );
+				teapotAfront.rotation.set( 1.2*Math.sin(t), t, 1.2*Math.cos(t/2) );
+				
+				teapotBback.rotation.set( 1.2*Math.sin(t), -t, 1.2*Math.cos(t/2) );
+				teapotBfront.rotation.set( 1.2*Math.sin(t), -t, 1.2*Math.cos(t/2) );
+			}
+		</script>
+	</body>
+</html>
+
+
