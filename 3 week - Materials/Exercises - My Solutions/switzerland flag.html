@@ -18,13 +18,18 @@
 
 			var geometry = new THREE.BoxGeometry( 90, 60, 3 );
 			var material = new THREE.MeshLambertMaterial( {color: 'red'} );
-			var flag = new THREE.Mesh( geometry, material );
+			var flag = new THREE.Group();
+			var base = new THREE.Mesh( geometry, material );
 
-      var horizontalCross = new THREE.Mesh(geometry, material);
-      horizontalCross.scale.set( 0.5,0.5,0.5 );
-      //horizontalCross.color.set( 0xff0000 );
+			material = new THREE.MeshLambertMaterial( {color: 'white'} );
+      var horizontalLine = new THREE.Mesh(geometry, material);
+      horizontalLine.scale.set( 0.5,0.3,1.009 );
 
-			scene.add( flag );
+			var verticalLine = horizontalLine.clone();
+			verticalLine.rotation.set(0,0,Math.PI/2);
+
+			flag.add( base, horizontalLine, verticalLine );
+			scene.add(flag);
 
 			function animate( t )
 			{
