@@ -4,14 +4,14 @@
 	<head>
 		<title>S0209: Въртящи се слънца</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="stats.min.js"></script>
 		<script src="vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
 			vaxInit();
@@ -28,22 +28,22 @@
 
 			// макет на лъч, отместен така, че (0,0,0)
 			// да не е по средата на височиата
-			var ray = new THREE.Mesh( geometryRay, material ); 
+			var ray = new THREE.Mesh( geometryRay, material );
 			ray.position.set( 0, 20, 0 );
-			scene.add(ray);
-			
+			//scene.add(ray);
+
 			// пакетираме го както е отместен в нов обект,
 			// т.е. вече центъра на обекта ще е центъра на
 			// новия обект, а не центъра на самия конус
 			rayTemplate = new THREE.Group();
 			rayTemplate.add( ray );
-			
+
 			// създаваме десет лъча в макета на слънцето,
 			// като клонираме макета на лъча десет пъти
 			for (var i=0; i<10; i++)
 			{
 				var alpha = 2*Math.PI*i/10;
-				
+
 				var ray = rayTemplate.clone();
 				ray.rotation.set( 0, 0, alpha );
 				sunTemplate.add( ray );
@@ -62,7 +62,7 @@
 					THREE.Math.randFloatSpread( 100 ) );
 				scene.add( suns[i] );
 			}
-			
+
 			function animate( t )
 			{
 				for (var i=0; i<15; i++)
@@ -73,5 +73,3 @@
 		</script>
 	</body>
 </html>
-
-

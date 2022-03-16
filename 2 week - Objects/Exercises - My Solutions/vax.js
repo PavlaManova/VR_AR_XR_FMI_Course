@@ -18,8 +18,8 @@ function vaxInit()
 	document.body.style.margin = 0;
 	document.body.style.overflow = 'hidden';
 
-	stats = new Stats();
-	document.body.appendChild( stats.dom );
+	/*stats = new Stats();
+	document.body.appendChild( stats.dom );*/
 
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color('white');
@@ -52,7 +52,7 @@ function frame( time )
 {
 	if (animate) animate( time/1000 );
 
-	stats.update();
+	//stats.update();
 
 	renderer.render( scene, camera );
 }
