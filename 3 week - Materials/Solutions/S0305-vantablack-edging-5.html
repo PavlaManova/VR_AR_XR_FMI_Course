@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0305: Вантаблек кант</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// размер (колкото е по-голям, толкова по-тънък е канта)
+			var n = 5;
+			
+			// куб
+			var cube = new THREE.Group();
+			var s = 0.9*(30-10/n)/n; // експериментално установен размер, че да се събира на екрана
+			cube.scale.set( s, s, s );
+			scene.add( cube );
+
+			// форми на връх на куба и на ръб на куба
+			var vertexGeometry = new THREE.SphereGeometry( 1, 60, 30 );
+			var edgeGeometry = new THREE.CylinderGeometry( 1, 1, 2*n, 30 );
+			var faceGeometry = new THREE.BoxGeometry( 2*n, 2*n+2, 2*n );
+			
+			// лъскав и матов материал
+			var matteMaterial = new THREE.MeshBasicMaterial( {color:'black'} );
+			var shinyMaterial = new THREE.MeshPhongMaterial( {color:'sandybrown', shininess:150, emissive:'sandybrown', emissiveIntensity:0.5} );
+			
+			// създаваме 8-те върха
+			for (var x=-n; x<2*n; x+=2*n)
+			for (var y=-n; y<2*n; y+=2*n)
+			for (var z=-n; z<2*n; z+=2*n)
+			{
+				var vertex = new THREE.Mesh( vertexGeometry, matteMaterial );
+				vertex.position.set( x, y, z );
+				cube.add( vertex );
+			}
+			
+			// създаваме 12-те от ребрата
+			for (var x=-n; x<2*n; x+=2*n)
+			for (var z=-n; z<2*n; z+=2*n)
+			{
+				var edge = new THREE.Mesh( edgeGeometry, matteMaterial );
+				edge.position.set( x, 0, z );
+				cube.add( edge );
+
+				var edge = edge.clone();
+				edge.position.set( x, z, 0 );
+				edge.rotation.x = Math.PI/2;
+				cube.add( edge );
+
+				var edge = edge.clone();
+				edge.position.set( 0, x, z );
+				edge.rotation.set( 0, 0, Math.PI/2 );
+				cube.add( edge );
+			}
+			
+			// създаваме стените
+			var face = new THREE.Mesh( faceGeometry, shinyMaterial );
+			cube.add( face );
+			face = face.clone();
+			face.rotation.x = Math.PI/2;
+			cube.add( face );
+			face = face.clone();
+			face.rotation.set( 0, 0, Math.PI/2 );
+			cube.add( face );
+			
+			function animate( t )
+			{
+				cube.rotation.set( Math.sin(t)/3, t, Math.sin(2*t)/3 );
+			}
+		</script>
+	</body>
+</html>
+
+

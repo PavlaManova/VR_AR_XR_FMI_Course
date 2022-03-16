@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0303: Кръгова диаграма</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// входнни данни
+			var values = [23,38,33,18,10,29];
+			
+			// сума (за да сметнем каква част от цялото е всеки дял)
+			var sum = 0;
+			for (var i=0; i<values.length; i++) sum += values[i];
+			
+			// диаграма
+			var chart = new THREE.Group();
+			scene.add( chart );
+			
+			// отделните дялове на диаграмата
+			for (var i=0, angle=0; i<values.length; i++, angle += dAngle)
+			{
+				// ъглов размер на i-тата част
+				var dAngle = 2*Math.PI*values[i]/sum;
+				
+				var geometry = new THREE.CylinderGeometry( 40, 40, 20, 2+Math.round(10*dAngle), 1, false, angle, dAngle );
+				var material = new THREE.MeshPhongMaterial( {
+					color: new THREE.Color( THREE.Math.randFloat(0.5,1), THREE.Math.randFloat(0.5,1), THREE.Math.randFloat(0.5,1) ),
+					shininess: 30
+				} );
+				
+				chart.add( new THREE.Mesh( geometry, material ) );
+			}
+						
+			function animate( t )
+			{
+				chart.rotation.set( t/3, t, t/2 );
+			}
+		</script>
+	</body>
+</html>
+
+

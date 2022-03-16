@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0310: Светулки над тор</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// черен фон
+			scene.background = new THREE.Color( 'black' );
+			
+			// тор
+			var torus = new THREE.Mesh(
+				new THREE.TorusGeometry( 40, 10, 15, 30 ),
+				new THREE.MeshPhongMaterial({
+					color: 'black',
+					shininess: 20
+				})
+			);
+			
+			// светулки
+			var firebugGeometry = new THREE.SphereGeometry( 1, 5, 5 );
+			
+			var n = 20;
+			var firebugs = [];
+			var firebugLights = [];
+			
+			// n светулки
+			for (var i=0; i<n; i++)
+			{
+				// случаен цвят в диапазона червено-жълто-зелено
+				var firebugColor = new THREE.Color().setHSL( THREE.Math.randFloat(0,0.3), 1, 0.5 );
+				firebugs[i] = new THREE.Mesh(
+					firebugGeometry,
+					new THREE.MeshBasicMaterial({ color: firebugColor })
+				);
+
+				// случайно отместване и скорост
+				firebugs[i].offset = THREE.Math.randFloat( 0, 2*Math.PI );
+				firebugs[i].speed = THREE.Math.randFloat( 0.5, 2 )*Math.sign(THREE.Math.randFloat( -1, 1 ));
+
+				// за всяка светулка има и светлинка, ограничена до разстояние 40 единици
+				firebugLights[i] = new THREE.PointLight( firebugColor, 10, 40 );
+
+				// добавяме ги към тор-а, за да се въртят заедно с него
+				torus.add( firebugs[i], firebugLights[i] );
+			}
+			
+			scene.add( torus  );
+
+			// не я искаме тази светлина, ще затъмни светулките ни
+			scene.remove( light );
+			
+			function animate( t )
+			{
+				for (var i=0; i<n; i++)
+				{
+					// движението над тора е движение по малко по-дебел тор
+					// дефинира се от радиусите и от два ъгъла theta и phi:
+					var theta = t*firebugs[i].speed+firebugs[i].offset;
+					var phi = t/3*firebugs[i].speed+firebugs[i].offset;
+					
+					// смятаме координатите на светулката чрез уравнение на тор
+					// https://en.wikipedia.org/wiki/Torus#Geometry
+					firebugs[i].position.set( 
+						(40+15*Math.cos(theta))*Math.cos(phi),
+						(40+15*Math.cos(theta))*Math.sin(phi),
+						15*Math.sin(theta)
+					);
+					
+					// същите координати отиват и в светлината на светулката
+					firebugLights[i].position.copy( firebugs[i].position );
+					
+					// мигането е синусоида, като тя променя както размера
+					// на светулката, така и интензитета на светлината ѝ
+					var s = 0.5+0.5*Math.sin(10*(t*firebugs[i].speed+firebugs[i].offset));
+					firebugs[i].scale.set( s, s, s );
+					firebugLights[i].intensity = 15*s;
+				}
+				
+				torus.rotation.set( 0, Math.PI*Math.sin(t/2), 0 );
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0308: Меки сенки</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// кубът
+			var cube = new THREE.Mesh(
+				new THREE.BoxGeometry( 50, 50, 50 ),
+				new THREE.MeshPhongMaterial( {
+					color: 'wheat',
+					shininess: 0,
+					emissive: 'tan',
+					emissiveIntensity: 0.1} )
+			);
+			var shadowCube = new THREE.Group();
+			scene.add( cube, shadowCube );
+			
+			// масиви за топките и антисветлините
+			var balls = [];
+			var lights = [];
+			
+			var n = 10;
+			var geometry = new THREE.IcosahedronGeometry(2,2);
+			var material = new THREE.MeshPhongMaterial({color:'black',shininess:70});
+			for (var i=0; i<n; i++)
+			{
+				// топка
+				balls[i] = new THREE.Mesh( geometry, material );
+				balls[i].offset = THREE.Math.randFloat( 0, 2*Math.PI );
+				cube.add( balls[i] );
+				
+				// антисветлина (отрицателен интензитет)
+				lights[i] = new THREE.PointLight( 'white', -0.5, 20 );
+				shadowCube.add( lights[i] );
+			}
+			
+			
+			scene.add( new THREE.AmbientLight('orange',0.5) );
+
+			light.intensity = 0.5;
+			
+			function animate( t )
+			{
+				cube.rotation.set( t/8, t/5, t/7 );
+				shadowCube.rotation.set( t/8, t/5, t/7 );
+				
+				for (var i=0; i<n; i++)
+				{
+					var q = t/3+balls[i].offset;					
+					var pos = new THREE.Vector3().setFromSphericalCoords( 60, -i+q, i*i-q );
+
+					// този вълшебен коефициент m преобразува сферата в куб
+					var m = 27/Math.max( Math.abs(pos.x), Math.abs(pos.y), Math.abs(pos.z) );
+					
+					pos = pos.multiplyScalar( m );
+					balls[i].position.copy( pos );
+					lights[i].position.copy( pos );
+				}
+			}
+		</script>
+	</body>
+</html>
+
+

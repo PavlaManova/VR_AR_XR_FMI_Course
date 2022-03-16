@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0302: Окръжности на дъгата</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var geometry = new THREE.CircleGeometry( 20, 60 );
+
+			// групов обект за шестте окръжности
+			var rainbow = new THREE.Group();
+			scene.add( rainbow );
+			
+			// централна окръжност
+			var circle = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 'midnightblue'} ) );
+			rainbow.add( circle );
+			
+			// останалите 6 около нея
+			var colors = ['red','orange','yellow','lime','dodgerblue','blueviolet']; // комплект 6 цвята
+			for (var i=0; i<6; i++)
+			{
+				var circle = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: colors[i]} ) );
+
+				// центровете са по окръжност около централната окръжност
+				var angle = 2*Math.PI*i/6;
+				circle.position.set( 40*Math.sin(angle), 40*Math.cos(angle), 0 );
+
+				rainbow.add( circle );
+			}
+			
+			function animate( t )
+			{
+				rainbow.rotation.set( 0, 0, t );
+			}
+		</script>
+	</body>
+</html>
+
+

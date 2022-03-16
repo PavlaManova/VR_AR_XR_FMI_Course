@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>С0309: Урбанистична планета</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// включваме обработката на сенки
+			renderer.shadowMap.enabled = true;
+			
+			// тъмно небе
+			scene.background = new THREE.Color(0x000010);
+			
+			// планета
+			var planet = new THREE.Mesh(
+				new THREE.IcosahedronGeometry( 30, 3 ),
+				new THREE.MeshPhongMaterial( {color: 'brown'} )
+			);
+			planet.receiveShadow = true;
+			planet.castShadow = true;
+			scene.add( planet );
+			
+			// мини-слънце
+			var sun = new THREE.Mesh(
+				new THREE.IcosahedronGeometry( 1.5, 1 ),
+				new THREE.MeshBasicMaterial( {color: 'gold'} )
+			);
+			scene.add( sun );
+			
+			// звезди
+			var starGeometry = new THREE.PlaneGeometry( 1, 1 );
+			var starMaterial = new THREE.MeshBasicMaterial( );
+			var stars = [];
+			for (var i=0; i<200; i++) // 200 май са достатъчно, а?
+			{
+				var scale = 2+1*Math.sin(i);
+				stars[i] = new THREE.Mesh( starGeometry, starMaterial );
+				stars[i].position.set( THREE.Math.randFloatSpread(2000), THREE.Math.randFloatSpread(1000), -800 );
+				stars[i].scale.set( scale, scale, scale );
+				scene.add( stars[i] );
+			}
+			
+			// сгради
+			var buildingGeometry = new THREE.BoxGeometry( 2, 1, 2 );
+			var buildingMaterial = new THREE.MeshPhongMaterial({
+					color: 'silver',
+					shininess: 100,
+					emissive: new THREE.Color('blue'),
+					emissiveIntensity: 0.3,
+					transparent: true,
+					opacity: 0.7
+				});
+			for (var i=0; i<40; i++)
+			{
+				var building = new THREE.Mesh( buildingGeometry, buildingMaterial );
+				building.scale.y = THREE.Math.randFloat(65,110);
+				building.rotation.set( THREE.Math.randFloat(0,2*Math.PI), THREE.Math.randFloat(0,2*Math.PI), THREE.Math.randFloat(0,2*Math.PI) );
+				building.castShadow = true;
+				building.receiveShadow = true;
+				planet.add( building );
+			}
+			
+			// светлината ще прави сянка
+			light.castShadow = true;
+			
+		
+			function animate( t )
+			{
+				// движение на слънцето
+				sun.position.setFromSphericalCoords( 60, Math.PI/2+0.3*Math.sin(t/2), -t/3 );
+				light.position.copy( sun.position );
+				
+				// мигане на звездите
+				var i = Math.round(50*t);
+				stars[ i%stars.length ].visible = true;
+				i += 2;
+				stars[ i%stars.length ].visible = false;
+				
+				// въртене на планетата
+				planet.rotation.y = t/6;
+			}
+		</script>
+	</body>
+</html>
+
+

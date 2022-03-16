@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0301: Швейцарско знаме</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// размери на X и Y
+			var X = 3*9;
+			var Y = 3*4;
+			
+			var materialRed = new THREE.MeshLambertMaterial( {color: 'red'} );
+			var materialWhite = new THREE.MeshLambertMaterial( {color: 'white'} );
+			var geometry = new THREE.BoxGeometry( 1, 1, 3 );
+
+			// групов обект за знамето
+			var flag = new THREE.Group();
+			scene.add( flag );
+			
+			// основна част
+			var flagRed = new THREE.Mesh( geometry, materialRed );
+			flagRed.scale.set( 2*X+3*Y, 5*Y, 1 );
+
+			// бял кръст - хоризонтална част (по z е малко по-дебела)
+			var flagWhiteA = new THREE.Mesh( geometry, materialWhite );
+			flagWhiteA.scale.set( 3*Y, Y, 1.02 );
+
+			// бял кръст - вертикална част (по z е малко по-дебела)
+			var flagWhiteB = new THREE.Mesh( geometry, materialWhite );
+			flagWhiteB.scale.set( Y, 3*Y, 1.02 );
+
+			// сглобяваме знамето
+			flag.add( flagRed, flagWhiteA, flagWhiteB );
+			
+			function animate( t )
+			{
+				flag.rotation.set( Math.sin(t/4)/3, t, Math.cos(t/4)/3 );
+			}
+		</script>
+	</body>
+</html>
+
+

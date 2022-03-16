@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0307: Светлинен куб</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			scene.background = new THREE.Color( 'black' );
+			
+			// земя
+			var ground = new THREE.Mesh( 
+				new THREE.CylinderGeometry( 160, 160, 1 ),
+				new THREE.MeshPhongMaterial({
+					color: 'indigo',
+					shininess: 100,
+				})
+			);
+			ground.position.y = -20;
+			scene.add( ground );
+			
+			
+			// кубът
+			var cube = new THREE.Mesh(
+				new THREE.BoxGeometry( 34, 34, 34 ),
+				new THREE.MeshPhongMaterial( {color: 'white', shininess: 20} )
+			);
+			cube.position.y = 20;
+			scene.add( cube );
+			
+			// невидимият "куб", към който са закачени светлините
+			// ако ги закачим към нормалния видим куб, те няма да
+			// го осветяват.
+			var lightCube = new THREE.Group();
+			lightCube.position.y = 20;
+			scene.add( lightCube );
+			
+			// създаване 8 светлини и ги закачаме към светлинния куб
+			var cubeLight = new THREE.PointLight( 'red', 2, 50 );
+				cubeLight.position.set( 20, 20, 20 );
+				lightCube.add( cubeLight );
+			var cubeLight = new THREE.PointLight( 'red', 2, 50 );
+				cubeLight.position.set( -20, -20, -20 );
+				lightCube.add( cubeLight );
+			var cubeLight = new THREE.PointLight( 'yellow', 2, 50 );
+				cubeLight.position.set( -20, -20, 20 );
+				lightCube.add( cubeLight );
+			var cubeLight = new THREE.PointLight( 'yellow', 2, 50 );
+				cubeLight.position.set( 20, 20, -20 );
+				lightCube.add( cubeLight );
+			var cubeLight = new THREE.PointLight( 'royalblue', 2, 50 );
+				cubeLight.position.set( -20, 20, -20 );
+				lightCube.add( cubeLight );
+			var cubeLight = new THREE.PointLight( 'royalblue', 2, 50 );
+				cubeLight.position.set( 20, -20, 20 );
+				lightCube.add( cubeLight );
+			var cubeLight = new THREE.PointLight( 'white', 2, 50 );
+				cubeLight.position.set( 20, -20, -20 );
+				lightCube.add( cubeLight );
+			var cubeLight = new THREE.PointLight( 'white', 2, 50 );
+				cubeLight.position.set( -20, 20, 20 );
+				lightCube.add( cubeLight );
+
+			// махаме традиционната светлина
+			scene.remove(light);
+			
+			// слагаме удобна гледна точка
+			camera.position.set( 100, 70, 0 );
+			camera.lookAt( scene.position );
+			
+			function animate( t )
+			{
+				scene.rotation.y = t/2;
+
+				// въртим куба и светлинния куб заедно
+				cube.rotation.set( t/4, t, t/3 );
+				lightCube.rotation.set( t/4, t, t/3 );
+			}
+		</script>
+	</body>
+</html>
+
+
