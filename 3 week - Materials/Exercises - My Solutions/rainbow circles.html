@@ -26,29 +26,34 @@
 			var circle = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 'indigo'} ) );
 			rainbow.add( circle );
 
+			var circles = [];
 			var red = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 'red'} ) );
-			red.position.set(-40,0,0);
+			circles[0] = red;
 
 			var orange = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 'orange'} ) );
-			orange.position.set(40,0,0);
+			circles[1] = orange;
 
 			var yellow = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial(
 				 {color: 'yellow'} ) );
-			orange.position.set(40,0,0);
+			circles[2] = yellow;
 
-			var n = 2*Math.PI*40/6;
 			var green = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {color: 'green'} ) );
-			orange.position.set(n,0,0);
+			circles[3] = green;
 
 			var blue = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial(
 				 {color: 'blue'} ) );
-			orange.position.set(2*n,0,0);
+			circles[4] = blue;
 
 			var violet  = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial(
 				{color: 'violet'} ) );
-			orange.position.set(3*n,0,0);
+			circles[5] = violet;
 
-			rainbow.add(red, orange);
+			for(var i=0; i<6; i++)
+			{
+					circles[i].position.set(40*Math.sin(2*Math.PI*(i/6)), 40*Math.cos(2*Math.PI*(i/6)), 0);
+			}
+
+			rainbow.add(red, orange, yellow, green, blue,violet);
 
 			function animate( t )
 			{
