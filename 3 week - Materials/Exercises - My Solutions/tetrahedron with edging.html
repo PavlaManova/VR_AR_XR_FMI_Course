@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Pyramid</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+      camera.position.set(0,0,30);
+      var pyramid = new THREE.Group();
+      scene.add(pyramid);
+
+      var edgeGeometry = new THREE.CylinderGeometry(0.5,0.5,3*Math.sqrt(6),64);
+      var vertexGeometry = new THREE.SphereGeometry(0.5,64,64);
+      var sideGeometry = new THREE.RingGeometry(0,3*Math.sqrt(2),1);
+
+      var blackMaterial = new THREE.MeshBasicMaterial( {color:'black'} );
+      var shinyMaterial = new THREE.MeshPhongMaterial({color:'sandybrown',
+                                                        shininess:150,
+                                                        emissive:'sandybrown',
+                                                         emissiveIntensity:0.5});
+
+      var vertexA = new THREE.Mesh(vertexGeometry,blackMaterial);
+      var vertexB = vertexA.clone();
+      var vertexC = vertexA.clone();
+      var vertexD = vertexA.clone();
+
+      vertexA.position.set(-(3/2)*Math.sqrt(2),0,-3*Math.sqrt(6)/2);
+      vertexB.position.set(-(3/2)*Math.sqrt(2),0,3*Math.sqrt(6)/2);
+      vertexC.position.set(3*Math.sqrt(2),0,0);
+      vertexD.position.set(0,6,0);
+      pyramid.add(vertexA, vertexB, vertexC,vertexD);
+
+      var edgeA = new THREE.Mesh(edgeGeometry,blackMaterial);
+      var edgeB = edgeA.clone();
+      var edgeC = edgeA.clone();
+      var edgeD = edgeA.clone();
+
+      //edge against vertex C in base
+      edgeC.position.set(-(3/2)*Math.sqrt(2),0,0);
+      edgeC.rotation.set(Math.PI/2,0,0);
+
+      //edge against vertex A in base
+      edgeA.position.set(3*Math.sqrt(2)/4, 0, 3*Math.sqrt(6)/4);
+      edgeA.rotation.set(0,Math.PI/6,Math.PI/2);
+
+      //edge against vertex B in base
+      edgeB.position.set(3*Math.sqrt(2)/4, 0, -3*Math.sqrt(6)/4);
+      edgeB.rotation.set(0,-Math.PI/6,Math.PI/2);
+
+      pyramid.add(edgeA, edgeC, edgeB);
+
+      //edges in surrounding surface
+      var edgeA2 = new THREE.Mesh(edgeGeometry,blackMaterial);
+      var edgeB2 = new THREE.Mesh(edgeGeometry,blackMaterial);
+      var edgeC2 = new THREE.Mesh(edgeGeometry,blackMaterial);
+
+      var pointX = new THREE.Vector3(-(3/2)*Math.sqrt(2),0,-3*Math.sqrt(6)/2);
+      var pointY = new THREE.Vector3(0,6,0);
+
+      //edge between vertexes A and D
+      var edgeA2=getEdgeMesh(pointX,pointY, blackMaterial);
+
+      //edge between vertexes B and D
+      pointX=new THREE.Vector3(-(3/2)*Math.sqrt(2),0,3*Math.sqrt(6)/2);
+      var edgeB2=getEdgeMesh(pointX,pointY, blackMaterial);
+
+      //edge between vertexes C and D
+      pointX=new THREE.Vector3(3*Math.sqrt(2),0,0);
+      var edgeC2=getEdgeMesh(pointX,pointY, blackMaterial);
+
+      pyramid.add(edgeA2, edgeB2, edgeC2);
+
+
+      var base = new THREE.Mesh(sideGeometry,shinyMaterial);
+      base.position.set(0,-0.5,0);
+      base.material.side = THREE.DoubleSide;
+      base.rotation.set(Math.PI/2,0,0);
+      pyramid.add(base);
+
+        var vertices = [];
+        vertices[0]=new THREE.Vector3(-(3/2)*Math.sqrt(2),0,-3*Math.sqrt(6)/2);
+        vertices[1]=new THREE.Vector3(-(3/2)*Math.sqrt(2),0,3*Math.sqrt(6)/2);
+        vertices[2]=new THREE.Vector3(0,6,0);
+
+        var geometry2 = new THREE.BufferGeometry();
+        geometry2.vertices=vertices;
+
+        var side1 = new THREE.Mesh(geometry2, shinyMaterial);
+        pyramid.add(side1);
+
+      /*pyramid.rotation.set(0,0,Math.PI/2+Math.PI/6);
+
+      /*var side1 = new THREE.Mesh(sideGeometry, shinyMaterial);
+      side1.rotation.set(0,-Math.PI/4,-Math.PI/3);
+      side1.position.set(3*Math.sqrt(2)/4,3,3*Math.sqrt(6)/4)
+      var side2 = new THREE.Mesh(sideGeometry,shinyMaterial);
+      var side3 = new THREE.Mesh(sideGeometry,shinyMaterial);*/
+
+
+      function  getEdgeMesh(pointX, pointY, material)
+      {
+          var direction = new THREE.Vector3().subVectors(pointY, pointX);
+
+          var geometry = new THREE.CylinderGeometry(0.5,0.5,3*Math.sqrt(6),64);
+
+          // shift geometry so one end rests on the origin
+          geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, direction.length() / 2, 0));
+
+          // rotate geometry the right way for lookAt to work
+          geometry.applyMatrix(new THREE.Matrix4().makeRotationX(THREE.Math.degToRad(90)));
+
+          var mesh = new THREE.Mesh(geometry, material);
+          mesh.position.copy(pointX);
+          //make it point to where we want
+          mesh.lookAt(pointY);
+
+          return mesh;
+      }
+
+			function animate( t )
+			{
+			    pyramid.rotation.set( Math.sin(t)/3, t, Math.sin(2*t)/3 );
+			}
+		</script>
+	</body>
+</html>
