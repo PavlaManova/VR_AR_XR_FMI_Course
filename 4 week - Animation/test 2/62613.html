@@ -4,22 +4,22 @@
 	<head>
 		<title>Тест №2: Имплементация</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="libs/three.min.js"></script>
 		<script src="libs/lil-gui.umd.min.js"></script>
 		<script src="libs/OrbitControls.js"></script>
 		<script src="libs/vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
 			vaxSceneInit();
-			
+
 			// орбитална навигация
 			var control = new THREE.OrbitControls( camera, renderer.domElement );
-			
+
 			// интерактивно контролиране на ъглите
 			var gui = new lil.GUI();
 			var pose = {
@@ -32,8 +32,8 @@
 			gui_alpha = gui.add( pose, 'alpha', 1, 179 ).name('&alpha;').step(0.1);
 			gui_beta = gui.add( pose, 'beta', -179, 179 ).name('&beta;').step(0.1);
 			gui.add( pose, 'solve' ).name('Реши!');
-			
-			
+
+
 			// първи елемент на робот
 			var a = robotElement( 2, 40, 5 );
 			scene.add( a );
@@ -48,21 +48,21 @@
 			end.castShadow = true;
 			b.add( end );
 
-			
+
 			function randomize()
 			{
 				p.position.x = THREE.Math.randFloat( -80, 80 );
 				p.position.y = THREE.Math.randFloat( 20, 70 );
 			}
-			
+
 			function animate()
 			{
 				a.rotation.z = THREE.Math.degToRad( pose.alpha-90 );
 				b.rotation.z = THREE.Math.degToRad( 180-pose.beta );
-				
+
 				control.update();
 			}
-			
+
 			randomize();
 
 
@@ -72,26 +72,49 @@
 
 			function solve()
 			{
-				alert('Във функцията solve() сложете своето решение от листа.');
-				alert('Ако не работи, го направете да работи, доразвивайки идеята си от листа.');
-				
+				/*alert('Във функцията solve() сложете своето решение от листа.');
+				alert('Ако не работи, го направете да работи, доразвивайки идеята си от листа.');*/
+
 				// двата елемента на робота са дълги 40 единици
 				// основата на робота е в (0,0,0)
 				// точката за достигане е p с координати p.position
 				// ъглите на елементите на робота са pos.alpha и pose.beta
-				
-				// примерно, но грешно решение:
-				
-				pose.alpha = 30;
-				pose.beta = 90;
-				
+
+				var distanceToP = Math.sqrt(p.position.x*p.position.x+p.position.y*p.position.y);
+
+				 if(p.position.x>=0)
+				{
+					if(distanceToP>80)
+					{
+						pose.beta=180;
+						pose.alpha = Math.atan(p.position.y/p.position.x)* (180/Math.PI);
+					}
+					else {
+						var h =Math.sqrt(40*40-(distanceToP*distanceToP)/4);
+						var halfBeta=Math.atan((distanceToP/(2*h)))* (180/Math.PI);
+						pose.beta=360-2*halfBeta;
+						pose.alpha = 90-halfBeta+Math.atan(p.position.y/p.position.x)* (180/Math.PI);
+					}
+				}
+				else {
+					if(distanceToP>80)
+					{
+						pose.beta=180;
+						pose.alpha = 180-Math.atan(-p.position.y/p.position.x)* (180/Math.PI);
+					}
+					else {
+						var h =Math.sqrt(40*40-(distanceToP*distanceToP)/4);
+						var halfBeta=Math.atan((distanceToP/(2*h)))* (180/Math.PI);
+						pose.beta=2*halfBeta;
+						pose.alpha = 180-Math.atan(-p.position.y/p.position.x)* (180/Math.PI)-90+pose.beta/2;
+					}
+				}
+
 				gui_alpha.updateDisplay();
 				gui_beta.updateDisplay();
 				console.log(gui);
 			}
-			
+
 		</script>
 	</body>
 </html>
-
-
