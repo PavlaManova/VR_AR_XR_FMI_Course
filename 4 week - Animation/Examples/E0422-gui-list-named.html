@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0422: Списъчен контролер 2</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// създаване на панел
+			var gui = new lil.GUI();
+			gui.domElement.style.marginRight = 0;
+			
+			var data = {
+				k: 0.5,
+				speed: 1,
+				px: -40,
+				pz: 0,
+				qx: 40,
+				qz: 0
+			};
+			gui.add( data, 'k', 0, 1 );
+			gui.add( data, 'speed', {'Стоп':0, 'Бавна':0.5, 'Нормална':1, 'Бърза':5} ).name('Скорост');
+			
+			var guiP = gui.addFolder('Пилон P');
+			guiP.add( data, 'px', -100, -20 ).name('x');
+			guiP.add( data, 'pz', -100, 100 ).name('z');
+			
+			var guiQ = gui.addFolder('Пилон Q');
+			guiQ.add( data, 'qx', 20, 100 ).name('x');
+			guiQ.add( data, 'qz', -100, 100 ).name('z');
+
+			
+			// координати на началната точка на движението
+			var p = new THREE.Vector3( -50, 10+50*Math.random(), 0 );
+			
+			// координати на крайната точка на движението
+			var q = new THREE.Vector3( 50, 10+50*Math.random(), 0 );
+
+			
+			// два пилона 
+			var pillarP = pillar( p, ground.material );
+			var pillarQ = pillar( q, ground.material );
+			scene.add( pillarP, pillarQ );
+	
+			var oldT = 0;
+			
+			function animate( t )
+			{
+				// позиция на пилоните
+				pillarP.position.set( data.px, 0, data.pz );
+				pillarQ.position.set( data.qx, 0, data.qz );
+				
+				// позиция на крайните точки
+				p.set( data.px, p.y, data.pz );
+				q.set( data.qx, q.y, data.qz );
+				
+				// движение по k
+				object.position.lerpVectors( p, q, data.k );
+
+				var dT = t-oldT;
+				oldT = t;
+				
+				// въртене на сцената и на обекта
+				object.rotation.y += -5*data.speed*dT;
+				scene.rotation.y += data.speed*dT/5;
+			}
+		</script>
+	</body>
+</html>
+
+

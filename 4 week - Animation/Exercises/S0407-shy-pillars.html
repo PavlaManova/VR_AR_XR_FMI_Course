@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0407: Срамежливи пилони</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="tween.umd.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxSceneInit();
+
+			// k пилона в кръг
+			var k = 8; // брой пилони
+			var positions = [];
+			var pillars = [];
+			for( var i=0; i<k; i++)
+			{
+				positions[i] = new THREE.Vector3().setFromSphericalCoords( 80, Math.PI/2, 2*Math.PI*i/k );
+				positions[i].y = 50;
+
+				pillars[i] = pillar( positions[i], ground.material );
+				scene.add( pillars[i] );
+			}
+
+
+			function animate( t )
+			{
+				// въртене на сцената и на обекта
+				object.position.setFromSphericalCoords( 80, Math.PI/2, t ).setY( 50 );
+				object.rotation.y = t;
+				
+				scene.rotation.y = t/5;
+			}
+		</script>
+	</body>
+</html>
+
+

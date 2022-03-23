@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0408: Движение по траектория</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// крива - собствен клас, наследник на THREE.Curve
+			class CustomCurve extends THREE.Curve
+			{
+				getPoint ( t )
+				{
+					var alpha = 2*Math.PI*t;
+					var radius = 60+12*Math.sin(2*alpha);
+					var p = new THREE.Vector3().setFromSphericalCoords(radius,Math.PI/2,alpha);
+					p.y = 30+20*Math.sin(alpha+Math.PI/4);
+					
+					return p;
+				};
+			}
+
+			// траектория
+			var path = new CustomCurve( );
+
+			// пилони
+			scene.add( pillar( path.getPoint(0/3), ground.material ) );
+			scene.add( pillar( path.getPoint(1/3), ground.material ) );
+			scene.add( pillar( path.getPoint(2/3), ground.material ) );
+	
+			// рисуване на траектория
+			var geometry = new THREE.TubeGeometry( path, 100, 1, 3, false );
+			var material = new THREE.MeshPhongMaterial( { emissive: 0x606070 } );
+			var mesh = new THREE.Mesh( geometry, material );
+			mesh.castShadow = true;
+			scene.add( mesh );
+
+			function animate( t )
+			{
+				// движение по траекторията
+				object.position.copy( path.getPoint(t/4) ); 
+
+				// въртене на сцената и на обекта
+				object.rotation.y = -5*t;
+				scene.rotation.y = t/5;
+			}
+		</script>
+	</body>
+</html>
+
+

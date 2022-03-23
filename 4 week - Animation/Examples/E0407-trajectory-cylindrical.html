@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0407: Движение с цилиндрична траектория</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// изключваме няколко светлини
+			scene.background = new THREE.Color( 'black' );
+			light.intensity = 0;
+			ambientLight.intensity = 0;
+
+			// правим втора прожекторна светлина, която не прави сянка
+			secondSpotLight = spotLight.clone();
+			secondSpotLight.castShadow = false;
+			scene.add( secondSpotLight );
+
+			// главната прожекторна светлина е слаба, за да са
+			// сенките достатъчно бледи
+			spotLight.shadow.radius = 4;
+			spotLight.intensity = 0.1;
+			
+			// лампа
+			var lamp = new THREE.Mesh(
+				new THREE.IcosahedronBufferGeometry( 5, 2 ),
+				new THREE.MeshLambertMaterial( {color: 'yellow', emissive: 'lightyellow', emissiveIntensity: 0.5} )
+			);
+			lamp.position.set( 0, 60, 0 );
+			scene.add( lamp );
+
+			// стълб на лампата
+			var lampPillar = pillar( lamp.position, ground.material );
+			lampPillar.scale.set( 0.5, 1, 0.5 );
+			lampPillar.castShadow = false;
+			scene.add( lampPillar );
+			
+			// мухи
+			scene.remove( object );
+			var n = 50; // брой мухи
+			var flies = [];
+			
+			// създаване на n мухи
+			var flyGeometry = new THREE.IcosahedronBufferGeometry( 0.5, 0 );
+			var flyMaterial = new THREE.MeshLambertMaterial( {color: 'yellow', emissive: 'white', emissiveIntensity: 0.5} );
+			for (var i=0; i<n; i++)
+			{
+				var fly = new THREE.Mesh( flyGeometry, flyMaterial );
+				fly.castShadow = true;
+				fly.offset = 2*Math.PI*Math.random();
+				flies.push( fly );
+				scene.add( fly );
+			}
+			
+			// Изчисляване на движението
+			function animate( t )
+			{
+				for (var i=0; i<n; i++)
+				{
+					fly = flies[i];
+					
+					var radius = 20+10*Math.sin( 0.8*t+i*i );
+					var height = 60+10*Math.sin( 2.1*t-i );
+					
+					fly.position.setFromSphericalCoords( radius, Math.PI/2, 2*t+fly.offset );
+					fly.position.y = height;
+				}
+			}
+		</script>
+	</body>
+</html>
+
+

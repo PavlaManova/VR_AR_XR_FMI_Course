@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0412: Безкрайна анимация</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="tween.umd.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+
+			// координати на една точка на движението
+			var p = new THREE.Vector3(
+				20+50*Math.random(),
+				10+50*Math.random(),
+				40-80*Math.random()
+			);
+			
+			// координати на друга точка на движението
+			var q = new THREE.Vector3(
+				-20-50*Math.random(),
+				10+50*Math.random(),
+				40-80*Math.random()
+			);
+			
+			// координати на трета точка на движението
+			var r = new THREE.Vector3(
+				-20-50*Math.random(),
+				10+50*Math.random(),
+				40-80*Math.random()
+			);
+
+			// три пилона 
+			scene.add( pillar(p,ground.material) );
+			scene.add( pillar(q,ground.material) );
+			scene.add( pillar(r,ground.material) );
+			object.position.copy( p );
+
+			// създаване на трите анимации 
+			var tween1 = new TWEEN.Tween(object.position).to(q,1000).delay(500);
+			var tween2 = new TWEEN.Tween(object.position).to(r,1000).delay(500);
+			var tween3 = new TWEEN.Tween(object.position).to(p,1000).delay(500);
+			
+			// свързване на трите анимации една за друга
+			tween1.chain( tween2 ); // втората почва след първата
+			tween2.chain( tween3 ); // третата - след втората
+			tween3.chain( tween1 ); // а първата - след третата
+			
+			// юруш на маслините
+			tween1.start();
+			
+			function animate( t )
+			{
+				// актуализиране на обекта
+				TWEEN.update();
+				
+				// въртене на сцената и на обекта
+				object.rotation.y = -5*t;
+				scene.rotation.y = t/5;
+			}
+		</script>
+	</body>
+</html>
+
+

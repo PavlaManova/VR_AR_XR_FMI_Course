@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0401: Ръбовете на куб</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			// полупрозрачен куб
+			var size = 55;
+			var cube = new THREE.Mesh(
+				new THREE.BoxGeometry( size, size, size ),
+				new THREE.MeshNormalMaterial( {transparent:true, opacity:0.1, side:THREE.DoubleSide, depthWrite: false} )
+			);
+			scene.add( cube );
+
+			// ръбове на куба като подобект на куба
+			var edges = new THREE.LineSegments(
+				new THREE.EdgesGeometry( cube.geometry ),
+				new THREE.LineBasicMaterial( {color:'black'} )
+			);
+			cube.add( edges );
+			
+			// топче 
+			var ball = new THREE.Mesh(
+				new THREE.SphereGeometry( 5 ),
+				new THREE.MeshStandardMaterial( {color:'orange', metalness:0, roughness:0} )
+			);
+			scene.add( ball );
+			
+			
+			function animate( t )
+			{
+				// въртене на куба
+				cube.rotation.set( t/11, t/9, t/7 );
+			}
+		</script>
+	</body>
+</html>
+
+

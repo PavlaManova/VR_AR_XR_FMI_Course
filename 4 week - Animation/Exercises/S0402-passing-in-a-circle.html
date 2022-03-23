@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0402: Разминаване в кръг</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			// фиксирана гледна точка
+			camera.position.set( 0, 20, 50 );
+			camera.lookAt( new THREE.Vector3(0,0,0) );
+	
+			// тракетория
+			var orbit = new THREE.Mesh(
+				new THREE.TorusGeometry( 20, 1, 32, 48 ),
+				new THREE.MeshNormalMaterial( {transparent: true, opacity: 0.5} )
+			);
+			orbit.rotation.x = Math.PI/2;
+			scene.add( orbit );
+			
+			// топче A
+			var ballA = new THREE.Mesh(
+				new THREE.SphereGeometry( 5 ),
+				new THREE.MeshLambertMaterial( {color: 'dodgerblue'} )
+			);
+			ballA.position.x = 20;
+			scene.add( ballA )
+			
+			// топче B
+			var ballB = new THREE.Mesh(
+				new THREE.SphereGeometry( 5 ),
+				new THREE.MeshLambertMaterial( {color: 'deeppink'} )
+			);
+			ballB.position.x = -20;
+			scene.add( ballB )
+			
+			
+			function animate( t )
+			{
+			}
+		</script>
+	</body>
+</html>
+
+

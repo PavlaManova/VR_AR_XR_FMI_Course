@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0415: Начална и крайна плавност Cubic.InOut</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="tween.umd.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+
+			// координати на една точка на движението
+			var p = new THREE.Vector3(
+				40+30*Math.random(),
+				10+50*Math.random(),
+				40-80*Math.random()
+			);
+			
+			// координати на друга точка на движението
+			var q = new THREE.Vector3(
+				-40-30*Math.random(),
+				10+50*Math.random(),
+				40-80*Math.random()
+			);
+			
+			// два пилона 
+			scene.add( pillar(p,ground.material) );
+			scene.add( pillar(q,ground.material) );
+			object.position.copy( p );
+
+			// създаване на двете анимации 
+			var tween1 = new TWEEN.Tween(object.position).to(q,1000).easing(TWEEN.Easing.Cubic.InOut);
+			var tween2 = new TWEEN.Tween(object.position).to(p,1000).easing(TWEEN.Easing.Cubic.InOut);
+			
+			// свързване на двете анимации една за друга
+			tween1.chain(tween2).start();
+			tween2.chain(tween1); 
+			
+			function animate( t )
+			{
+				// актуализиране на обекта
+				TWEEN.update();
+				
+				// въртене на сцената и на обекта
+				object.rotation.y = -5*t;
+				scene.rotation.y = t/5;
+			}
+		</script>
+	</body>
+</html>
+
+

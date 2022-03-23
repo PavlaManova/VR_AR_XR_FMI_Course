@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0401: Движение с вектор на скоростта</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// координати на началната точка на движението
+			var p = new THREE.Vector3(
+				20+50*Math.random(),
+				10+50*Math.random(),
+				40-80*Math.random()
+			);
+			
+			// координати на крайната точка на движението
+			var q = new THREE.Vector3(
+				-20-50*Math.random(),
+				10+50*Math.random(),
+				40-80*Math.random()
+			);
+
+			// два пилона 
+			scene.add( pillar(p,ground.material) );
+			scene.add( pillar(q,ground.material) );
+			object.position.copy( p ); // обекта е във върха на първия пилон
+	
+			// изчисляване на движението
+			var n = 50; // брой стъпки
+			var v = q.sub(p).divideScalar(n); // вектор v=(q-p)/n
+
+			function animate( t )
+			{
+				// n стъпки след като минат 2 секунди
+				if (t>2 && n)
+				{
+					object.position.add(v); // движение с v
+					n--;
+				}
+				
+				// въртене на сцената и на обекта
+				object.rotation.y = -5*t;
+				scene.rotation.y = t/5;
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0406: Автоматичен контролер</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxSceneInit();
+			
+			// създаване на панел
+			var gui = new lil.GUI();
+			
+			var data = {
+				k: 0.5,
+			};
+			gui_k = gui.add( data, 'k', 0, 1 );
+
+
+			
+			// координати на началната точка на движението
+			var p = new THREE.Vector3( -50, 10+50*Math.random(), 50 );
+			
+			// координати на крайната точка на движението
+			var q = new THREE.Vector3( 50, 10+50*Math.random(), -50 );
+
+			
+			// два пилона 
+			var pillarP = pillar( p, ground.material );
+			var pillarQ = pillar( q, ground.material );
+			scene.add( pillarP, pillarQ );
+	
+			function animate( t )
+			{
+				// промяна на k
+				data.k = 0.5+0.5*Math.sin(2*t);
+				
+				// движение по k
+				object.position.lerpVectors( p, q, data.k );
+
+				// въртене на сцената и на обекта
+				object.rotation.y = -5*t;
+				scene.rotation.y = t/5;
+			}
+		</script>
+	</body>
+</html>
+
+

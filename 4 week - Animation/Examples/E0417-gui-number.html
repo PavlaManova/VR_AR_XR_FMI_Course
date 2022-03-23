@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0417: Интерактивна линейна комбинация</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// създаване на панел
+			var data = {k: 0.5}; // интерактивни данни
+			var gui = new lil.GUI(); // панел
+			gui.add( data, 'k', 0, 1 ); // контролер за k
+			
+			// координати на началната точка на движението
+			var p = new THREE.Vector3(
+				20+50*Math.random(),
+				10+50*Math.random(),
+				40-80*Math.random()
+			);
+			
+			// координати на крайната точка на движението
+			var q = new THREE.Vector3(
+				-20-50*Math.random(),
+				10+50*Math.random(),
+				40-80*Math.random()
+			);
+
+			// два пилона 
+			scene.add( pillar(p,ground.material) );
+			scene.add( pillar(q,ground.material) );
+	
+			function animate( t )
+			{
+				// движение по k
+				object.position.lerpVectors( p, q, data.k );
+				
+				// въртене на сцената и на обекта
+				object.rotation.y = -5*t;
+				scene.rotation.y = t/5;
+			}
+		</script>
+	</body>
+</html>
+
+

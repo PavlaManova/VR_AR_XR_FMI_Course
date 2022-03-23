@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>С0404: Топащи се топки</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="tween.umd.js"></script>
+	</head>
+	
+	<body>
+		<script>
+		
+			// ---------------------------------------------
+			// Тук е само началото на решението. Може да го
+			// ползвате, ако искате да си спестите писането
+			// на периферен код. Ако силно желаете да имате
+			// опит с Three.js, по-добре започнете начисто.
+			// ---------------------------------------------		
+		
+			vaxInit();
+
+			scene.add( new THREE.AmbientLight( 'white', 0.5 ) );
+			
+			// сцена със случайни сфери
+			var geometry = new THREE.SphereGeometry( 5 );
+			for( var i=0; i<30; i++)
+			{
+				var material = new THREE.MeshPhongMaterial();
+				material.color = new THREE.Color( Math.random(), Math.random(), Math.random() );
+				
+				var mesh = new THREE.Mesh( geometry, material );
+				mesh.position.set( THREE.Math.randFloat(-30,30), THREE.Math.randFloat(0,40), THREE.Math.randFloat(-30,30) );
+				
+				scene.add( mesh );
+			}
+			
+			function animate( t )
+			{
+				scene.rotation.y = t;
+			}
+		</script>
+	</body>
+</html>
+
+

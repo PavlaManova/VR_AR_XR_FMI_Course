@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0424: Навигация с dat.GUI</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+
+			// създаване на панел
+			var gui = new lil.GUI();
+			
+			var data = {
+				alpha: 0.1,
+				beta: 1.1,
+				distance: 150
+			}
+			gui.add( data, 'alpha', -5, 5 ).name('Ъгъл &alpha;');
+			gui.add( data, 'beta', 0.1, 1.4 ).name('Ъгъл &beta;');
+			gui.add( data, 'distance', 50, 300 ).name('Разстояние');
+
+			// координати на началната точка на движението
+			var p = new THREE.Vector3( -50, 10+50*Math.random(), 0 );
+			
+			// координати на крайната точка на движението
+			var q = new THREE.Vector3( 50, 10+50*Math.random(), 0 );
+			
+			// два пилона 
+			scene.add( pillar(p,ground.material) );
+			scene.add( pillar(q,ground.material) );
+	
+			function animate( t )
+			{
+				// движение по k
+				var k = 0.5+0.5*Math.sin(3*t);
+				object.position.lerpVectors( p, q, k );
+
+				// въртене на обекта
+				object.rotation.y = -5*t;
+				
+				// движение на гледната точка (обръщаме посоката на въртене по алфа )
+				camera.position.setFromSphericalCoords( data.distance, data.beta, -data.alpha );
+				camera.lookAt( new THREE.Vector3(0,20*data.distance/150,0) );
+			}
+		</script>
+	</body>
+</html>
+
+
