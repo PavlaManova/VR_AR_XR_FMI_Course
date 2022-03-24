@@ -4,27 +4,21 @@
 	<head>
 		<title>S0401: Ръбовете на куб</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="vax.js"></script>
+		<script src="tween.umd.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
-		
-			// ---------------------------------------------
-			// Тук е само началото на решението. Може да го
-			// ползвате, ако искате да си спестите писането
-			// на периферен код. Ако силно желаете да имате
-			// опит с Three.js, по-добре започнете начисто.
-			// ---------------------------------------------		
-		
 			vaxInit();
 
 			// полупрозрачен куб
 			var size = 55;
+
 			var cube = new THREE.Mesh(
 				new THREE.BoxGeometry( size, size, size ),
 				new THREE.MeshNormalMaterial( {transparent:true, opacity:0.1, side:THREE.DoubleSide, depthWrite: false} )
@@ -37,22 +31,325 @@
 				new THREE.LineBasicMaterial( {color:'black'} )
 			);
 			cube.add( edges );
-			
-			// топче 
+
+			// топче
 			var ball = new THREE.Mesh(
 				new THREE.SphereGeometry( 5 ),
 				new THREE.MeshStandardMaterial( {color:'orange', metalness:0, roughness:0} )
 			);
 			scene.add( ball );
-			
-			
+
+			var halfSide=size/2;
+
+			var A = ball.clone();
+			A.position.set(-halfSide,-halfSide,halfSide);
+			var B = ball.clone();
+			B.position.set(halfSide,-halfSide,halfSide);
+			var C = ball.clone();
+			C.position.set(halfSide,-halfSide,-halfSide);
+			var D = ball.clone();
+			D.position.set(-halfSide,-halfSide,-halfSide);
+			var A1 = ball.clone();
+			A1.position.set(-halfSide,halfSide,halfSide);
+			var B1 = ball.clone();
+			B1.position.set(halfSide,halfSide,halfSide);
+			var C1 = ball.clone();
+			C1.position.set(halfSide,halfSide,-halfSide);
+			var D1 = ball.clone();
+			D1.position.set(-halfSide,halfSide,-halfSide);
+
+			var fromAtoB =	new TWEEN.Tween(ball.position).to(B.position, 2000);
+			var fromAtoD = new TWEEN.Tween(ball.position).to(D.position,2000);
+			var fromAtoA1 = new TWEEN.Tween(ball.position).to(A1.position,2000);
+			var fromBtoC = new TWEEN.Tween(ball.position).to(C.position,2000);
+			var fromBtoB1 = new TWEEN.Tween(ball.position).to(B1.position,2000);
+			var fromBtoA = new TWEEN.Tween(ball.position).to(A.position,2000);
+			var fromCtoC1 = new TWEEN.Tween(ball.position).to(C1.position,2000);
+			var fromCtoB = new TWEEN.Tween(ball.position).to(B.position,2000);
+			var fromCtoD = new TWEEN.Tween(ball.position).to(D.position,2000);
+			var fromDtoC = new TWEEN.Tween(ball.position).to(C.position,2000);
+			var fromDtoA = new TWEEN.Tween(ball.position).to(A.position,2000);
+			var fromDtoD1 = new TWEEN.Tween(ball.position).to(D1.position,2000);
+
+			var fromA1toB1 =	new TWEEN.Tween(ball.position).to(B1.position, 2000);
+			var fromA1toD1 = new TWEEN.Tween(ball.position).to(D1.position,2000);
+			var fromA1toA = new TWEEN.Tween(ball.position).to(A.position,2000);
+			var fromB1toC1 = new TWEEN.Tween(ball.position).to(C1.position,2000);
+			var fromB1toB = new TWEEN.Tween(ball.position).to(B.position,2000);
+			var fromB1toA1 = new TWEEN.Tween(ball.position).to(A1.position,2000);
+			var fromC1toC = new TWEEN.Tween(ball.position).to(C.position,2000);
+			var fromC1toB1 = new TWEEN.Tween(ball.position).to(B1.position,2000);
+			var fromC1toD1 = new TWEEN.Tween(ball.position).to(D1.position,2000);
+			var fromD1toC1 = new TWEEN.Tween(ball.position).to(C1.position,2000);
+			var fromD1toA1 = new TWEEN.Tween(ball.position).to(A1.position,2000);
+			var fromD1toD = new TWEEN.Tween(ball.position).to(D.position,2000);
+
+			var optionsFromA = [fromAtoB, fromAtoD, fromAtoA1];
+			var optionsFromB = [fromBtoA, fromBtoC, fromBtoB1];
+			var optionsFromC = [fromCtoB, fromCtoD, fromCtoC1];
+			var optionsFromD = [fromDtoA, fromDtoC, fromDtoD1];
+
+			var optionsFromA1 = [fromA1toA, fromA1toB1, fromA1toD1];
+			var optionsFromB1 = [fromB1toA1, fromB1toC1, fromB1toB];
+			var optionsFromC1 = [fromC1toB1, fromC1toD1, fromC1toC];
+			var optionsFromD1 = [fromD1toA1, fromD1toC1, fromD1toD];
+
+
+
+
+			//for vertice B
+
+
+			//vertice C
+
+
+			//vertice D
+
+
+
+
+			//vertice A1
+
+
+			//for vertice B1
+
+
+			//vertice C1
+
+
+			//vertice D1
+
+
+
+			ball.position.copy(A1.position);
+			randomB1();
+			fromA1toB1.start();
+
+
+
 			function animate( t )
 			{
-				// въртене на куба
-				cube.rotation.set( t/11, t/9, t/7 );
+				// въртене на сцената
+				scene.rotation.set( t/11, t/9, t/7 );
+				stopAll();
+				randomA();
+				randomB();
+				randomC();
+				randomD();
+				randomA1();
+				randomB1();
+				randomC1();
+				randomD1();
+				TWEEN.update();
 			}
+
+
+
+			function randomA()
+			{
+				//options for vertice A
+				var rand = Math.floor(Math.random() * 2);
+				if(rand==0)
+				fromAtoB.chain(optionsFromB[1]);
+				else {
+					fromAtoB.chain(optionsFromB[2]);
+				}
+				rand=Math.floor(Math.random() * 2);
+				if(rand==0)
+				fromAtoD.chain(optionsFromD[1]);
+				else {
+					fromAtoD.chain(optionsFromD[2]);
+				}
+				rand=Math.floor(Math.random() * 2);
+				if(rand==0)
+				fromAtoA1.chain(optionsFromA1[1]);
+				else {
+					fromAtoA1.chain(optionsFromA1[2]);
+				}
+			}
+
+			function randomB()
+			{
+				rand = Math.random();
+				if(rand==0)
+				fromBtoC.chain(optionsFromC[1]);
+				else {
+					fromBtoC.chain(optionsFromC[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromBtoA.chain(optionsFromA[1]);
+				else {
+					fromBtoA.chain(optionsFromA[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromBtoB1.chain(optionsFromB1[0]);
+				else {
+					fromBtoB1.chain(optionsFromB1[1]);
+				}
+			}
+
+			function randomC()
+			{
+				rand = Math.random();
+				if(rand==0)
+				fromCtoB.chain(optionsFromB[0]);
+				else {
+					fromCtoB.chain(optionsFromB[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromCtoD.chain(optionsFromD[0]);
+				else {
+					fromCtoD.chain(optionsFromD[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromCtoC1.chain(optionsFromC1[0]);
+				else {
+					fromCtoC1.chain(optionsFromC1[1]);
+				}
+			}
+
+			function randomD()
+			{
+				rand = Math.random();
+				if(rand==0)
+				fromDtoA.chain(optionsFromA[0]);
+				else {
+					fromDtoA.chain(optionsFromA[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromDtoC.chain(optionsFromC[0]);
+				else {
+					fromDtoC.chain(optionsFromC[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromDtoD1.chain(optionsFromD1[0]);
+				else {
+					fromDtoD1.chain(optionsFromD1[1]);
+				}
+			}
+
+			function randomA1()
+			{
+				var rand = Math.random();
+				if(rand==0)
+				fromA1toB1.chain(optionsFromB[1]);
+				else {
+					fromA1toB1.chain(optionsFromB[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromA1toD1.chain(optionsFromD[1]);
+				else {
+					fromA1toD1.chain(optionsFromD[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromA1toA.chain(optionsFromA[0]);
+				else {
+					fromA1toA.chain(optionsFromA[1]);
+				}
+			}
+
+			function randomB1()
+			{
+				rand = Math.random();
+				if(rand==0)
+				fromB1toC1.chain(optionsFromC1[1]);
+				else {
+					fromB1toC1.chain(optionsFromC1[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromB1toA1.chain(optionsFromA1[0]);
+				else {
+					fromB1toA1.chain(optionsFromA1[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromB1toB.chain(optionsFromB[0]);
+				else {
+					fromB1toB.chain(optionsFromB[1]);
+				}
+			}
+
+			function randomC1()
+			{
+				rand = Math.random();
+				if(rand==0)
+				fromC1toB1.chain(optionsFromB1[0]);
+				else {
+					fromC1toB1.chain(optionsFromB1[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromC1toD1.chain(optionsFromD1[0]);
+				else {
+					fromC1toD1.chain(optionsFromD1[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromC1toC.chain(optionsFromC[0]);
+				else {
+					fromC1toC.chain(optionsFromC[1]);
+				}
+			}
+
+			function randomD1()
+			{
+				rand = Math.random();
+				if(rand==0)
+				fromD1toA1.chain(optionsFromA1[0]);
+				else {
+					fromD1toA1.chain(optionsFromA1[1]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromD1toC1.chain(optionsFromC1[0]);
+				else {
+					fromD1toC1.chain(optionsFromC1[2]);
+				}
+				rand=Math.random();
+				if(rand==0)
+				fromD1toD.chain(optionsFromD[0]);
+				else {
+					fromD1toD.chain(optionsFromD[1]);
+				}
+			}
+
+			function stopAll()
+			{
+				fromAtoB.stop();
+				fromAtoD.stop();
+				fromAtoA1.stop();
+				fromBtoA.stop();
+				fromBtoC.stop();
+				fromBtoB1.stop();
+				fromCtoB.stop();
+				fromCtoD.stop();
+				fromCtoC1.stop();
+				fromDtoA.stop();
+				fromDtoC.stop();
+				fromDtoD1.stop();
+				fromA1toA.stop();
+				fromA1toB1.stop();
+				fromA1toD1.stop();
+				fromB1toB.stop();
+				fromB1toA1.stop();
+				fromB1toC1.stop();
+				fromC1toC.stop();
+				fromC1toB1.stop();
+				fromC1toD1.stop();
+				fromD1toD.stop();
+				fromD1toA1.stop();
+				fromD1toC1.stop();
+			}
+
 		</script>
 	</body>
 </html>
-
-
