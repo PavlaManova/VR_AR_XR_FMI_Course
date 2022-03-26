@@ -14,11 +14,74 @@
 	<body>
 		<script>
 			vaxInit();
+      camera.position.set(-5,10,80);
+
+      var bodyX = 40;
+      var bodyY = 60;
+      var bodyZ = 3;
+      var R = 3;
+
+      var body=new THREE.Group();
+      scene.add(body);
+
+      var bodyMaterial = new THREE.MeshPhongMaterial({color:'black', shininess:30});
+      var rectAGeometry = new THREE.BoxGeometry(bodyX-2*R,bodyZ,bodyY);
+      var rectBGeometry = new THREE.BoxGeometry(bodyX,bodyZ,bodyY-2*R);
+
+      var rectA = new THREE.Mesh(rectAGeometry,bodyMaterial);
+      var rectB = new THREE.Mesh(rectBGeometry,bodyMaterial);
+      body.add(rectA,rectB);
+
+      var vertexGeometry = new THREE.CylinderGeometry(R,R,bodyZ,36,36);
+      var vertexA = new THREE.Mesh(vertexGeometry, bodyMaterial);
+      vertexA.position.set(-bodyX/2+R,0,-bodyY/2+R);
+      var vertexB = vertexA.clone();
+      vertexB.position.set(bodyX/2-R,0,-bodyY/2+R);
+      var vertexC = vertexA.clone();
+      vertexC.position.set(bodyX/2-R,0,bodyY/2-R);
+      var vertexD = vertexA.clone();
+      vertexD.position.set(-bodyX/2+R,0,bodyY/2-R);
+      body.add(vertexA, vertexB, vertexC, vertexD);
+
+      var detailR = 0.7;
+      var sideDetailGeometry = new THREE.CylinderGeometry(detailR, detailR, bodyY-2*R, 36, 36);
+      var cylinderA = new THREE.Mesh(sideDetailGeometry, bodyMaterial);
+      cylinderA.position.set(-bodyX/2+detailR, bodyZ/2,0);
+      cylinderA.rotation.set(Math.PI/2,0,0);
+      var cylinderB = cylinderA.clone();
+      cylinderB.position.set(bodyX/2-detailR,bodyZ/2,0);
+
+      var sideDetailGeometry2 = new THREE.CylinderGeometry(detailR, detailR, bodyX-2*R, 36, 36);
+      var cylinderC = new THREE.Mesh(sideDetailGeometry2, bodyMaterial);
+      cylinderC.position.set(0, bodyZ/2,-bodyY/2+detailR);
+      cylinderC.rotation.set(0,0,Math.PI/2);
+      var cylinderD = cylinderC.clone();
+      cylinderD.position.set(0, bodyZ/2,bodyY/2-detailR);
+
+      body.add(cylinderA, cylinderB, cylinderC, cylinderD);
+
+      var torusGeometry = new THREE.TorusGeometry(R-detailR, detailR, 30,70,Math.PI/2);
+      var torusA = new THREE.Mesh(torusGeometry, bodyMaterial);
+      torusA.position.set(-bodyX/2+R,bodyZ/2,-bodyY/2+R);
+      torusA.rotation.set(Math.PI/2,Math.PI,0,'YXZ');
+      var torusB = torusA.clone();
+      torusB.position.copy(vertexB.position);
+      torusB.position.y = bodyZ/2;
+      torusB.rotation.set(-Math.PI/2,0,0);
+      var torusC = torusA.clone();
+      torusC.position.copy(vertexC.position);
+      torusC.position.y = bodyZ/2;
+      torusC.rotation.set(Math.PI/2,0,0);
+      var torusD = torusA.clone();
+      torusD.position.copy(vertexD.position);
+      torusD.position.y = bodyZ/2;
+      torusD.rotation.set(0,-Math.PI/2,Math.PI/2,'ZYX');
+
+      body.add(torusA, torusB, torusC, torusD);
+
 			function animate( t )
 			{
-				// въртене на сцената
-				scene.rotation.set( t/11, t/9, t/7 );
-				TWEEN.update();
+        body.rotation.set(t/2,0,0);
 			}
 		</script>
 	</body>
