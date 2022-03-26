@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Таблет</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+			function animate( t )
+			{
+				// въртене на сцената
+				scene.rotation.set( t/11, t/9, t/7 );
+				TWEEN.update();
+			}
+		</script>
+	</body>
+</html>
