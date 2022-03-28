@@ -16,13 +16,16 @@
 			vaxInit();
       camera.position.set(-5,10,80);
 
+			var device = new THREE.Group();
+			scene.add(device);
+
       var bodyX = 40;
       var bodyY = 60;
       var bodyZ = 3;
       var R = 3;
 
       var body=new THREE.Group();
-      scene.add(body);
+      //device.add(body);
 
       var bodyMaterial = new THREE.MeshPhongMaterial({color:'black', shininess:30});
       var rectAGeometry = new THREE.BoxGeometry(bodyX-2*R,bodyZ,bodyY);
@@ -57,7 +60,6 @@
       cylinderC.rotation.set(0,0,Math.PI/2);
       var cylinderD = cylinderC.clone();
       cylinderD.position.set(0, bodyZ/2,bodyY/2-detailR);
-
       body.add(cylinderA, cylinderB, cylinderC, cylinderD);
 
       var torusGeometry = new THREE.TorusGeometry(R-detailR, detailR, 30,70,Math.PI/2);
@@ -79,9 +81,89 @@
 
       body.add(torusA, torusB, torusC, torusD);
 
+			var screenMaterial = new THREE.MeshPhongMaterial({color:"black",shininess:90});
+			var screen2Material = new THREE.MeshPhongMaterial({color:0x2c343c,shininess:90});
+			var screenGeometry = new THREE.PlaneGeometry(bodyX-2*detailR-0.25,bodyY-2*detailR-0.25);
+			var screen = new THREE.Mesh(screenGeometry, screenMaterial);
+			screen.position.y = bodyZ/2+0.05;
+			screen.rotation.set(-Math.PI/2,0,0);
+
+			var screen2 = new THREE.Mesh(screenGeometry,screen2Material);
+			screen2.scale.set(0.89,0.95,1);
+			screen2.position.y = bodyZ/2+0.07;
+			screen2.rotation.set(-Math.PI/2,0,0);
+
+			var cameraGroup = new THREE.Group();
+			var frontCameraR=0.5;
+			var frontCameraGeometry = new THREE.CircleGeometry(frontCameraR,36);
+			var frontCamera1Material = new THREE.MeshPhongMaterial({color:0x9EA2A6,shininess:100});
+			var frontCamera1 = new THREE.Mesh(frontCameraGeometry,frontCamera1Material);
+			frontCamera1.position.set(bodyX/2-2*detailR-frontCameraR,bodyZ/2+0.06,0);
+			frontCamera1.rotation.set(-Math.PI/2,0,0);
+			var frontCamera2Material = new THREE.MeshPhongMaterial({color:0x2D5297,shininess:100});
+			var frontCamera2 = new THREE.Mesh(frontCameraGeometry, frontCamera2Material);
+			frontCamera2.scale.set(0.8,0.8,0.8);
+			frontCamera2.position.copy(frontCamera1.position);
+			frontCamera2.position.y+=0.01;
+			frontCamera2.rotation.set(-Math.PI/2,0,0);
+			cameraGroup.add(frontCamera1, frontCamera2);
+
+			body.add(screen, screen2, cameraGroup);
+
+			//back camera
+			var backCameraGroup = new THREE.Group();
+			var cameraBody = new THREE.Mesh(rectAGeometry,bodyMaterial);
+			cameraBody.scale.set(0.1,0.3,0.1);
+			backCameraGroup.add(cameraBody);
+			var tempR = 0.1*(bodyX-2*R)/2;
+			var tempZ = 0.3*bodyZ;
+			var cylinderGeometry = new THREE.CylinderGeometry(tempR,tempR,tempZ,36,36);
+			var cylinder1 = new THREE.Mesh(cylinderGeometry,bodyMaterial);
+			cylinder1.position.set(0,0,0.1*(bodyX-2*R));
+			var cylinder2 = cylinder1.clone();
+			cylinder2.position.set(0,0,-0.1*(bodyX-2*R));
+			backCameraGroup.add(cylinder1,cylinder2);
+			backCameraGroup.scale.set(1.2,1,1);
+
+			var flash = frontCamera1.clone();
+			flash.position.copy(cylinder1.position);
+			flash.position.y += tempZ/2+0.1;
+
+			var group = new THREE.Group();
+			var backCameraA1 = frontCamera1.clone();
+			backCameraA1.position.set(0,tempZ/2+0.1,-0.1*(bodyX-2*R)+0.5);
+			backCameraA1.scale.set(1.5,1.5,1.5);
+			var backCameraA2 = frontCamera2.clone();
+			backCameraA2.position.copy(backCameraA1.position);
+			backCameraA2.scale.set(1.2,1.2,1.2);
+			backCameraA2.position.y+=0.05;
+			group.add(backCameraA1,backCameraA2);
+			var group2 = group.clone();
+			group.position.z+=3;
+			backCameraGroup.add(flash, group, group2);
+			backCameraGroup.position.set(bodyX/2-bodyX/6,-bodyZ/2-tempZ/2,-bodyY/2+10);
+			backCameraGroup.rotation.set(0,0,Math.PI);
+			body.add(backCameraGroup);
+
+
+			//pen
+	  	var pen = new THREE.Group();
+	  	device.add(pen);
+	  	var penR = 1;
+	  	var penLength = 45;
+	  	var penBodyGeometry = new THREE.CylinderGeometry(penR, penR,penLength, 36,36,false,0,Math.PI+ Math.PI/3);
+	  	var penMaterial = new THREE.MeshLambertMaterial({color:0x404040});
+	  	var penBody = new THREE.Mesh(penBodyGeometry, penMaterial);
+
+			var flatSide = new THREE.Mesh(screenGeometry, penMaterial);
+
+	  	pen.add(penBody);
+
+
+
 			function animate( t )
 			{
-        body.rotation.set(t/2,0,0);
+        device.rotation.set(t/2,0,0);
 			}
 		</script>
 	</body>
