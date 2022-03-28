@@ -14,7 +14,7 @@
 	<body>
 		<script>
 			vaxInit();
-      camera.position.set(-5,10,80);
+      //camera.position.set(-5,10,80);
 
 			var device = new THREE.Group();
 			scene.add(device);
@@ -125,7 +125,6 @@
 			cylinder2.position.set(0,0,-0.1*(bodyX-2*R));
 			backCameraGroup.add(cylinder1,cylinder2);
 			backCameraGroup.scale.set(1.2,1,1);
-			tempGroup.add(cameraBody,cylinder1,cylinder2);
 
 			var flash = frontCamera1.clone();
 			flash.position.copy(cylinder1.position);
@@ -180,13 +179,11 @@
 			nib.scale.set(0.3,0.8,0.3);
 	  	pen.add(penBody, topSphere,front,torus,nib);
 
-			pen.position.set(0,penLength/2,3);
+			pen.position.set(0,penLength/2-3,3);
 			pen.rotation.set(Math.PI/6,0,Math.PI/8);
 			pen.scale.set(0.8,0.8,0.8);
 
 			//buttons
-
-			//tempGroup.add(cameraBody,cylinder1,cylinder2);
 			var button1A = cameraBody.clone();
 			button1A.material = new THREE.MeshLambertMaterial({color:'black'});
 			var button1B = cylinder1.clone();
@@ -207,11 +204,26 @@
 			device.add(button1,button2);
 
 			//charging port
+			var partA = cameraBody.clone();
+			var innerSidedMaterial = new THREE.MeshLambertMaterial({color:0x373737});
+			partA.material = innerSidedMaterial;
+			//partA.material.side = THREE.BackSide;
+			var partB = cylinder1.clone();
+			partB.material = innerSidedMaterial;
+			var partC = cylinder2.clone();
+			partC.material= innerSidedMaterial;
+			var portGroup = new THREE.Group();
+			portGroup.add(partA,partB,partC);
+			portGroup.rotation.set(Math.PI/2,Math.PI/2,0);
+			portGroup.position.set(0,0,bodyY/2-0.2);
+			portGroup.scale.set(0.3,0.5,0.3);
+
+			device.add(portGroup);
 
 
 			function animate( t )
 			{
-        device.rotation.set(t/2,t/3,t/4);
+        device.rotation.set(t/2,t/3,t/2);
 			}
 		</script>
 	</body>
