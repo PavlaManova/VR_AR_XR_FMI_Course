@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0607: Скачащи кубчета</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// светлина и сенки
+			renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.position.set( -150, 300, -50 );
+			light.castShadow = true;
+
+			// по-добра позиция на камерата
+			camera.position.set( 0, 80, 240 );
+			camera.lookAt( new THREE.Vector3(0,0,0) );
+			
+			// земя
+			var geometry = new THREE.BoxGeometry( 300, 4, 300 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'lightgreen'}) );
+			var ground = new Physijs.BoxMesh( geometry, material, 0 );
+				ground.position.set( 0, -10, 0 );
+				ground.receiveShadow = true;
+			scene.add( ground );
+			
+			// кубчета
+			var geometry = new THREE.BoxGeometry( 20, 20, 20 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'hotpink'}) );
+				
+			var cubes = [];
+			for( var i=0; i<20; i++ )
+			{
+				var cube = new Physijs.BoxMesh( geometry, material );
+					cube.position.set( THREE.Math.randFloat(-50,50), 30+20*i, THREE.Math.randFloat(-50,50) );
+					cube.receiveShadow = true;
+					cube.castShadow = true;
+					
+				scene.add( cube );
+				
+				cubes.push( cube );
+			}
+			
+			var oldT = 4;
+			var idx = 0;
+			
+			function animate( t )
+			{
+				scene.simulate( 1/10 );
+				
+				if( t>oldT+0.5 )
+				{
+					// случайна скорост на скок нагоре
+					var v = new THREE.Vector3(
+						THREE.Math.randFloat( -5, 5 ),
+						THREE.Math.randFloat( 30, 80 ),
+						THREE.Math.randFloat( -5, 5 )
+					);
+					cubes[idx].setLinearVelocity( v );
+					oldT = t;
+					idx = (idx+1)%20;
+				}
+				
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0618: Под от плочки</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// светлина и сенки
+			renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.position.set( -150, 300, -50 );
+			light.intensity = 0.8;
+			
+			light = light.clone();
+			light.intensity = 0.2;
+			light.castShadow = true;
+			scene.add( light );
+
+			scene.add( new THREE.AmbientLight( 'yellow', 0.1 ) );
+			
+			// по-добра позиция на камерата
+			camera.position.set( 0, 80, 240 );
+			camera.lookAt( new THREE.Vector3(0,0,0) );
+			
+			function hit( otherObject )
+			{
+				if (otherObject.isBall)
+				{
+					this.mass = 1;
+					this.setAngularVelocity( new THREE.Vector3(THREE.Math.randFloat(-1,1),0,THREE.Math.randFloat(-1,1)) )
+				}
+			}
+					
+			// под от плочки
+			geometry = new THREE.BoxGeometry( 30, 4, 30 );
+			material = [
+				Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'white', shininess:100}), 0.5, 1),
+				Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'gray', shininess:100}), 0.5, 1)
+			];
+			for( var i=-5; i<=5; i++)
+			for( var j=-5; j<=5; j++)
+			{
+				var tile = new Physijs.BoxMesh( geometry, material[ (i+j+100)%2 ], 0);
+				tile.position.set( 30*i, 0,  30*j );
+				tile.castShadow = true;
+				tile.receiveShadow = true;
+				scene.add( tile );
+
+				tile.addEventListener( 'collision', hit );					
+			}
+				
+			var geometry = new THREE.IcosahedronGeometry( 10, 0 );
+				
+			for( var i=0; i<40; i++ )
+			{
+				var material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'crimson', shininess:100, flatShading:true}), 0, 1 );
+				var ball = new Physijs.BoxMesh( geometry, material, 1 );
+					ball.isBall = true;
+										// случайна скорост на завъртане
+					ball.position.set( THREE.Math.randFloat(-150,150), 10+40*i, THREE.Math.randFloat(-150,150) );
+					ball.setAngularVelocity( new THREE.Vector3(THREE.Math.randFloat(-1,1),0,THREE.Math.randFloat(-1,1)) )
+
+					ball.receiveShadow = true;
+					ball.castShadow = true;
+				scene.add( ball );
+			}
+			
+			function animate( t )
+			{
+				scene.simulate( 1/15 );
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0616: Врата с панта</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// светлина и сенки
+			renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.position.set( 0, 300, 150 );
+			light.castShadow = true;
+
+			// по-добра позиция на камерата
+			camera.position.set( 100, 50, 100 );
+			camera.lookAt( new THREE.Vector3(0,20,0) );
+			
+			// земя
+			var geometry = new THREE.BoxGeometry( 300, 4, 300 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'lightgreen'}) );
+			var ground = new Physijs.BoxMesh( geometry, material, 0 );
+				ground.position.set( 0, -2, 0 );
+				ground.receiveShadow = true;
+			scene.add( ground );
+
+			// пилон
+			var p = pillar( new THREE.Vector3(0,50,0), ground.material );
+			scene.add( p );
+			
+			// врата
+			var door = new Physijs.BoxMesh(
+				new THREE.BoxGeometry( 60, 40, 3 ),
+				Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'tomato'}) ),
+				1
+			);
+			door.castShadow = true;
+			door.receiveShadow = true;
+			door.position.set( 30, 30, 0 );
+			scene.add( door );
+			
+			// пантово ограничение
+			var constraint = new Physijs.HingeConstraint(
+				door, 
+				null,
+				new THREE.Vector3( 0, 30, 0 ),
+				new THREE.Vector3( 0, 1, 0 )
+			);
+			scene.addConstraint( constraint );
+			
+			// зло ку(б)че
+			var cube = new Physijs.BoxMesh(
+				new THREE.BoxGeometry( 15, 15, 15 ),
+				Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'gold'}) ),
+				1
+			);
+			cube.castShadow = true;
+			cube.receiveShadow = true;
+			cube.position.set( 50, 50, 60 );
+			scene.add( cube );
+			
+
+			// начален kickass
+			cube.applyForce( new THREE.Vector3( 0, 0, -600 ), new THREE.Vector3( 1, -1, 0 ) );
+			
+			function animate()
+			{		
+				scene.simulate( 1/20 );
+			}
+		</script>
+	</body>
+</html>
+
+

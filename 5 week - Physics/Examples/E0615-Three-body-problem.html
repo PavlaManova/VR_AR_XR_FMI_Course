@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0615: Задача с три тела</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			camera.position.set( 0, 0, 600 );
+			
+			// планета 1
+			var m1 = 1000,
+				geometry = new THREE.SphereGeometry( 25 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'gray'}) );
+			var planet1 = new Physijs.SphereMesh( geometry, material, m1 );
+				planet1.position.set( 200, 0, 0 );
+			scene.add( planet1 );
+
+			// планета 2
+			var m2 = 300,
+				geometry = new THREE.SphereGeometry( 15 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'tomato'}) );
+			var planet2 = new Physijs.SphereMesh( geometry, material, m2 );
+				planet2.position.set( -200, 0, 0 );
+			scene.add( planet2 );
+
+			// планета 3
+			var m3 = 200,
+				geometry = new THREE.SphereGeometry( 10 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'cornflowerblue'}) );
+			var planet3 = new Physijs.SphereMesh( geometry, material, m3 );
+				planet3.position.set( 0, 150, 0 );
+			scene.add( planet3 );
+
+			planet1.setLinearVelocity( new THREE.Vector3(6,53,0) );
+			planet2.setLinearVelocity( new THREE.Vector3(-12,-53,0) );
+			planet3.setLinearVelocity( new THREE.Vector3(0,-135,0) );
+			
+			var f1 = new THREE.Vector3();
+			var f2 = new THREE.Vector3();
+			var f3 = new THREE.Vector3();
+			var g = new THREE.Vector3();
+			
+			var k = 50;
+			
+			scene.setGravity( g );
+			
+			function animate()
+			{
+				// планета 1
+				f2.subVectors( planet2.position, planet1.position );
+				f3.subVectors( planet3.position, planet1.position );
+
+				g.set(0,0,0);
+				g.addScaledVector( f2, k*m1*m2/f2.lengthSq() );
+				g.addScaledVector( f3, k*m1*m3/f3.lengthSq() );
+
+				planet1.applyCentralForce( g );
+				
+
+				// планета 2
+				f1.subVectors( planet1.position, planet2.position );
+				f3.subVectors( planet3.position, planet2.position );
+
+				g.set(0,0,0);
+				g.addScaledVector( f1, k*m2*m1/f1.lengthSq() );
+				g.addScaledVector( f3, k*m2*m3/f3.lengthSq() );
+
+				planet2.applyCentralForce( g );
+				
+
+				// планета 3
+				f1.subVectors( planet1.position, planet3.position );
+				f2.subVectors( planet2.position, planet3.position );
+
+				g.set(0,0,0);
+				g.addScaledVector( f1, k*m3*m1/f1.lengthSq() );
+				g.addScaledVector( f2, k*m3*m2/f2.lengthSq() );
+
+				planet3.applyCentralForce( g );
+				
+				g.set(0,0,0);
+				g.addScaledVector( planet1.position, 1/3 );
+				g.addScaledVector( planet2.position, 1/3 );
+				g.addScaledVector( planet3.position, 1/3 );
+				camera.position.set( g.x, g.y, g.z+600 );
+				camera.lookAt( g )
+			
+				scene.simulate( 1/20 );
+			}
+		</script>
+	</body>
+</html>
+
+

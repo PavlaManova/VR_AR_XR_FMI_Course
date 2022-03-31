@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0603: Две топки</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// светлина и сенки
+			renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.position.set( 0, 300, 0 );
+			light.castShadow = true;
+
+			// земя
+			var geometry = new THREE.BoxGeometry( 300, 4, 300 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'lightgreen'}) );
+			var ground = new Physijs.BoxMesh( geometry, material, 0 );
+				ground.position.set( 0, -10, 0 );
+				ground.receiveShadow = true;
+			scene.add( ground );
+			
+			// топка 1
+			var geometry = new THREE.SphereGeometry( 8 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'hotpink'}) );
+			var ballA = new Physijs.SphereMesh( geometry, material );
+				ballA.position.set( 0, 40, 0 );
+				ballA.castShadow = true;
+			scene.add( ballA );
+
+			// топка 2
+			var ballB = new Physijs.SphereMesh( geometry, material );
+				ballB.position.set( 4, 20, 0 );
+				ballB.castShadow = true;
+			scene.add( ballB );
+
+			function animate()
+			{
+				scene.simulate();
+			}
+		</script>
+	</body>
+</html>
+
+

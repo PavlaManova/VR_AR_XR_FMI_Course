@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0617: Колизии</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// светлина и сенки
+			renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.position.set( -150, 300, -50 );
+			light.intensity = 0.8;
+			
+			light = light.clone();
+			light.intensity = 0.2;
+			light.castShadow = true;
+			scene.add( light );
+
+			scene.add( new THREE.AmbientLight( 'yellow', 0.1 ) );
+			
+			// по-добра позиция на камерата
+			camera.position.set( 0, 80, 240 );
+			camera.lookAt( new THREE.Vector3(0,0,0) );
+			
+			// земя
+			var geometry = new THREE.BoxGeometry( 300, 4, 300 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'gold', shininess:100}) );
+			var ground = new Physijs.BoxMesh( geometry, material, 0 );
+				ground.position.set( 0, -10, 0 );
+				ground.receiveShadow = true;
+				
+			function hit( otherObject )
+			{
+				if (otherObject instanceof Physijs.SphereMesh)
+				{
+					otherObject.material.color = new THREE.Color('crimson');
+				}
+			}
+					
+			// ограничители
+			geometry = new THREE.BoxGeometry( 13, 30, 3 );
+			material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'white', shininess:100, emissive:'gold', emissiveIntensity:0.2}) );
+			for( var i=0; i<40; i++)
+			{
+				var angle = i/40*2*Math.PI;
+				var barrier = new Physijs.BoxMesh( geometry, material, 110 );
+				barrier.position.set( 140*Math.cos(angle), 12,  140*Math.sin(angle) );
+				barrier.rotation.set( 0, -angle, 0 );
+				barrier.castShadow = true;
+				barrier.receiveShadow = true;
+				scene.add( barrier );
+
+				barrier.addEventListener( 'collision', hit );					
+			}
+				
+			scene.add( ground );
+			
+			var geometry = new THREE.SphereGeometry( 12, 24, 12 );
+				
+			for( var i=0; i<20; i++ )
+			{
+				var material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'white', shininess:100}), 0, 1 );
+				var ball = new Physijs.SphereMesh( geometry, material, 10 );
+					ball.position.set( THREE.Math.randFloat(-30,30), 10+30*i, THREE.Math.randFloat(-30,30) );
+					ball.receiveShadow = true;
+					ball.castShadow = true;
+				scene.add( ball );
+			}
+			
+			function animate( t )
+			{
+				scene.simulate( 1/20 );
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

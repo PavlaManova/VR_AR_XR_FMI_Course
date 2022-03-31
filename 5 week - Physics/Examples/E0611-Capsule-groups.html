@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0611: Капсулни групи</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// светлина и сенки
+			renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.position.set( 0, 300, 150 );
+			light.castShadow = true;
+
+			// по-добра позиция на камерата
+			camera.position.set( 0, 80, 240 );
+			camera.lookAt( new THREE.Vector3(0,0,0) );
+			
+			// земя
+			var geometry = new THREE.BoxGeometry( 300, 4, 300 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'lightgreen'}) );
+			var ground = new Physijs.BoxMesh( geometry, material, 0 );
+				ground.position.set( 0, -10, 0 );
+				ground.receiveShadow = true;
+			scene.add( ground );
+			
+			// капсула
+			var geometryCyl = new THREE.CylinderGeometry( 5, 5, 20, 32, 1, true ),
+				geometrySph = new THREE.SphereGeometry( 5, 32 );
+				
+			
+			for( var i=0; i<20; i++ )
+			{
+				var material = Physijs.createMaterial(
+					new THREE.MeshPhongMaterial({
+						color: new THREE.Color(Math.random(),Math.random(),Math.random()),
+						shininess:100 })
+				);
+
+				// цилиндричната част на капсулата
+				var capsule = new Physijs.CylinderMesh( geometryCyl, material );
+					capsule.position.set( THREE.Math.randFloat(-80,80), THREE.Math.randFloat(50,150) , THREE.Math.randFloat(-80,80) );
+					capsule.receiveShadow = true;
+					capsule.castShadow = true;
+					
+				// горната сфера
+				var topSphere = new Physijs.SphereMesh( geometrySph, material );
+					topSphere.position.y = 10;
+					topSphere.receiveShadow = true;
+					topSphere.castShadow = true;
+					
+				// долната сфера
+				var bottomSphere = new Physijs.SphereMesh( geometrySph, material );
+					bottomSphere.position.y = -10;
+					bottomSphere.receiveShadow = true;
+					bottomSphere.castShadow = true;
+
+				// сглобена капсула
+				capsule.add( topSphere, bottomSphere );
+				scene.add( capsule );
+			}
+			
+			function animate( t )
+			{
+				scene.simulate( 1/10 );
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

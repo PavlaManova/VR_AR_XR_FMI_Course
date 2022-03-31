@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0602: Земя</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// светлина и сенки
+			renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.position.set( 0, 300, 0 );
+			light.castShadow = true;
+
+			// земя
+			var geometry = new THREE.BoxGeometry( 300, 4, 300 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'lightgreen'}) );
+			var ground = new Physijs.BoxMesh( geometry, material, 0 );
+				ground.position.set( 0, -10, 0 );
+				ground.receiveShadow = true;
+			scene.add( ground );
+			
+			// топка
+			var geometry = new THREE.SphereGeometry( 8 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'hotpink'}) );
+			var ball = new Physijs.SphereMesh( geometry, material );
+				ball.position.set( 0, 40, 0 );
+				ball.castShadow = true;
+			scene.add( ball );
+
+			function animate()
+			{
+				scene.simulate();
+			}
+		</script>
+	</body>
+</html>
+
+

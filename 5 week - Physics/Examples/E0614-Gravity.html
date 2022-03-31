@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0614: Гравитация</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			camera.position.set( 0, 0, 240 );
+			
+			// слънце
+			var geometry = new THREE.SphereGeometry( 30, 32, 32 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'yellow'}) );
+			var sun = new Physijs.SphereMesh( geometry, material, 0 );
+			scene.add( sun );
+			
+			// планета
+			var geometry = new THREE.SphereGeometry( 10, 32, 16 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'gray'}) );
+			var planet = new Physijs.SphereMesh( geometry, material, 10 );
+				planet.position.set( 150, 0, 0 );
+			scene.add( planet );
+
+			planet.setLinearVelocity( new THREE.Vector3(0,70,0) );
+			
+			var g = new THREE.Vector3();
+			
+			function animate()
+			{
+				g.subVectors( sun.position, planet.position );
+
+				scene.setGravity( g );
+				scene.simulate( 1/30 );
+			}
+		</script>
+	</body>
+</html>
+
+

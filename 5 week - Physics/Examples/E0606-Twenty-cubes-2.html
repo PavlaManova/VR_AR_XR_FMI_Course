@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0606: Двадесет кубчета 2</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// светлина и сенки
+			renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.position.set( -150, 300, -50 );
+			light.castShadow = true;
+
+			// по-добра позиция на камерата
+			camera.position.set( 0, 80, 240 );
+			camera.lookAt( new THREE.Vector3(0,0,0) );
+			
+			// земя
+			var geometry = new THREE.BoxGeometry( 300, 4, 300 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'lightgreen'}) );
+			var ground = new Physijs.BoxMesh( geometry, material, 0 );
+				ground.position.set( 0, -10, 0 );
+				ground.receiveShadow = true;
+			scene.add( ground );
+			
+			// кубчета
+			var geometry = new THREE.BoxGeometry( 20, 20, 20 ),
+				material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'hotpink'}) );
+				
+			for( var i=0; i<20; i++ )
+			{
+				var cube = new Physijs.BoxMesh( geometry, material );
+					cube.position.set( THREE.Math.randFloat(-20,20), 30+40*i, THREE.Math.randFloat(-20,20) );
+					cube.receiveShadow = true;
+					cube.castShadow = true;
+				scene.add( cube );
+			}
+			
+			function animate( t )
+			{
+				scene.simulate( 1/10 );
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+
