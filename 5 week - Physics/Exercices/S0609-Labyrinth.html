@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0609: Лабиринт</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			scene.remove( ground );
+			scene.remove( object );
+
+			scene.setGravity( new THREE.Vector3( 0, -30, 0 ) );
+			
+			camera.position.set( 0, 50, 200 );
+			camera.lookAt( new THREE.Vector3(0,0,0) );
+			
+			// земя
+			ground = new THREE.Mesh(
+				new THREE.BoxGeometry( 204, 4, 204 ),
+				new THREE.MeshPhongMaterial()
+			);
+			ground.position.set( 0, -2, 0 );
+			ground.receiveShadow = true;
+			scene.add( ground );
+			
+			// капак
+			material = new THREE.MeshPhongMaterial( {color: 'cornflowerblue', transparent: true, opacity: 0.3, depthWrite: false} )
+			cover = new THREE.Mesh(
+				new THREE.BoxGeometry( 200, 1, 200 ),
+				material,
+				0
+			);
+			cover.position.set( 0, 24, 0 );
+			ground.add( cover );
+			
+			// преграда ляво-дясно
+			function barX( x0, x1, z )
+			{
+				var bar = new Physijs.BoxMesh(
+					new THREE.BoxGeometry( x1-x0, 24, 2 ),
+					material,
+					0
+				);
+				bar.position.set( (x1+x0)/2, 12, z );
+				ground.add( bar );
+			}
+			
+			// преграда напред-назад
+			function barZ( x, z0, z1 )
+			{
+				var bar = new Physijs.BoxMesh(
+					new THREE.BoxGeometry( 2, 24, z1-z0 ),
+					material,
+					0
+				);
+				bar.position.set( x, 12, (z1+z0)/2 );
+				ground.add( bar );
+			}
+			
+			// външни стени
+			barX( -100,  100, -100 );
+			barX( -100,  100,  100 );
+			barZ( -100, -100,  100 );
+			barZ(  100, -100,  100 );
+			
+			// топка
+			var geometry = new THREE.OctahedronGeometry( 9, 2 ),
+				material = new THREE.MeshPhongMaterial( {color: 'crimson', shininess: 150, flatShading: true} ),
+				ball = new THREE.Mesh( geometry, material );
+				ball.position.set( 0, 9, 0 );
+				ball.castShadow = true;
+			scene.add( ball );
+			
+			function animate( t )
+			{
+				ground.rotation.set( Math.sin(t)/5, 0, Math.cos(t)/5 );
+			}
+		</script>
+	</body>
+</html>
+
+

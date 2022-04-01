@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0607: Триене</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+	
+			scene.remove( ground );
+			scene.remove( object );
+			
+			// земя
+			ground = new THREE.Mesh(
+				new THREE.BoxGeometry( 500, 4, 100 ),
+				new THREE.MeshPhongMaterial( {color:'lightgreen'} )
+			);
+			ground.position.set( 0, -2, 0 );
+			ground.receiveShadow = true;
+			scene.add( ground );
+
+			var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+			
+			// обект 1
+			material = new THREE.MeshPhongMaterial( {color: 'gray', shininess: 50} );
+			object1 = new THREE.Mesh( geometry, material );
+				object1.position.set( 0, 15, 33 );
+				object1.castShadow = true;
+			scene.add( object1 );
+			
+			// обект 2
+			material = new THREE.MeshPhongMaterial( {color: 'gray', shininess: 50} );
+			object2 = new THREE.Mesh( geometry, material );
+				object2.position.set( 0, 15, 0 );
+				object2.castShadow = true;
+			scene.add( object2 );
+			
+			// обект 3
+			material = new THREE.MeshPhongMaterial( {color: 'gray', shininess: 50} );
+			object3 = new THREE.Mesh( geometry, material );
+				object3.position.set( 0, 15, -33 );
+				object3.castShadow = true;
+			scene.add( object3 );
+			
+			window.addEventListener( 'mousemove', onMouseMove, false );
+
+			var pos = 0;
+			function onMouseMove(event)
+			{
+				// относителна хоризонтална позиция на мишката
+				pos = event.clientX/window.innerWidth-0.5;
+			}
+			
+			function animate( )
+			{
+				scene.simulate( 1/20 );
+				
+				ground.rotation.z = THREE.Math.lerp( ground.rotation.z, pos, 0.1 );
+			}
+		</script>
+	</body>
+</html>
+
+

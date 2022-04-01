@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0602: Ветровит ден</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+
+			scene.background = new THREE.Color( 'navy' );
+			scene.remove( object );
+			
+			// земя
+			ground = new THREE.Mesh(
+				new THREE.BoxGeometry( 300, 4, 300 ),
+				new THREE.MeshPhongMaterial( {color:'lightgreen'} )
+			);
+			ground.position.set( 0, -2, 0 );
+			ground.receiveShadow = true;
+			scene.add( ground );
+
+			// два пилона с въже между тях
+			scene.add( pillar( new THREE.Vector3( -60, 70, 0 ), ground.material ) );
+			scene.add( pillar( new THREE.Vector3( +60, 70, 0 ), ground.material ) );
+			
+			var wire = new THREE.Mesh(
+				new THREE.CylinderGeometry( 1/3, 1/3, 120, 4, 1, true ),
+				new THREE.MeshPhongMaterial( {color:'black', shininess:100} )
+			);
+			wire.castShadow = true;
+			wire.position.y = 70;
+			wire.rotation.z = Math.PI/2;
+			scene.add( wire );
+			
+			
+			// пране 1
+			var geometry = new THREE.BoxGeometry( 20, 30, 1 ),
+				material = new THREE.MeshPhongMaterial( {color: 'white'} );
+				
+			laundry1 = new THREE.Mesh( geometry, material );
+				laundry1.position.set( -10, 55, 0 );
+				laundry1.castShadow = true;
+			scene.add( laundry1 );
+				
+			// пране 2
+			var geometry = new THREE.BoxGeometry( 20, 40, 1 ),
+				material = new THREE.MeshLambertMaterial( {color: 'tomato'} );
+				
+			laundry2 = new THREE.Mesh( geometry, material, 10 );
+				laundry2.position.set( -40, 50, 0 );
+				laundry2.castShadow = true;
+			scene.add( laundry2 );
+				
+			// пране 3
+			var geometry = new THREE.BoxGeometry( 40, 30, 1 ),
+				material = new THREE.MeshPhongMaterial( {color: 'cornflowerblue' });
+				
+			laundry3 = new THREE.Mesh( geometry, material, 10 );
+				laundry3.position.set( 30, 55, 0 );
+				laundry3.castShadow = true;
+			scene.add( laundry3 );
+			
+			function animate( t )
+			{
+				scene.simulate( 1/10 );
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

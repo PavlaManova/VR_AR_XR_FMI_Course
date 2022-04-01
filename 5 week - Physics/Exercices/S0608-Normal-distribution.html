@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0608: Нормално разпределение</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// светлина и сенки
+			renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.position.set( -150, 300, -50);
+			light.intensity = 0.8;
+			
+			light = light.clone();
+			light.intensity = 0.4;
+			light.castShadow = true;
+			scene.add( light );
+
+			scene.add( new THREE.AmbientLight( 'yellow', 0.2 ) );
+			scene.setGravity( new THREE.Vector3(0,-10,0) );
+			
+			camera.position.set(0,20,250);
+			camera.lookAt(new THREE.Vector3(0,30,0));
+			
+			
+			// прозрачен куб
+			var material = new THREE.MeshNormalMaterial({
+				transparent: true,
+				opacity: 0.3,
+				depthWrite: false,
+				depthTest: false
+			});
+
+			// долна страна
+			var geometry = new THREE.BoxGeometry( 210, 1, 20 );
+			var wall = new THREE.Mesh( geometry, material );
+				wall.position.set( 0, -100, 0 );
+				scene.add( wall );
+				
+			// лява страна
+			var geometry = new THREE.BoxGeometry( 1, 300, 12 );
+			var	wall = new THREE.Mesh( geometry, material );
+				wall.position.set( -105, 50, 0 );
+				scene.add( wall );
+				
+			// дясна страна
+			var	wall = new THREE.Mesh( geometry, material );
+				wall.position.set( 105, 50, 0 );
+				scene.add( wall );
+				
+			// предна страна
+			var geometry = new THREE.BoxGeometry( 210, 300, 1 );
+			var	wall = new THREE.Mesh( geometry, material );
+				wall.position.set( 0, 50, 4 );
+				scene.add( wall );
+				
+			// задна страна
+			var	wall = new THREE.Mesh( geometry, material );
+				wall.position.set( 0, 50, -4 );
+				scene.add( wall );
+				
+			var gap = 19.5;
+			
+			// деления отдолу
+			var geometry = new THREE.BoxGeometry( 12, 80, 12 );
+			for( var i=-4; i<=4; i++ )
+			{
+				var	bar = new THREE.Mesh( geometry, material );
+					bar.position.set( i*gap, -60, 0 );
+					scene.add( bar );
+			}
+			
+			// прегради
+			var geometry = new THREE.BoxGeometry( 5, 5, 10 );
+			var x0 = -4*gap, n=9;
+			for( var y=-10; n>=1; y+=16 )
+			{
+				for( var i=0; i<n; i++ )
+				{
+					var	bar = new THREE.Mesh( geometry, material );
+						bar.rotation.z = Math.PI/4;
+						bar.position.set( x0+i*gap, y, 0 );
+						scene.add( bar );
+				}
+				
+				n--;
+				x0 += gap/2;
+			}
+			
+			// топче
+			var geometry = new THREE.IcosahedronGeometry( 3.5, 3 ),
+				material = new THREE.MeshPhongMaterial( {color: 'crimson'} ),
+				ball = new THREE.Mesh( geometry, material, 1 );
+				ball.position.set( 0, 140, 0 );
+			scene.add( ball );
+			
+			function animate( t )
+			{
+				scene.simulate( 1/9 );
+				scene.rotation.y = t/2 + 0.5*Math.sin(t+Math.PI);
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0606: Махало</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+
+			scene.background = new THREE.Color( 'black' );
+			scene.remove( object );
+			spotLight.position.set( 50, 200, 50 );
+			
+			// по-добра позиция на камерата
+			camera.position.set( 0, 80, 250 );
+			camera.lookAt( new THREE.Vector3(0,30,0) );
+			
+			
+			// земя
+			ground = new THREE.Mesh(
+				new THREE.BoxGeometry( 300, 4, 300 ),
+				new THREE.MeshPhongMaterial( {color: 'lightgreen'} )
+			);
+			ground.position.set( 0, -2, 0 );
+			ground.receiveShadow = true;
+			scene.add( ground );
+
+			// два пилона с въже между тях
+			scene.add( pillar( new THREE.Vector3( -60, 90, 0 ), ground.material ) );
+			scene.add( pillar( new THREE.Vector3( +60, 90, 0 ), ground.material ) );
+			
+			var wire = new THREE.Mesh(
+				new THREE.CylinderGeometry( 1, 1, 120, 4, 1, true ),
+				new THREE.MeshPhongMaterial( {color:'gray', shininess:100} )
+			);
+			wire.castShadow = true;
+			wire.position.y = 90;
+			wire.rotation.z = Math.PI/2;
+			scene.add( wire );
+			
+			
+			// махало 1
+			var geometry = new THREE.BoxGeometry( 10, 30, 10 ),
+				material = new THREE.MeshPhongMaterial( {color: 'white'} );
+				
+			pendulum1 = new THREE.Mesh( geometry, material );
+				pendulum1.position.set( 0, 90, 0 );
+				pendulum1.castShadow = true;
+			var thread = new THREE.Mesh( new THREE.CylinderGeometry(0.5,0.5,40) );
+				thread.position.y = -20;
+				thread.castShadow = true;
+				pendulum1.add( thread );
+			var joint = new THREE.Mesh(
+				new THREE.CylinderGeometry( 3, 3, 8, 12 ),
+				material );
+				joint.castShadow = true;
+				joint.position.y = -40;
+				joint.rotation.z = Math.PI/2;
+				pendulum1.add( joint );
+
+			
+			// махало 2
+			var geometry = new THREE.SphereGeometry( 10 );
+				
+			pendulum2 = new THREE.Mesh( geometry, material );
+				pendulum2.position.set( 0, 0, 0 );
+				pendulum2.castShadow = true;
+			var thread = new THREE.Mesh( new THREE.CylinderGeometry(0.5,0.5,40) );
+				thread.position.y = 30;
+				thread.castShadow = true;
+				pendulum2.add( thread );
+								
+			scene.add( pendulum2 );
+			scene.add( pendulum1 );
+
+			function animate( t )
+			{
+				scene.simulate( 1/10 );
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0603: Накланяща се платформа</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+
+			// земя
+			scene.remove( ground );
+			ground = new THREE.Mesh(
+				new THREE.BoxGeometry( 400, 4, 40 ),
+				new THREE.MeshPhongMaterial( {color: 'gold'} )
+			);
+			ground.position.set( 0, -12, 0 );
+			ground.receiveShadow = true;
+			scene.add( ground );
+
+			// обект
+			scene.remove( object );
+			var geometry = new THREE.IcosahedronGeometry( 15, 2 ),
+				material = new THREE.MeshPhongMaterial( {color: 'navy', shininess: 150, flatShading: true} ),
+				object = new THREE.Mesh( geometry, material, 50 );
+				object.position.set( 0, 3, 0 );
+				object.castShadow = true;
+			scene.add( object );
+						
+			function animate()
+			{
+				scene.simulate( 1/10 );
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0610: Стрелба с чайници</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="TeapotGeometry.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			scene.remove( ground );
+			scene.remove( object );
+			
+			camera.position.set( 0, 50, 150 );
+			camera.lookAt( new THREE.Vector3(0,40,0) );
+			
+			// земя
+			ground = new Physijs.BoxMesh(
+				new THREE.BoxGeometry(200,4,100),
+				Physijs.createMaterial(new THREE.MeshPhongMaterial({color:'white'}),0.7,0.3),
+				0
+			);
+			ground.position.set( 0, -2, 0 );
+			ground.receiveShadow = true;
+			
+			scene.add( ground );
+
+			
+			// стена от кубчета
+			var geometry = new THREE.BoxGeometry( 15, 15, 15 );
+				
+			for( var x = -80; x<=80; x+=25 )
+			for( var y = 10; y<=360; y+=50 )
+			{
+				var material = Physijs.createMaterial(new THREE.MeshPhongMaterial({
+						color: new THREE.Color(
+							0.8+Math.random()/4,
+							0.8+Math.random()/4,
+							0.8+Math.random()/4
+						)}),1,0.2);
+
+				var box = new Physijs.BoxMesh( geometry, material, 1 );
+				box.rotation.set( 0, 2*Math.PI*Math.random(), 0 );
+				box.position.set( x+THREE.Math.randFloat(-2,2), y, 0 );
+				box.receiveShadow = true;
+				box.castShadow = true;
+				scene.add( box );
+			}
+			
+
+			// чайник
+			var teapotGeometry = new THREE.TeapotGeometry( 10, 5 );
+				teapotMaterial = new THREE.MeshPhongMaterial( {color: 'crimson', shininess: 150, side: THREE.DoubleSide} ),
+				teapot = new THREE.Mesh( teapotGeometry, teapotMaterial );
+				teapot.position.set( 0, 8, 30 );
+				teapot.receiveShadow = true;
+				teapot.castShadow = true;
+			scene.add( teapot );
+
+			function animate()
+			{
+				scene.simulate( 1/10 );
+			}
+		</script>
+	</body>
+</html>
+
+
