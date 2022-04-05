@@ -27,30 +27,39 @@
 			// розов фон
 			scene.background = new THREE.Color( 'pink' );
 
-			var tower = new THREE.Group();
-			var x =THREE.Math.randFloat(-40,40);
-			var z = THREE.Math.randFloat(-40,40);
-			var cubesCount = THREE.Math.randInt(3,11);
-
-			var cubeGeometry = new THREE.BoxGeometry(6,6,6);
-
-			for(var i=0;i<cubesCount;i++)
-			{
-				var material = new THREE.MeshPhongMaterial( {
-					color: new THREE.Color().setHSL( THREE.Math.randFloat(0,1), 1, 0.7 ),
-					shininess: 100,
-				} );
-
-				var cube = new THREE.Mesh(cubeGeometry, material);
-				cube.position.set(THREE.Math.randFloat(x-0.5,x+0.5),i*6-30,THREE.Math.randFloat(z-0.5,z+0.5));
-				cube.rotation.y=THREE.Math.randFloat(0,2*Math.PI);
-				tower.add(cube);
+			var towersCount = THREE.Math.randInt(7,10);
+			for(var i=0;i<towersCount;i++)
+		  {
+				createTower();
 			}
-			scene.add(tower);
 
 			function animate( t )
 			{
 				scene.rotation.set( 0, t, 0 );
+			}
+
+			function createTower()
+			{
+				var tower = new THREE.Group();
+				var x =THREE.Math.randFloat(-40,40);
+				var z = THREE.Math.randFloat(-40,40);
+				var cubesCount = THREE.Math.randInt(3,11);
+
+				var cubeGeometry = new THREE.BoxGeometry(6,6,6);
+
+				for(var i=0;i<cubesCount;i++)
+				{
+					var material = new THREE.MeshPhongMaterial( {
+						color: new THREE.Color().setHSL( THREE.Math.randFloat(0,1), 1, 0.7 ),
+						shininess: 100,
+					} );
+
+					var cube = new THREE.Mesh(cubeGeometry, material);
+					cube.position.set(THREE.Math.randFloat(x-0.5,x+0.5),i*6-30,THREE.Math.randFloat(z-0.5,z+0.5));
+					cube.rotation.y=THREE.Math.randFloat(0,2*Math.PI);
+					tower.add(cube);
+				}
+				scene.add(tower);
 			}
 		</script>
 	</body>
