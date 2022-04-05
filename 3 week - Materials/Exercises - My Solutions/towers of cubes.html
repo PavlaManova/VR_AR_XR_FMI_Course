@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0304: Кули от кубчета</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+
+			// платформа
+			var platform = new THREE.Mesh(
+				new THREE.BoxGeometry( 100, 4, 100 ),
+				new THREE.MeshPhongMaterial( {color:'white', shininess:20} )
+			);
+			platform.position.y = -35;
+			scene.add( platform );
+
+			// розов фон
+			scene.background = new THREE.Color( 'pink' );
+
+			var tower = new THREE.Group();
+			var x =THREE.Math.randFloat(-40,40);
+			var z = THREE.Math.randFloat(-40,40);
+			var cubesCount = THREE.Math.randInt(3,11);
+
+			var cubeGeometry = new THREE.BoxGeometry(6,6,6);
+
+			for(var i=0;i<cubesCount;i++)
+			{
+				var material = new THREE.MeshPhongMaterial( {
+					color: new THREE.Color().setHSL( THREE.Math.randFloat(0,1), 1, 0.7 ),
+					shininess: 100,
+				} );
+
+				var cube = new THREE.Mesh(cubeGeometry, material);
+				cube.position.set(THREE.Math.randFloat(x-0.5,x+0.5),i*6-30,THREE.Math.randFloat(z-0.5,z+0.5));
+				cube.rotation.y=THREE.Math.randFloat(0,2*Math.PI);
+				tower.add(cube);
+			}
+			scene.add(tower);
+
+			function animate( t )
+			{
+				scene.rotation.set( 0, t, 0 );
+			}
+		</script>
+	</body>
+</html>

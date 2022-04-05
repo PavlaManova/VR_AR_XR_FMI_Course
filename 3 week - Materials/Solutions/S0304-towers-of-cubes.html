@@ -4,33 +4,33 @@
 	<head>
 		<title>S0304: Кули от кубчета</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="stats.min.js"></script>
 		<script src="vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
 			vaxInit();
 
 			var geometry = new THREE.BoxGeometry( 6, 6, 6 );
-			
+
 			// функция за строеж на една кула
 			function buildTower()
 			{
 				// брой кубчета
 				var n = THREE.Math.randInt( 3, 10 );
-				
+
 				// позиция
 				var x = THREE.Math.randFloat( -40, 40 );
 				var z = THREE.Math.randFloat( -40, 40 );
-				
+
 				var tower = new THREE.Group();
 				scene.add( tower );
-			
+
 				// слагаме кубчетата едно по едно
 				for (var i=0; i<n; i++)
 				{
@@ -38,17 +38,17 @@
 						color: new THREE.Color().setHSL( THREE.Math.randFloat(0,1), 1, 0.7 ),
 						shininess: 100,
 					} );
-					
+
 					var cube = new THREE.Mesh( geometry, material );
 					cube.position.set( THREE.Math.randFloat(x-1,x+1), 6*i-30, THREE.Math.randFloat(z-1,z+1) );
 					cube.rotation.y = THREE.Math.randFloat( 0, 2*Math.PI );
 					tower.add( cube );
-				}			
+				}
 			}
-			
+
 			for (var j=0; j<10; j++)
 				buildTower();
-			
+
 			// платформа
 			var platform = new THREE.Mesh(
 				new THREE.BoxGeometry( 100, 4, 100 ),
@@ -56,14 +56,14 @@
 			);
 			platform.position.y = -35;
 			scene.add( platform );
-			
+
 			// розов фон
 			scene.background = new THREE.Color( 'pink' );
-			
+
 			// допълнителна розова светлина, по-силна от нормалното,
 			// така осветява в розово гърбовете на кубчетата
 			scene.add( new THREE.AmbientLight( 'deeppink', 1.5 ) );
-			
+
 			function animate( t )
 			{
 				scene.rotation.set( 0, t, 0 );
@@ -71,5 +71,3 @@
 		</script>
 	</body>
 </html>
-
-
