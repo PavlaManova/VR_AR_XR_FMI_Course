@@ -1,17 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html>
 	<head>
 		<title>S0603: Накланяща се платформа</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="physi.js"></script>
 		<script src="vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
 			vaxSceneInit();
@@ -20,7 +20,7 @@
 			scene.remove( ground );
 			ground = new THREE.Mesh(
 				new THREE.BoxGeometry( 400, 4, 40 ),
-				new THREE.MeshPhongMaterial( {color: 'gold'} )
+				new THREE.MeshPhongMaterial( {color: 'gold'} ),1,1,0
 			);
 			ground.position.set( 0, -12, 0 );
 			ground.receiveShadow = true;
@@ -28,13 +28,50 @@
 
 			// обект
 			scene.remove( object );
-			var geometry = new THREE.IcosahedronGeometry( 15, 2 ),
-				material = new THREE.MeshPhongMaterial( {color: 'navy', shininess: 150, flatShading: true} ),
+			var geometry = new THREE.IcosahedronGeometry( 15, 2 );
+			var material = new THREE.MeshPhongMaterial( {color: 'navy', shininess: 150, flatShading: true} ),
 				object = new THREE.Mesh( geometry, material, 50 );
 				object.position.set( 0, 3, 0 );
 				object.castShadow = true;
 			scene.add( object );
-						
+
+			window.addEventListener( 'mousedown', onMouseDown, false );
+			window.addEventListener( 'mousemove', onMouseMove, false );
+			window.addEventListener( 'mouseup', onMouseUp, false );
+			var mouseButton = 0; // кой клавиш е натиснат
+			var mouseX = 0; // координати на последна
+			var mouseY = 0; // ...позиция на мишката
+
+
+			function onMouseDown(event)
+			{
+				mouseButton = event.which;
+				mouseX = event.clientX;
+				mouseY = event.clientY;
+			}
+
+			// обработване на пускане на миши бутон
+			function onMouseUp(event)
+			{
+				mouseButton = false;
+			}
+
+			// обработване на местене на мишката
+			function onMouseMove(event)
+			{
+				if (!mouseButton) return; // ако не е натиснат бутон
+
+				// изчисляване колко се е преместила мишката
+				var dX = event.clientX-mouseX;
+				var dY = event.clientY-mouseY;
+
+				ground.rotation.set(0,0,Math.sin(dX)+Math.cos(dY));
+				// запомняме къде е мишката
+				mouseX = event.clientX;
+				mouseY = event.clientY;
+			}
+
+
 			function animate()
 			{
 				scene.simulate( 1/10 );
@@ -42,5 +79,3 @@
 		</script>
 	</body>
 </html>
-
-

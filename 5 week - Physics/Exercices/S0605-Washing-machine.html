@@ -4,14 +4,14 @@
 	<head>
 		<title>S0605: Пералня</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="physi.js"></script>
 		<script src="vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
 			vaxInit();
@@ -19,20 +19,20 @@
 			// по-добра позиция на камерата
 			camera.position.set( 0, 0, 350 );
 			camera.lookAt( new THREE.Vector3() );
-			
+
 			var material = new THREE.MeshNormalMaterial( {transparent:true, opacity:0.2} );
-			
+
 			// долна основа
 			var geometry = new THREE.CylinderGeometry( 150, 150, 2, 32 ),
 				ground = new THREE.Mesh( geometry, material );
 				ground.position.set( 0, -100, 0 );
 			scene.add( ground );
-				
+
 			// горна основа
 			var ground2 = new THREE.Mesh( geometry, material );
 				ground2.position.set( 0, 200, 0 );
 			ground.add( ground2 );
-				
+
 			// долна преграда
 			var geometry = new THREE.BoxGeometry( 280, 10, 2 ),
 				bar = new THREE.Mesh( geometry, material );
@@ -42,7 +42,7 @@
 				bar.position.set( 0, 10, 0 );
 				bar.rotation.y = Math.PI/2;
 			ground.add( bar );
-				
+
 			// ограничители
 			geometry = new THREE.BoxGeometry( 30, 200, 3 );
 			for( var i=0; i<20; i++)
@@ -53,32 +53,30 @@
 				barrier.rotation.set( 0, -angle+Math.PI/2, 0 );
 				ground.add( barrier );
 			}
-				
+
 			scene.add( ground );
-			
+
 			var geometry = new THREE.IcosahedronGeometry( 10 );
-				
+
 			for( var i=0; i<32; i++ )
 			{
 				var angle = (i+0.5)/32*2*Math.PI;
-				
+
 				var material = new THREE.MeshPhongMaterial({color:'cornflowerblue', shininess:100}),
 					ball = new THREE.Mesh( geometry, material, 1 );
-					ball.position.set( 110*Math.cos(angle), -87, 110*Math.sin(angle) );
+					ball.position.set( 110*Math.cos(angle), -100, 110*Math.sin(angle) );
 				material.color = new THREE.Color( ['crimson','seagreen','orange','cornflowerblue'][i>>3]);
 				scene.add( ball );
 			}
-			
+
 			var dRot = 0;
 			function animate( t )
 			{
 				scene.simulate( 1/10 );
-				
+
 				dRot += 0.1*Math.sin( t/5 );
 				ground.rotation.y = dRot;
 			}
 		</script>
 	</body>
 </html>
-
-

@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0401: Ръбовете на куб</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="tween.umd.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+
+			// полупрозрачен куб
+			var size = 55;
+
+			var cube = new THREE.Mesh(
+				new THREE.BoxGeometry( size, size, size ),
+				new THREE.MeshNormalMaterial( {transparent:true, opacity:0.1, side:THREE.DoubleSide, depthWrite: false} )
+			);
+			scene.add( cube );
+
+			// ръбове на куба като подобект на куба
+			var edges = new THREE.LineSegments(
+				new THREE.EdgesGeometry( cube.geometry ),
+				new THREE.LineBasicMaterial( {color:'black'} )
+			);
+			cube.add( edges );
+
+			// топче
+			var ball = new THREE.Mesh(
+				new THREE.SphereGeometry( 5 ),
+				new THREE.MeshStandardMaterial( {color:'orange', metalness:0, roughness:0} )
+			);
+			scene.add( ball );
+
+			var halfSide=size/2;
+
+			var A = ball.clone();
+			A.position.set(-halfSide,-halfSide,halfSide);
+			var B = ball.clone();
+			B.position.set(halfSide,-halfSide,halfSide);
+			var C = ball.clone();
+			C.position.set(halfSide,-halfSide,-halfSide);
+			var D = ball.clone();
+			D.position.set(-halfSide,-halfSide,-halfSide);
+			var A1 = ball.clone();
+			A1.position.set(-halfSide,halfSide,halfSide);
+			var B1 = ball.clone();
+			B1.position.set(halfSide,halfSide,halfSide);
+			var C1 = ball.clone();
+			C1.position.set(halfSide,halfSide,-halfSide);
+			var D1 = ball.clone();
+			D1.position.set(-halfSide,halfSide,-halfSide);
+
+			var fromAtoB =	new TWEEN.Tween(ball.position).to(B.position, 2000);
+			var fromAtoD = new TWEEN.Tween(ball.position).to(D.position,2000);
+			var fromAtoA1 = new TWEEN.Tween(ball.position).to(A1.position,2000);
+			var fromBtoC = new TWEEN.Tween(ball.position).to(C.position,2000);
+			var fromBtoB1 = new TWEEN.Tween(ball.position).to(B1.position,2000);
+			var fromBtoA = new TWEEN.Tween(ball.position).to(A.position,2000);
+			var fromCtoC1 = new TWEEN.Tween(ball.position).to(C1.position,2000);
+			var fromCtoB = new TWEEN.Tween(ball.position).to(B.position,2000);
+			var fromCtoD = new TWEEN.Tween(ball.position).to(D.position,2000);
+			var fromDtoC = new TWEEN.Tween(ball.position).to(C.position,2000);
+			var fromDtoA = new TWEEN.Tween(ball.position).to(A.position,2000);
+			var fromDtoD1 = new TWEEN.Tween(ball.position).to(D1.position,2000);
+
+			var fromA1toB1 =	new TWEEN.Tween(ball.position).to(B1.position, 2000);
+			var fromA1toD1 = new TWEEN.Tween(ball.position).to(D1.position,2000);
+			var fromA1toA = new TWEEN.Tween(ball.position).to(A.position,2000);
+			var fromB1toC1 = new TWEEN.Tween(ball.position).to(C1.position,2000);
+			var fromB1toB = new TWEEN.Tween(ball.position).to(B.position,2000);
+			var fromB1toA1 = new TWEEN.Tween(ball.position).to(A1.position,2000);
+			var fromC1toC = new TWEEN.Tween(ball.position).to(C.position,2000);
+			var fromC1toB1 = new TWEEN.Tween(ball.position).to(B1.position,2000);
+			var fromC1toD1 = new TWEEN.Tween(ball.position).to(D1.position,2000);
+			var fromD1toC1 = new TWEEN.Tween(ball.position).to(C1.position,2000);
+			var fromD1toA1 = new TWEEN.Tween(ball.position).to(A1.position,2000);
+			var fromD1toD = new TWEEN.Tween(ball.position).to(D.position,2000);
+
+			/*var optionsFromA = [fromAtoB, fromAtoD, fromAtoA1];
+			var optionsFromB = [fromBtoA, fromBtoC, fromBtoB1];
+			var optionsFromC = [fromCtoB, fromCtoD, fromCtoC1];
+			var optionsFromD = [fromDtoA, fromDtoC, fromDtoD1];
+
+			var optionsFromA1 = [fromA1toA, fromA1toB1, fromA1toD1];
+			var optionsFromB1 = [fromB1toA1, fromB1toC1, fromB1toB];
+			var optionsFromC1 = [fromC1toB1, fromC1toD1, fromC1toC];
+			var optionsFromD1 = [fromD1toA1, fromD1toC1, fromD1toD];*/
+
+
+			ball.position.copy(A.position);
+			fromAtoB.chain(fromBtoC);
+			fromBtoC.chain(fromCtoC1);
+			fromCtoC1.chain(fromC1toB1);
+			fromC1toB1.chain(fromB1toA1);
+			fromB1toA1.chain(fromA1toD1);
+			fromA1toD1.chain(fromD1toD);
+			fromD1toD.chain(fromDtoA);
+			fromDtoA.chain(fromAtoA1);
+			fromAtoA1.chain(fromA1toB1);
+			fromA1toB1.chain(fromB1toC1);
+			fromB1toC1.chain(fromC1toD1);
+			fromC1toD1.chain(fromD1toA1);
+			fromD1toA1.chain(fromA1toA);
+			fromA1toA.chain(fromAtoD);
+			fromAtoD.chain(fromDtoC);
+			fromDtoC.chain(fromCtoB);
+			fromCtoB.chain(fromBtoB1);
+			fromBtoB1.chain(fromB1toA1);
+			fromAtoD.start();
+
+
+
+			function animate( t )
+			{
+				// въртене на сцената
+				scene.rotation.set( t/11, t/9, t/7 );
+				TWEEN.update();
+			}
+		</script>
+	</body>
+</html>
