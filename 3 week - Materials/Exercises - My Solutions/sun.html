@@ -32,14 +32,33 @@
 						color:'yellow',
 						emissive: 'red',
 						emissiveIntensity: 0.5
-					})
-			var sun = new THREE.Mesh( geometry, material );
-			scene.add( sun );
+					});
+			var suns = [];
+			for(var i=0; i<40; i++)
+			{
+				var material2 = new THREE.MeshLambertMaterial({
+					color: new THREE.Color().setHSL( THREE.Math.randFloat(0.04,0.12), 1.5, 0.5 ),
+							emissive: 'orange',
+							emissiveIntensity: 0.5,
+							transparent: true,
+							opacity: 1-i/(40+2)
+						});
+				var help =new THREE.Mesh(
+					new THREE.IcosahedronGeometry( 40,1 ), material2);
+					help.position.set(2*Math.sin(i),2*Math.sin(i),0);
+
+					var s = 1+i/40/25;
+					help.scale.set( s, s, s );
+					scene.add(help);
+					suns[i]=help;
+			}
+
 
 			function animate( t )
 			{
 				// въртим цялото слънце
-				sun.rotation.set( 0, t/5, 0 );
+				for(var i=0;i<40;i++)
+				suns[i].rotation.set( t/3-i/2,t/3- i/5,t/3+ i/3 );
 			}
 		</script>
 	</body>
