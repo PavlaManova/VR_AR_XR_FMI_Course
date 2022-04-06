@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0307: Светлинен куб</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+
+			scene.background = new THREE.Color( 'black' );
+
+			// земя
+			var ground = new THREE.Mesh(
+				new THREE.CylinderGeometry( 160, 160, 1 ),
+				new THREE.MeshPhongMaterial({
+					color: 'indigo',
+					shininess: 100,
+				})
+			);
+			ground.position.y = -20;
+			scene.add( ground );
+
+
+			// кубът
+			var cube = new THREE.Mesh(
+				new THREE.BoxGeometry( 34, 34, 34 ),
+				new THREE.MeshPhongMaterial( {color: 'white', shininess: 20} )
+			);
+			cube.position.y = 20;
+			scene.add( cube );
+
+			// слагаме удобна гледна точка
+			camera.position.set( 100, 70, 0 );
+			camera.lookAt( scene.position );
+
+			//светлините ги слагаме върху втори куб - група от върховете му,
+			//, за да може и върховете на кубчето да се осветяват от светлините
+			var lights = new THREE.Group();
+			lights.position.y=20;
+			scene.add(lights);
+
+			var x=20;
+			var greenLight1 = new THREE.PointLight('green',2,50);
+			greenLight1.position.set(x,x,x);
+			lights.add(greenLight1);
+			var greenLight2 = greenLight1.clone();
+			greenLight2.position.set(-x,-x-x);
+			lights.add(greenLight2);
+
+			var redLight1 = new THREE.PointLight('red',2,50);
+			redLight1.position.set(-x,x,x);
+			lights.add(redLight1);
+			var redLight2 = redLight1.clone();
+			redLight2.position.set(x,-x,-x);
+			lights.add(redLight2);
+
+			var blueLight1 = new THREE.PointLight('blue',2,50);
+			blueLight1.position.set(-x,-x,x);
+			lights.add(blueLight1);
+			var blueLight2 = blueLight1.clone();
+			blueLight2.position.set(x,x,-x);
+			lights.add(blueLight2);
+
+			var yellowLight1 = new THREE.PointLight('yellow',2,50);
+			yellowLight1.position.set(x,-x,x);
+			lights.add(yellowLight1);
+			var yellowLight2 = yellowLight1.clone();
+			yellowLight2.position.set(-x,x,-x);
+			lights.add(yellowLight2);
+
+
+			scene.remove(light);
+
+			function animate( t )
+			{
+				scene.rotation.y = t/2;
+
+				// въртим куба
+				cube.rotation.set( t/4, t, t/3 );
+				lights.rotation.set( t/4, t, t/3 );
+			}
+		</script>
+	</body>
+</html>
