@@ -9,7 +9,6 @@
 
 		<script src="three.min.js"></script>
 		<script src="vax.js"></script>
-		<script src="tween.umd.js"></script>
 	</head>
 
 	<body>
@@ -44,13 +43,13 @@
 			ballB.position.x = -20;
 			scene.add( ballB )
 
-			var tweenA = new TWEEN.Tween(ballA.position).to(ballB.position,2000)
-									.easing(Math.cos(Math.PI/2));
-									tweenA.start();
-
 			function animate( t )
 			{
-				TWEEN.update();
+				ballA.position.setFromSphericalCoords(20,Math.PI/2,2*t);
+				ballB.position.setFromSphericalCoords(20,Math.PI/2,-2*t);
+
+				ballA.position.y=6*Math.pow(Math.cos(2*t),5);
+				ballB.position.y=6*Math.pow(-Math.cos(2*t),5);
 			}
 		</script>
 	</body>
