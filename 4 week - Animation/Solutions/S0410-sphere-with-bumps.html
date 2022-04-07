@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0410: Сфера с подутини</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			scene.background = new THREE.Color( 0x101010 );
+			scene.fog = new THREE.Fog( 0, 60, 90 );
+			
+			var n = 8;
+			
+			// начална сфера от доста детайлен икосаедър
+			var ground = new THREE.Mesh(
+				new THREE.IcosahedronGeometry( 40, 10 ),
+				new THREE.MeshPhongMaterial( {
+					color: 'lightgreen',
+					polygonOffset: true,
+					polygonOffsetFactor: 1,
+				} )
+			);
+			
+			// функция за подутина
+			function bump( x, y, z )
+			{
+				var k = 1+0.15*Math.sin( Math.sin(x/5+y/6)-Math.cos(y/7-z/5+x/10)+Math.sin(x*y/100-z/7));
+				return new THREE.Vector3( x*k, y*k, z*k );
+			}
+			
+			// достъп до координатите на всички върхове в геометрията
+			var pos = ground.geometry.getAttribute( 'position' );
+			for (var i=0; i<pos.count; i++)
+			{
+				// извличаме координатите на връх №i
+				var x = pos.getX(i);
+				var y = pos.getY(i);
+				var z = pos.getZ(i);
+				
+				// смятаме подутината
+				var v = bump( x, y, z );
+				
+				// записаме новите координати
+				pos.setXYZ( i, v.x, v.y, v.z );
+			}
+
+			// преизчисляваме норманите вектори
+			ground.geometry.computeVertexNormals();
+			scene.add( ground );
+			
+			// добавяне на черен контур около всяка плочка
+			var dots = new THREE.Mesh( ground.geometry, new THREE.MeshLambertMaterial( {color:'black', wireframe: true} ) );
+			ground.add( dots );
+			
+			
+
+			var n = 30; // брой топки
+			
+			var balls = [];
+			var alpha = [];
+			var beta = [];
+			var geometry = new THREE.IcosahedronGeometry( 2 );
+			var material = new THREE.MeshPhongMaterial( );
+			for( var i=0; i<n; i++ )
+			{
+				balls.push( new THREE.Mesh(	geometry, material ) );
+				alpha.push( THREE.Math.randFloat( 0, 2*Math.PI ) );
+				beta.push( THREE.Math.randFloat( 0, 2*Math.PI ) );
+			}
+			ground.add( ...balls );
+			
+			function animate( t )
+			{
+				// въртене на сцената
+				ground.rotation.x = t/5;
+				ground.rotation.y = t/9;
+				
+				// топчета
+				for( var i=0; i<n; i++ )
+				{
+					var p = balls[i].position;
+					
+					// точка по сфера
+					p.setFromSphericalCoords( 40, t/1.5+alpha[i], t/2+beta[i] );
+					
+					// точка по подута сфера
+					p = bump(p.x,p.y,p.z);
+					
+					// отместваме на 2, колкото е радиуса на топчето
+					p.setLength( p.length()+2 );
+					
+					// координатите му са вече готови
+					balls[i].position.copy( p );
+					balls[i].rotation.set( Math.random(), Math.random(), Math.random() );
+				}
+			}
+		</script>
+	</body>
+</html>
+
+

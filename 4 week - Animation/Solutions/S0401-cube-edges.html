@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0401: Ръбовете на куб</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// полупрозрачен куб
+			var size = 55;
+			var cube = new THREE.Mesh(
+				new THREE.BoxGeometry( size, size, size ),
+				new THREE.MeshNormalMaterial( {transparent:true, opacity:0.1, side:THREE.DoubleSide, depthWrite: false} )
+			);
+			scene.add( cube );
+
+			// ръбове на куба като подобект на куба
+			var edges = new THREE.LineSegments(
+				new THREE.EdgesGeometry( cube.geometry ),
+				new THREE.LineBasicMaterial( {color:'black'} )
+			);
+			cube.add( edges );
+			
+			// топче като подобект на куба
+			var ball = new THREE.Mesh(
+				new THREE.SphereGeometry( 5 ),
+				new THREE.MeshStandardMaterial( {color:'orange', metalness:0, roughness:0} )
+			);
+			ball.position.set( size/2, size/2, size/2 );
+			cube.add( ball );
+			
+			// брой стъпки и текуща стъпка на движението по ръб
+			const STEPS = 60;
+			var step = -1;
+			
+			// посока на движение x=0, y=1, z=2
+			var dir = THREE.Math.randInt(0,2);
+			var dirStep = size/STEPS;
+			
+			function animate( t )
+			{
+				// нова посока
+				if ( step%STEPS == 0 )
+				{
+					dir = (dir+THREE.Math.randInt(1,2))%3;
+					if ( ball.position.getComponent(dir)>0 )
+						dirStep = -Math.abs(dirStep)
+					else
+						dirStep = Math.abs(dirStep);
+				}
+				
+				// движение на топчето една стъпка по ръба
+				step++;
+				ball.position.setComponent( dir, ball.position.getComponent(dir)+dirStep );
+				
+				// въртене на куба и свързаните с него обекти - ръбовете и топчето
+				cube.rotation.set( t/11, t/9, t/7 );
+			}
+		</script>
+	</body>
+</html>
+
+

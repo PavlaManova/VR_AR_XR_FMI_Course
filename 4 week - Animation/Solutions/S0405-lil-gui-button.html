@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>С0405: lil-gui бутон</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			scene.add( new THREE.AmbientLight( 'yellow', 0.3 ) );
+			
+			// сцена със случайни сфери, запомнени в масива balls
+			var balls = [];
+			var geometry = new THREE.SphereGeometry( 8 );
+			for( var i=0; i<40; i++)
+			{
+				var material = new THREE.MeshPhongMaterial();
+				material.color = new THREE.Color( Math.random(), Math.random(), Math.random() );
+				
+				var ball = new THREE.Mesh( geometry, material );
+				ball.position.set( THREE.Math.randFloat(-40,40), THREE.Math.randFloat(-30,30), THREE.Math.randFloat(-40,40) );
+				
+				balls.push( ball );
+				scene.add( ball );
+			}
+			
+			// функция, която сменя цвета на всички топки
+			function recolor( color )
+			{
+				for( var i=0; i<balls.length; i++ )
+					balls[i].material.color = new THREE.Color( color );
+			}
+			
+			
+			// функция, която прави всички топки червени
+			function makeRed()
+			{
+				recolor( 'red' );
+			}
+			
+			// функция, която прави всички топки сини
+			function makeBlue()
+			{
+				recolor( 'blue' );
+			}
+			
+			// функция, която прави всички топки черни
+			function makeBlack()
+			{
+				recolor( 'black' );
+			}
+			
+			
+			// създаване на панел
+			var gui = new lil.GUI();
+			
+			var data = {
+				red: makeRed,
+				blue: makeBlue,
+				black: makeBlack
+			};
+			gui.add( data, 'red' ).name( 'Червено' );
+			gui.add( data, 'blue' ).name( 'Синьо' );
+			gui.add( data, 'black' ).name( 'Черно' );
+
+
+			
+			function animate( t )
+			{
+				scene.rotation.y = t;
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0408: Свободна разходка</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="FirstPersonControls.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+
+			camera.position.set( 100, 10, 100 );
+			camera.lookAt( new THREE.Vector3(0, 30, 0) );
+
+			// навигация
+			var control = new THREE.FirstPersonControls( camera, renderer.domElement );
+			control.lookSpeed = 0.2;
+			control.movementSpeed = 30;
+			control.lookVertical = false;
+			control.constrainVertical = true;
+				
+			// координати на началната точка на движението
+			var p = new THREE.Vector3( -50, 20, 0 );
+			
+			// координати на крайната точка на движението
+			var q = new THREE.Vector3( 50, 20, 0 );
+			
+			// два пилона 
+			scene.add( pillar(p,ground.material) );
+			scene.add( pillar(q,ground.material) );
+	
+			// и още няколко на случайни места
+			for( var i=0; i<10; i++)
+			{
+				scene.add( pillar(
+					new THREE.Vector3( THREE.Math.randFloat(-80,80), 10, THREE.Math.randFloat(-80,80) ),
+					ground.material
+				) );
+			}
+			
+			var oldT = 0;
+			function animate( t )
+			{
+				// движение по k
+				var k = 0.5+0.5*Math.sin(3*t);
+				object.position.lerpVectors( p, q, k );
+				camera.position.y = 10;	
+
+				// въртене на обекта
+				object.rotation.y = -5*t;
+	
+				// движение на гледната точка
+				control.update( t-oldT );
+				oldT = t;
+			}
+		</script>
+	</body>
+</html>
+
+

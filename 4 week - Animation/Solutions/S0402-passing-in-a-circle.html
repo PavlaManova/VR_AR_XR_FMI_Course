@@ -4,14 +4,13 @@
 	<head>
 		<title>S0402: Разминаване в кръг</title>
 		<meta charset="utf-8">
-
+		
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-
+		
 		<script src="three.min.js"></script>
 		<script src="vax.js"></script>
-		<script src="tween.umd.js"></script>
 	</head>
-
+	
 	<body>
 		<script>
 			vaxInit();
@@ -19,7 +18,7 @@
 			// фиксирана гледна точка
 			camera.position.set( 0, 20, 50 );
 			camera.lookAt( new THREE.Vector3(0,0,0) );
-
+	
 			// тракетория
 			var orbit = new THREE.Mesh(
 				new THREE.TorusGeometry( 20, 1, 32, 48 ),
@@ -27,31 +26,33 @@
 			);
 			orbit.rotation.x = Math.PI/2;
 			scene.add( orbit );
-
+			
 			// топче A
 			var ballA = new THREE.Mesh(
 				new THREE.SphereGeometry( 5 ),
 				new THREE.MeshLambertMaterial( {color: 'dodgerblue'} )
 			);
-			ballA.position.x = 20;
 			scene.add( ballA )
-
+			
 			// топче B
 			var ballB = new THREE.Mesh(
 				new THREE.SphereGeometry( 5 ),
 				new THREE.MeshLambertMaterial( {color: 'deeppink'} )
 			);
-			ballB.position.x = -20;
 			scene.add( ballB )
-
-			var tweenA = new TWEEN.Tween(ballA.position).to(ballB.position,2000)
-									.easing(Math.cos(Math.PI/2));
-									tweenA.start();
-
+			
+			
 			function animate( t )
 			{
-				TWEEN.update();
+				// движение в кръг в противоположни посоки
+				ballA.position.setFromSphericalCoords( 20, Math.PI/2, +2*t );
+				ballB.position.setFromSphericalCoords( 20, Math.PI/2, -2*t );
+				
+				ballA.position.y = 6*Math.pow( Math.cos( 2*t ), 9 );
+				ballB.position.y = 6*Math.pow( Math.cos( 2*t+Math.PI ), 9 );
 			}
 		</script>
 	</body>
 </html>
+
+

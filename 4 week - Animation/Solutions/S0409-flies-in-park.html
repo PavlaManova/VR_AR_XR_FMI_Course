@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0409: Мушички в парка</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// изключваме няколко светлини
+			scene.background = new THREE.Color( 'black' );
+			light.intensity = 0;
+			ambientLight.intensity = 0;
+
+			// правим втора прожекторна светлина, която не прави сянка
+			secondSpotLight = spotLight.clone();
+			secondSpotLight.angle = 0.6;
+			secondSpotLight.position.x = -40;
+			secondSpotLight.castShadow = false;
+			secondSpotLight.target = new THREE.Object3D();
+			secondSpotLight.target.position.set( -40, 0, 0 );
+			scene.add( secondSpotLight );
+			scene.add( secondSpotLight.target );
+
+			// и трета
+			thirdSpotLight = spotLight.clone();
+			thirdSpotLight.angle = 0.6;
+			thirdSpotLight.position.x = 40;
+			thirdSpotLight.castShadow = false;
+			thirdSpotLight.target = new THREE.Object3D();
+			thirdSpotLight.target.position.set( 40, 0, 0 );
+			scene.add( thirdSpotLight );
+			scene.add( thirdSpotLight.target );
+
+			// главната прожекторна светлина е слаба,
+			// за да са сенките достатъчно бледи
+			spotLight.shadow.radius = 4;
+			spotLight.intensity = 0.1;
+			
+			// две лампи
+			var lamp1 = new THREE.Mesh(
+				new THREE.SphereGeometry( 5 ),
+				new THREE.MeshLambertMaterial( {color:'yellow', emissive:'lightyellow', emissiveIntensity:0.5} )
+			);
+			lamp1.position.set( -40, 60, 0 );
+			scene.add( lamp1 );
+			
+			var lamp2 = lamp1.clone();
+			lamp2.position.x = 40;
+			scene.add( lamp2 );
+
+			// стълб на лампата
+			var lampPillar1 = pillar( lamp1.position, ground.material );
+			lampPillar1.scale.set( 0.5, 1, 0.5 );
+			scene.add( lampPillar1 );
+			
+			var lampPillar2 = pillar( lamp2.position, ground.material );
+			lampPillar2.scale.set( 0.5, 1, 0.5 );
+			scene.add( lampPillar2 );
+			
+			// мухи
+			scene.remove( object );
+			var n = 60; // брой мухи
+			var flies = [];
+			
+			// създаване на n мухи
+			for (var i=0; i<n; i++)
+			{
+				fly = new THREE.Mesh(
+					new THREE.IcosahedronGeometry( 0.4, 0 ),
+					new THREE.MeshLambertMaterial( {color:'yellow', emissive:'white', emissiveIntensity:0.5} )
+				);
+				fly.castShadow = true;
+				fly.offset = 2*Math.PI*Math.random();
+				flies.push( fly );
+				scene.add( fly );
+			}
+			
+			// Изчисляване на движението
+			pos1 = new THREE.Vector3();
+			pos2 = new THREE.Vector3();
+			
+			function animate( t )
+			{
+				
+				for (var i=0; i<n; i++)
+				{
+					fly = flies[i];
+					
+					var radius = 20+10*Math.sin(0.8*t+i*i);
+					var height = 60+10*Math.sin(2.1*t-i);
+					
+					// две позиции на мухата
+					pos1.setFromSphericalCoords( radius, Math.PI/2, 2*t+fly.offset );
+					pos2.setFromSphericalCoords( radius, Math.PI/2, 2*t+fly.offset );
+					
+					// едната е около едната лампа, другата - около другата
+					pos1.add( lamp1.position );
+					pos2.add( lamp2.position );
+					
+					// крайната позиция на муката е линейна комбинация между тези
+					// две позиции, по-долу синусът е от -1 до 2, като зоните
+					// извън [0,1] мухата лети около съответната лампа, а вътре в
+					// [0,1] лети между двете лампи
+					var k = THREE.Math.clamp( 1+3*Math.sin(t/2+i/40), 0, 1 );
+					fly.position.lerpVectors( pos1, pos2, k );
+					fly.position.y = height;
+				}
+				
+				scene.rotation.y = t/5;
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0407: Срамежливи пилони</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="tween.umd.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+
+			// k пилона в кръг
+			var k = 8; // брой пилони
+			var positions = [];
+			var pillars = [];
+			for( var i=0; i<k; i++)
+			{
+				positions[i] = new THREE.Vector3().setFromSphericalCoords( 80, Math.PI/2, 2*Math.PI*i/k );
+				positions[i].y = 50;
+
+				pillars[i] = pillar( positions[i], ground.material );
+				scene.add( pillars[i] );
+			}
+
+
+			var oldIndex = 0;
+				
+			function animate( t )
+			{
+				// актуализиране на пилоните
+				TWEEN.update();
+				
+				// индекс на пилона, който да се срамува
+				var index = Math.floor((t+0.15) / (2*Math.PI/k) ) % k;
+				
+				// ако не е последния засрамен, да почне да се срамува
+				if( index != oldIndex )
+				{
+					pillars[index].scale.y = 0.2;
+					new TWEEN.Tween( pillars[index].scale )
+						.to( new THREE.Vector3(1,1,1), 2000 )
+						.start();
+				}
+				
+				// въртене на сцената и на обекта
+				object.position.setFromSphericalCoords( 80, Math.PI/2, t ).setY( 50 );
+				object.rotation.y = t;
+				
+				scene.rotation.y = t/5;
+				oldIndex = index;
+			}
+		</script>
+	</body>
+</html>
+
+
