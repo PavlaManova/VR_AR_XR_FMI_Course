@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>С0309: Урбанистична планета</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="stats.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+
+			// включваме обработката на сенки
+			renderer.shadowMap.enabled = true;
+
+			// планета
+			var planet = new THREE.Mesh(
+				new THREE.SphereGeometry( 30, 60 ),
+				new THREE.MeshPhongMaterial( {color: 'brown'} )
+			);
+			//planet.rotation.y = 1;
+			planet.receiveShadow = true;
+			planet.castShadow = true;
+			scene.add( planet );
+
+			// мини-слънце
+			var sun = new THREE.Mesh(
+				new THREE.IcosahedronGeometry( 1.5, 1 ),
+				new THREE.MeshBasicMaterial( {color: 'gold'} )
+			);
+			sun.position.set( 10, 5, 70 );
+			scene.add( sun );
+
+			// сгради
+			var geometry = new THREE.BoxGeometry(2, 1, 2 );
+			var material = new THREE.MeshPhongMaterial({
+					color: 'silver',
+					shininess: 100,
+					emissive: new THREE.Color('blue'),
+					emissiveIntensity: 0.3,
+					transparent: true,
+					opacity: 0.7
+				});
+
+
+			var buildingsCount=30;
+			for(var i=0;i<buildingsCount;i++)
+			{
+					var building = new THREE.Mesh( geometry, material );
+					var scale = THREE.Math.randFloat(70,95);
+					building.scale.set(1,scale,1);
+					building.rotation.set(THREE.Math.randFloat(0,Math.PI*2),THREE.Math.randFloat(0,Math.PI*2),THREE.Math.randFloat(0,Math.PI*2));
+					building.receiveShadow=true;
+					building.castShadow=true;
+				  planet.add( building );
+			}
+			light.castShadow=true;
+
+			function animate( t )
+			{
+				sun.position.setFromSphericalCoords(60,Math.PI/3+t/2,Math.PI/10);
+				light.position.copy(sun.position);
+				planet.rotation.y=t/4;
+			}
+		</script>
+	</body>
+</html>
