@@ -62,6 +62,33 @@
 			}
 			light.castShadow=true;
 
+			/*for (var i=0; i<200; i++) // 200 май са достатъчно, а?
+			{
+				var scale = 2+1*Math.sin(i);
+				stars[i] = new THREE.Mesh( starGeometry, starMaterial );
+				stars[i].position.set( THREE.Math.randFloatSpread(2000), THREE.Math.randFloatSpread(1000), -800 );
+				stars[i].scale.set( scale, scale, scale );
+				scene.add( stars[i] );
+			}*/
+
+			//добавяне на звезди
+			var starGeometry = new THREE.RingGeometry(0,1,24);
+			var starMaterial = new THREE.MeshBasicMaterial();
+			var starsCount = 300;
+			var stars=[];
+			for(var i=0; i<starsCount; i++)
+			{
+				stars[i]=new THREE.Mesh(starGeometry,starMaterial);
+				var scale = THREE.Math.randFloat(0,2.5);
+				stars[i].scale.set(scale,scale,scale);
+
+				stars[i].position.set(THREE.Math.randFloat(-window.innerWidth,window.innerWidth),
+															THREE.Math.randFloat(-window.innerHeight,window.innerHeight),-800);
+				scene.add(stars[i]);
+			}
+
+			scene.background = new THREE.Color(0x000016);
+
 			function animate( t )
 			{
 				sun.position.setFromSphericalCoords(60,Math.PI/3+t/2,Math.PI/10);
