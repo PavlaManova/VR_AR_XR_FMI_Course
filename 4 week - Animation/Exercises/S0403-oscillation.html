@@ -4,48 +4,46 @@
 	<head>
 		<title>С0403: Осцилация</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="vax.js"></script>
 		<script src="tween.umd.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
-		
-			// ---------------------------------------------
-			// Тук е само началото на решението. Може да го
-			// ползвате, ако искате да си спестите писането
-			// на периферен код. Ако силно желаете да имате
-			// опит с Three.js, по-добре започнете начисто.
-			// ---------------------------------------------		
-		
 			vaxInit();
 
 			scene.add( new THREE.AmbientLight( 'yellow', 0.3 ) );
-			
+
 			// сцена със случайни сфери
 			var geometry = new THREE.SphereGeometry( 10 );
+			var group = new THREE.Group();
+			scene.add(group);
 			for( var i=0; i<40; i++)
 			{
 				var material = new THREE.MeshPhongMaterial();
 				material.color = new THREE.Color( Math.random(), Math.random(), Math.random() );
-				
+
 				var mesh = new THREE.Mesh( geometry, material );
 				mesh.position.set( THREE.Math.randFloat(-40,40), THREE.Math.randFloat(-30,30), THREE.Math.randFloat(-40,40) );
-				
-				scene.add( mesh );
+
+				group.add( mesh );
 			}
-			
-			
+
+			var tweenA = new TWEEN.Tween(group.position).to({angle:2},2000).easing(Tween.Easing.Queartic.InOut);
+			var tweenB = new TWEEN.Tween(group.position).to({angle:-2},2000).easing(Tween.Easing.Queartic.InOut);
+			tweenA.chain(tweenB);
+			tweenB.chain(tweenA);
+			tweenA.start();
+
 			function animate( t )
 			{
-				scene.rotation.y = t/5;
+				//scene.rotation.y = t/5;
+				TWEEN.update();
 			}
 		</script>
 	</body>
 </html>
-
-
