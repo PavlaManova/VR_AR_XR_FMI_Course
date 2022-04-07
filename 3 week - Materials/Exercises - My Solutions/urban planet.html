@@ -81,11 +81,11 @@
 				stars[i]=new THREE.Mesh(starGeometry,starMaterial);
 				var scale = THREE.Math.randFloat(0,2.5);
 				stars[i].scale.set(scale,scale,scale);
-
 				stars[i].position.set(THREE.Math.randFloat(-window.innerWidth,window.innerWidth),
 															THREE.Math.randFloat(-window.innerHeight,window.innerHeight),-800);
 				scene.add(stars[i]);
 			}
+			stars[0].material.side=THREE.FrontSide;
 
 			scene.background = new THREE.Color(0x000016);
 
@@ -94,6 +94,12 @@
 				sun.position.setFromSphericalCoords(60,Math.PI/3+t/2,Math.PI/10);
 				light.position.copy(sun.position);
 				planet.rotation.y=t/4;
+
+				//блещукане на звездите
+				for(var i=0;i<starsCount;i++)
+				{
+					stars[i].rotation.y=Math.sin(100*i+t);
+				}
 			}
 		</script>
 	</body>
