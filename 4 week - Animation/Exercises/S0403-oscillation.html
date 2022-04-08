@@ -33,8 +33,10 @@
 				group.add( mesh );
 			}
 
-			var tweenA = new TWEEN.Tween(group.position).to({angle:2},2000).easing(Tween.Easing.Queartic.InOut);
-			var tweenB = new TWEEN.Tween(group.position).to({angle:-2},2000).easing(Tween.Easing.Queartic.InOut);
+			var rotation ={angle: -2};
+			group.rotation.y = rotation.angle;
+			var tweenA = new TWEEN.Tween(rotation).to({angle:2},2000).easing(TWEEN.Easing.Quartic.InOut);
+			var tweenB = new TWEEN.Tween(rotation).to({angle:-2},2000).easing(TWEEN.Easing.Quartic.InOut);
 			tweenA.chain(tweenB);
 			tweenB.chain(tweenA);
 			tweenA.start();
@@ -42,6 +44,7 @@
 			function animate( t )
 			{
 				//scene.rotation.y = t/5;
+				group.rotation.y = rotation.angle;
 				TWEEN.update();
 			}
 		</script>
