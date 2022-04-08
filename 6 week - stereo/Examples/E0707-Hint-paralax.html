@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0707: Подсказка - паралакс</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// създаване на панел
+			var gui = new lil.GUI();
+			var data = {
+				rotation: false,
+			};
+			gui.add( data, 'rotation' ).name('Въртене');
+			
+			
+			// земя
+			var map = myTexture();
+				map.repeat.set( 4, 4 );
+			var ground = new THREE.Mesh(
+				new THREE.BoxGeometry( 1800, 10, 1800 ),
+				new THREE.MeshBasicMaterial( {map: map} )
+			);
+			scene.add( ground );
+			
+			// гледна точка
+			camera.position.set(0,250,200);
+			camera.lookAt( ground.position );
+
+			// два обекта
+			var map = map.clone();
+				map.repeat.set( 1/3, 1/3 );
+			var object = new THREE.Mesh(
+				new THREE.PlaneGeometry( 100, 100 ),
+				new THREE.MeshBasicMaterial( {map: map} )
+			);
+			object.rotation.x = -Math.PI/2;
+			object.position.set( 60, 100, 12 );
+			scene.add( object );
+
+			var map = map.clone();
+				map.repeat.set( 1/2, 1/2 );
+			var object = new THREE.Mesh(
+				new THREE.CircleGeometry( 80, 32 ),
+				new THREE.MeshBasicMaterial( {map: map} )
+			);
+			object.rotation.x = -Math.PI/2;
+			object.position.set( -100, 50, 50 );
+			scene.add( object );
+
+			
+			// създаване на текстура 
+			function myTexture()
+			{
+				var canvas = document.createElement('canvas'),
+				ctx = canvas.getContext('2d');
+				 
+				canvas.width = 256;
+				canvas.height = 256;
+				 
+		
+				for( var i=0; i<100000; i++ )
+				{
+					ctx.fillStyle = 'hsl(0,0%,'+(100*Math.random())+'%)';
+					ctx.fillRect( THREE.Math.randInt(0,255), THREE.Math.randInt(0,255), 1, 1 );
+				}
+				
+				var texture = new THREE.CanvasTexture(canvas);
+					texture.wrapS = THREE.RepeatWrapping;
+					texture.wrapT = THREE.RepeatWrapping;
+
+				return texture;
+			}
+			
+			function animate( t, dT )
+			{
+				if( data.rotation )
+					scene.rotation.y += dT/2;
+			}
+		</script>
+	</body>
+</html>
+
+

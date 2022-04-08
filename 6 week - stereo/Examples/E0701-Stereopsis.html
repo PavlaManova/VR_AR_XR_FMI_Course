@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0701: Стереопсис</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var geometry = new THREE.SphereGeometry( 30, 50, 50 ),
+				materialA = new THREE.MeshPhongMaterial( {color: 'cornflowerblue'} ),
+				materialB = new THREE.MeshPhongMaterial( {color: 'crimson'} );
+			
+			// обекти
+			object = new THREE.Mesh( geometry, materialB );
+			object.position.set( -80, 0, -80 );
+			scene.add( object );
+			
+			object = new THREE.Mesh( geometry, materialB );
+			object.position.set( 80, 0, -80 );
+			scene.add( object );
+				
+			var object = new THREE.Mesh( geometry, materialA );
+			scene.add( object );
+			
+
+			function animate( t )
+			{
+				// симулирано гледане с редуване на очите
+				if( Math.round(t*2)%2 )
+					camera.position.set( 20, 0, 100 ); // дясно око
+				else
+					camera.position.set( -20, 0, 100 ); // ляво око
+					
+				camera.lookAt( object.position );
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0706: Подсказка - текстура</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// създаване на панел
+			var gui = new lil.GUI();
+			var data = {
+				rotation: false,
+			};
+			gui.add( data, 'rotation' ).name('Въртене');
+			
+			
+			// земя
+			var map = myTexture();
+				map.repeat.set( 200, 200 );
+			var ground = new THREE.Mesh(
+				new THREE.BoxGeometry( 1800, 10, 1800 ),
+				new THREE.MeshBasicMaterial( {map: map} )
+			);
+			scene.add( ground );
+			
+			// гледна точка
+			camera.position.set(0,200,300);
+			camera.lookAt( ground.position );
+
+			// два обекта
+			var map = myTexture();
+				map.repeat.set( 11, 11 );
+			var object = new THREE.Mesh(
+				new THREE.BoxGeometry( 99, 99, 99 ),
+				new THREE.MeshBasicMaterial( {map: map} )
+			);
+			object.position.set( 105, 54, 12 );
+			scene.add( object );
+
+			var map = myTexture();
+				map.repeat.set( 70, 35 );
+			var object = new THREE.Mesh(
+				new THREE.SphereGeometry( 80, 50, 50 ),
+				new THREE.MeshBasicMaterial( {map: map} )
+			);
+			object.position.set( -160, 5, 50 );
+			scene.add( object );
+
+			
+			// създаване на текстура 
+			function myTexture()
+			{
+				var canvas = document.createElement('canvas'),
+				ctx = canvas.getContext('2d');
+				 
+				canvas.width = 8;
+				canvas.height = 8;
+				 
+				ctx.fillStyle = 'white';
+				ctx.fillRect( 0, 0, 8, 8 );
+				
+				ctx.strokeStyle = 'black';
+				ctx.strokeRect (0, 0, 10, 10 );
+				
+				var texture = new THREE.CanvasTexture(canvas);
+					texture.wrapS = THREE.RepeatWrapping;
+					texture.wrapT = THREE.RepeatWrapping;
+
+				return texture;
+			}
+			
+			// за удобство vax.js вече добавя и изминалото
+			// време dT от предходния генериран кадър
+			function animate( t, dT )
+			{
+				if( data.rotation )
+					scene.rotation.y += dT;
+			}
+		</script>
+	</body>
+</html>
+
+

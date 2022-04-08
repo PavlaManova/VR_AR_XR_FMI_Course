@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0708: Подсказка - припокриване</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			camera.position.set( 0, 0, 450 );
+
+			var geometry = new THREE.SphereGeometry( 30, 32, 24 );
+			
+			// обекти
+			for( var i=0; i<30; i++ )
+			{
+				material = new THREE.MeshBasicMaterial({
+					color: new THREE.Color( Math.random(), Math.random(), Math.random())
+				});
+				
+				var object = new THREE.Mesh( geometry, material );
+					object.scale.set( 0.6+0.4*Math.sin(i),  0.6+0.4*Math.sin(i),  0.6+0.4*Math.sin(i) );
+					object.position.setFromSphericalCoords( THREE.Math.randFloat(50,250), Math.PI/2, THREE.Math.randFloat(0,2*Math.PI) );
+				scene.add( object );
+			}
+			
+			function animate( t )
+			{
+				scene.rotation.y = t;
+			}
+		</script>
+	</body>
+</html>
+
+

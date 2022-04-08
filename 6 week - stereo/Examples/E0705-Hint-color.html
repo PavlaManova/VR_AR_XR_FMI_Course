@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0705: Подсказка - цвят</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			perspective = false;
+			vaxInit();
+
+			camera.position.set( 0, 0, 400 );
+
+			// мъгла
+			scene.fog = new THREE.Fog( 'white', 100, 800 );
+			
+			// обекти
+			var geometry = new THREE.SphereGeometry( 30 ),
+				material = new THREE.MeshBasicMaterial( {color: 'black'} );
+				
+			var object = new THREE.Mesh( geometry, material );
+			object.position.set( 250, 0, 0 );
+			scene.add( object );
+
+			object = object.clone();
+			object.position.set( -250, 0, 0 );
+			scene.add( object );
+			
+			function animate( t )
+			{
+				scene.rotation.y = t;
+			}
+		</script>
+	</body>
+</html>
+
+
