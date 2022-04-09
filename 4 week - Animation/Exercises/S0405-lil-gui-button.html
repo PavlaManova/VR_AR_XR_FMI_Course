@@ -4,28 +4,20 @@
 	<head>
 		<title>С0405: lil-gui бутон</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="lil-gui.umd.min.js"></script>
 		<script src="vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
-		
-			// ---------------------------------------------
-			// Тук е само началото на решението. Може да го
-			// ползвате, ако искате да си спестите писането
-			// на периферен код. Ако силно желаете да имате
-			// опит с Three.js, по-добре започнете начисто.
-			// ---------------------------------------------		
-		
 			vaxInit();
 
 			scene.add( new THREE.AmbientLight( 'yellow', 0.3 ) );
-			
+
 			// сцена със случайни сфери, запомнени в масива balls
 			var balls = [];
 			var geometry = new THREE.SphereGeometry( 8 );
@@ -33,24 +25,26 @@
 			{
 				var material = new THREE.MeshPhongMaterial();
 				material.color = new THREE.Color( Math.random(), Math.random(), Math.random() );
-				
+
 				var ball = new THREE.Mesh( geometry, material );
 				ball.position.set( THREE.Math.randFloat(-40,40), THREE.Math.randFloat(-30,30), THREE.Math.randFloat(-40,40) );
-				
+
 				balls.push( ball );
 				scene.add( ball );
 			}
-			
+
 			// създаване на панел
 			var gui = new lil.GUI();
-			
-			
+
+
 			function animate( t )
 			{
 				scene.rotation.y = t;
+				if(t>2)
+				{
+					balls[0].material.color.setHex(0xff0000);
+			}
 			}
 		</script>
 	</body>
 </html>
-
-
