@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0504: Въртящ се паралелепипед 2</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// паралелепипед
+			var object = new THREE.Mesh(
+				new THREE.BoxBufferGeometry( 20, 12, 6 ),
+				new THREE.MeshLambertMaterial( {color: 'tomato'} )
+			);
+			
+			// родителски обект
+			var parent = new THREE.Group();
+			scene.add( parent );
+			
+			// паралелепипедът е отместен
+			object.position.set( 0, 0, 60 );
+			
+			// паралелепипедът е дете, затова отместването
+			// е спрямо родителя, а не спрямо сцената
+			parent.add( object );
+			
+
+			function animate( t )
+			{
+				// движение по окръжност и въртене
+				parent.rotation.y = t;
+			}
+		</script>
+	</body>
+</html>
+
+

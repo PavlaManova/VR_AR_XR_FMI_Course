@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0510: Елемент на робот</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			scene.background = new THREE.Color( 'beige' );
+			
+			// геометрия и материал на елемент на робот
+			var robotGeometry = new THREE.BoxGeometry( 1, 1, 1 ),
+				robotMaterial = new THREE.MeshPhongMaterial( {color: 'tomato', shininess: 100} );
+				
+			// нагласяваме елемента да е с център (0,0,0) в долния край
+			robotGeometry.translate( 0, 0.5, 0 );
+			
+			// функция за елемент на робот
+			function robotElement( sizeX, sizeY, sizeZ, parent )
+			{
+				var object = new THREE.Mesh( robotGeometry, robotMaterial );
+				object.scale.set( sizeX, sizeY, sizeZ );
+					
+				// ако има родител, регистрира елемента като негов подобект
+				if( parent )
+				{
+					parent.add( object );
+				}
+				
+				return object;
+			}
+
+
+			// първи елемент на робот
+			var a = robotElement( 10, 25, 5 );
+			a.position.y = -40;
+			scene.add( a );
+			
+			
+			function animate( t )
+			{
+				a.rotation.x = Math.sin( t );
+			}
+		</script>
+	</body>
+</html>
+
+

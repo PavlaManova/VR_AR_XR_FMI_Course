@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0501: Планета с дървета</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			
+			// планета
+			var planet = new THREE.Mesh(
+				new THREE.SphereGeometry( 35 ),
+				new THREE.MeshLambertMaterial( {color: 'brown'} )
+			);
+			scene.add( planet );
+			
+
+			function animate( t )
+			{
+				// въртене на планетата
+				planet.rotation.y = t/2;
+			}
+		</script>
+	</body>
+</html>
+
+

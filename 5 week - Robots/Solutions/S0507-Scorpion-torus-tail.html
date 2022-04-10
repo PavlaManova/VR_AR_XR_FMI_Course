@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0507: Опашка на скорпион с тор</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			scene.remove( object );
+
+			// проба с елемент-конус
+			
+			// първи сегмент
+			var scorpion = [];
+			var size = 2; // размер
+			var geometry = new THREE.TorusGeometry( 6*size, 1*size, 16, 50 );
+			geometry.translate( 0, 6*size, 0 );
+			scorpion.push( robotElementShape( geometry, 12.5*size ) );
+			scorpion[0].rotation.z = -Math.PI/2;
+			scorpion[0].position.set( -20, 13, 50 );
+			scene.add( scorpion[0] );
+	
+			// още n-1 сегмента
+			var n = 40;
+			for( var i=1; i<n; i++ )
+			{
+				size *= 0.95;
+				var geometry = new THREE.TorusGeometry( 6*size, 1*size, 16-(i>>2), 50-(i>>1) );
+				geometry.translate( 0, 6*size, 0 );
+				scorpion.push( robotElementShape( geometry, 12.5*size, scorpion[i-1] ) );
+			}			
+			
+			function animate( t )
+			{
+				var angle = 0.27+0.27*Math.sin( t );
+				
+				// навиване на спирала
+				for( var i=1; i<n; i++ )
+					scorpion[i].rotation.z = angle;
+
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

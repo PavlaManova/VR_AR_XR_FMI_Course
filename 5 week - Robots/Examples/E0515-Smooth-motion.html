@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0515: Плавно движение</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			scene.background = new THREE.Color( 'beige' );
+			
+			// интерактивно контролиране на ъглите
+			var gui = new lil.GUI();
+			var pose = {
+				ax: 0,
+				ay: 0,
+				bx: 0,
+				cx: 0,
+				dx: 0,
+			};
+			gui.add( pose, 'ay', -360, 360 ).name('Въртене').step(1);
+			gui.add( pose, 'ax', -90, 90 ).name('Наклон №1').step(1);
+			gui.add( pose, 'bx', -160, 160 ).name('Наклон №2').step(1);
+			gui.add( pose, 'cx', -160, 160 ).name('Наклон №3').step(1);
+			gui.add( pose, 'dx', -160, 160 ).name('Наклон №4').step(1);
+			
+			
+			// елемент на робот
+			var robotMaterial = new THREE.MeshPhongMaterial( {color: 'tomato', shininess: 100} );
+				
+			// клас за елемент на робот
+			function robotElement( sizeX, sizeY, sizeZ, parent )
+			{
+				var robotGeometry = new THREE.BoxBufferGeometry( sizeX, sizeY, sizeZ );
+				robotGeometry.translate( 0, sizeY/2, 0 );
+				
+				var object = new THREE.Mesh( robotGeometry, robotMaterial );
+					
+				// ако има родител, регистрира елемента като негов подобект
+				if( parent )
+				{
+					object.position.set( 0, parent.geometry.parameters.height, 0 );
+					parent.add( object );
+				}
+				
+				return object;
+			}
+
+
+			// първи елемент на робот
+			var a = robotElement( 10, 25, 5 );
+			a.position.y = -40;
+			scene.add( a );
+
+			// втори елемент
+			var b = robotElement( 8, 20, 5, a );
+
+			// трети елемент
+			var c = robotElement( 7, 17, 4, b );
+
+			// четвърти елемент
+			var d = robotElement( 6, 15, 3, c );
+			
+			
+			function animate()
+			{
+				var k = 0.02;
+				
+				a.rotation.set(
+					THREE.Math.lerp( a.rotation.x, THREE.Math.degToRad(pose.ax), k ),
+					THREE.Math.lerp( a.rotation.y, THREE.Math.degToRad(pose.ay), k ),
+					0,
+					'YXZ'
+				);
+				b.rotation.x = THREE.Math.lerp( b.rotation.x, THREE.Math.degToRad(pose.bx), k );
+				c.rotation.x = THREE.Math.lerp( c.rotation.x, THREE.Math.degToRad(pose.cx), k );
+				d.rotation.x = THREE.Math.lerp( d.rotation.x, THREE.Math.degToRad(pose.dx), k );
+			}
+		</script>
+	</body>
+</html>
+
+

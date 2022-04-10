@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0508: Ротации и DOF=2</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// позиция
+			var p = new THREE.Vector3( 0, 50, 0 );
+			
+			// пилон
+			scene.add( pillar(p,ground.material) );
+			
+			// връзка
+			var group = new THREE.Group();
+			var wire = new THREE.Mesh(
+				new THREE.CylinderBufferGeometry( 1, 1, 50 ),
+				ground.material
+			);
+			wire.position.set( 0, 25, 0 );
+			wire.castShadow = true;
+			object.position.y = 50;
+			
+			group.position.y = 50;
+			group.add( wire, object );
+			scene.add( group );
+						
+	
+			function animate( t )
+			{
+				// движение на подвижната връзка
+				group.rotation.set( 1.2+1*Math.sin(7*t), t, 0, 'YXZ' );
+				
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0516: Щипци</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			scene.background = new THREE.Color( 'beige' );
+			
+			// интерактивно контролиране на ъглите
+			var gui = new lil.GUI();
+			var pose = {
+				ax: 0,
+				ay: 90,
+				bx: 0,
+				cx: 0,
+				t1: 0, // завъртяност
+				t2: 90, // разпереност
+				t3: 160, // отвореност
+			};
+			gui.add( pose, 'ay', -360, 360 ).name('Въртене').step(1);
+			gui.add( pose, 'ax', -90, 90 ).name('Наклон №1').step(1);
+			gui.add( pose, 'bx', -160, 160 ).name('Наклон №2').step(1);
+			gui.add( pose, 'cx', -160, 160 ).name('Наклон №3').step(1);
+			gui.add( pose, 't1', -360, 360 ).name('Завъртяност').step(1);
+			gui.add( pose, 't2', 20, 300 ).name('Разпереност').step(1);
+			gui.add( pose, 't3', 20, 180 ).name('Отвореност').step(1);
+			
+			
+			// елемент на робот
+			var robotMaterial = new THREE.MeshPhongMaterial( {color: 'tomato', shininess: 100} );
+				
+			// клас за елемент на робот
+			function robotElement( sizeX, sizeY, sizeZ, parent )
+			{
+				var robotGeometry = new THREE.BoxBufferGeometry( sizeX, sizeY, sizeZ );
+				robotGeometry.translate( 0, sizeY/2, 0 );
+				
+				var object = new THREE.Mesh( robotGeometry, robotMaterial );
+					
+				// ако има родител, регистрира елемента като негов подобект
+				if( parent )
+				{
+					object.position.set( 0, parent.geometry.parameters.height, 0 );
+					parent.add( object );
+				}
+				
+				return object;
+			}
+
+
+			// първи елемент на робот
+			var a = robotElement( 10, 25, 5 );
+			a.position.y = -40;
+			scene.add( a );
+
+			// втори елемент
+			var b = robotElement( 8, 20, 5, a );
+
+			// трети елемент
+			var c = robotElement( 7, 17, 4, b );
+
+			// единия клон на щипците
+			var d1 = robotElement( 6, 13, 3, c );
+			var e1 = robotElement( 6, 8, 2, d1 );
+			
+			// другия клон на щипците
+			var d2 = robotElement( 6, 13, 3, c );
+			var e2 = robotElement( 6, 8, 2, d2 );
+			
+			
+			function animate()
+			{
+				var k = 0.1;
+				
+				a.rotation.set(
+					THREE.Math.lerp( a.rotation.x, THREE.Math.degToRad(pose.ax), k ),
+					THREE.Math.lerp( a.rotation.y, THREE.Math.degToRad(pose.ay), k ),
+					0,
+					'YXZ'
+				);
+				b.rotation.x = THREE.Math.lerp( b.rotation.x, THREE.Math.degToRad(pose.bx), k );
+				c.rotation.x = THREE.Math.lerp( c.rotation.x, THREE.Math.degToRad(pose.cx), k );
+				
+				// разпереност
+				d1.rotation.set(
+					THREE.Math.lerp( d1.rotation.x, +THREE.Math.degToRad(pose.t2/2), k ),
+					THREE.Math.lerp( d1.rotation.y, THREE.Math.degToRad(pose.t1), k ),
+					0,
+					'YXZ'
+				);
+				d2.rotation.set(
+					THREE.Math.lerp( d2.rotation.x, -THREE.Math.degToRad(pose.t2/2), k ),
+					THREE.Math.lerp( d2.rotation.y, THREE.Math.degToRad(pose.t1), k ),
+					0,
+					'YXZ'
+				);
+				
+				// отвореност
+				e1.rotation.x = THREE.Math.lerp( e1.rotation.x, -THREE.Math.degToRad(180-pose.t3), k );
+				e2.rotation.x = THREE.Math.lerp( e2.rotation.x, +THREE.Math.degToRad(180-pose.t3), k );
+			}
+		</script>
+	</body>
+</html>
+
+

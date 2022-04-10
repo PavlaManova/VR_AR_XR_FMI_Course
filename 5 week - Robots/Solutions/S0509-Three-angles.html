@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0509: Три ъгъла</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// интерактивно контролиране на ъглите
+			var gui = new lil.GUI();
+			var angles = {
+				alpha: 0,
+				beta: 0,
+				gamma: 0
+			};
+			gui.add( angles, 'gamma', -360, 360 ).name('Хоризонтално').step(1);
+			gui.add( angles, 'beta', 0, 90 ).name('Вертикално').step(1);
+			gui.add( angles, 'alpha', -360, 300 ).name('Около оста').step(1);
+
+			// позиция
+			var p = new THREE.Vector3( 0, 30, 0 );
+			
+			// пилон
+			scene.add( pillar(p,ground.material) );
+			
+			// въртящ се обект
+			var group = new THREE.Group();
+			group.position.y = 30;
+			var innerGroup = new THREE.Group();
+			group.add( innerGroup );
+			scene.add( group );
+			
+			// връзка до пилона
+			var wire = new THREE.Mesh(
+				new THREE.CylinderGeometry( 1, 1, 50 ),
+				ground.material
+			);
+			wire.position.y = 25;
+			wire.castShadow = true;
+			
+			// позиция на обекта в групата (в края на връзката)
+			object.position.y = 50;
+			object.scale.set( 5, 0.2, 1 );
+			
+			// добавяме връзката и обекта към въртящия се обект
+			scene.remove( object );
+			innerGroup.add( wire, object );
+			
+	
+			function animate( t )
+			{
+				innerGroup.rotation.set(
+					0,
+					THREE.Math.lerp( innerGroup.rotation.y, THREE.Math.degToRad(angles.alpha), 0.2 ),
+					0
+				);
+				group.rotation.set(
+					THREE.Math.lerp( group.rotation.x, THREE.Math.degToRad(angles.beta), 0.2 ),
+					THREE.Math.lerp( group.rotation.y, THREE.Math.degToRad(angles.gamma), 0.2 ),
+					0,
+					'YXZ'
+				);
+			}
+		</script>
+	</body>
+</html>
+
+

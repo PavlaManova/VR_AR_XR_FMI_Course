@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0507: Транслации и DOF=2</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// позиции
+			var p = new THREE.Vector3( -50, 50, -50 );
+			var q = new THREE.Vector3( +50, 50, -50 );
+			var s = new THREE.Vector3( -50, 50, +50 );
+			var r = new THREE.Vector3( +50, 50, +50 );
+			
+			// пилони
+			scene.add( pillar(p,ground.material) );
+			scene.add( pillar(q,ground.material) );
+			scene.add( pillar(s,ground.material) );
+			scene.add( pillar(r,ground.material) );
+			
+			// връзка p-q
+			var wire = new THREE.Mesh(
+				new THREE.CylinderBufferGeometry( 1, 1, 100 ),
+				ground.material
+			);
+			wire.position.set( 0, 50, -50 );
+			wire.rotation.z = Math.PI/2;
+			wire.castShadow = true;
+			scene.add( wire );
+			
+			// връзка r-s
+			wire = wire.clone();
+			wire.position.z = 50;
+			scene.add( wire );
+			
+			// подвижна връзка
+			wire = wire.clone();
+			wire.position.set( 0, 50, 0 );
+			wire.rotation.x = -Math.PI/2;
+			wire.rotation.z = 0;
+			scene.add( wire );
+			
+	
+			function animate( t )
+			{
+				// движение на подвижната връзка
+				wire.position.x = THREE.Math.lerp( -50, 50, 0.5+0.45*Math.sin(t) );
+				
+				
+				// движение DOF=1
+				object.position.set(
+					wire.position.x,
+					50,
+					THREE.Math.lerp( -50, 50, 0.5+0.45*Math.cos(8*t) )
+				);
+				
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

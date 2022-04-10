@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0506: Опашка на скорпион</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			scene.remove( object );
+
+			// първи сегмент
+			var scorpion = [];
+			var size = 2; // размер
+			scorpion.push( robotElement( 1*size, 6*size, 8*size ) );
+			scorpion[0].rotation.z = -Math.PI/2;
+			scorpion[0].position.set( -50, 1, 50 );
+			scene.add( scorpion[0] );
+	
+			// още n-1 сегмента
+			var n = 40;
+			for( var i=1; i<n; i++ )
+			{
+				size *= 0.95;
+				scorpion.push( robotElement( 1*size, 6*size, 8*size, scorpion[i-1] ) );
+			}			
+			
+			function animate( t )
+			{
+				var angle = 0.3+0.3*Math.sin( t );
+				
+				// навиване на спирала
+				for( var i=1; i<n; i++ )
+					scorpion[i].rotation.z = angle;
+
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

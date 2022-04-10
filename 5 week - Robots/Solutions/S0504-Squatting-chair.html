@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0504: Клякащ стол</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			scene.remove( object );
+
+			// шарнир
+			var joint = new THREE.Mesh( new THREE.CylinderGeometry(3,3,6,24), new THREE.MeshPhongMaterial( {color:'black', shininess:200}) );
+			joint.rotation.x = Math.PI/2;
+			joint.position.y = 30;
+			
+			// седалка
+			var seat = robotElement( 60, 5, 60 );
+			seat.position.y = 60;
+			scene.add( seat );
+	
+			// първи крак
+			var legA1 = robotElement( 5, 30, 5, seat );
+			var legA2 = robotElement( 5, 30, 5, legA1 );
+			legA1.rotation.x = Math.PI;
+			legA1.position.set( 25, 0, 0 );
+	
+			// втори крак
+			var legB1 = robotElement( 5, 30, 5, seat );
+			var legB2 = robotElement( 5, 30, 5, legB1 );
+			legB1.rotation.x = Math.PI;
+			legB1.position.set( -25, 0, 0 );
+			
+			legA1.add( joint.clone() );
+			legA2.add( joint.clone() );
+			legB1.add( joint.clone() );
+			legB2.add( joint.clone() );
+			
+			function animate( t )
+			{
+				var angle = 0.5+0.5*Math.sin( 2*t );
+				
+				seat.position.y = 60*Math.cos( angle )+3;
+				
+				legA1.rotation.z = -angle;
+				legA2.rotation.z = 2*angle;
+				
+				legB1.rotation.z = angle;
+				legB2.rotation.z = -2*angle;
+				
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

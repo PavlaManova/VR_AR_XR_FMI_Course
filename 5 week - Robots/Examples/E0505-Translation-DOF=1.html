@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0505: Транслация и DOF=1</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// позиции
+			var p = new THREE.Vector3( -50, 50, 0 );
+			var q = new THREE.Vector3( +50, 50, 0 );
+			
+			// пилони
+			scene.add( pillar(p,ground.material) );
+			scene.add( pillar(q,ground.material) );
+			
+			// връзка
+			var wire = new THREE.Mesh(
+				new THREE.CylinderBufferGeometry( 1, 1, 100 ),
+				ground.material
+			);
+			wire.position.y = 50;
+			wire.rotation.z = Math.PI/2;
+			scene.add( wire );
+			
+	
+			function animate( t )
+			{
+				// движение DOF=1
+				object.position.lerpVectors( p, q, 0.5+0.5*Math.sin(t) );
+				
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

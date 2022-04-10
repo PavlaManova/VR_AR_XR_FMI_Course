@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0510: Кватерниони</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// интерактивно контролиране на ъглите
+			var gui = new lil.GUI();
+			var angles = {
+				alpha: 0,
+				beta: 0,
+				gamma: 0,
+				autoAlpha: false
+			};
+			gui.add( angles, 'gamma', -360, 360 ).name('Хоризонтално').step(1);
+			gui.add( angles, 'beta', -90, 90 ).name('Вертикално').step(1);
+			gui.add( angles, 'alpha', -360, 360 ).name('Около оста').step(1);
+			gui.add( angles, 'autoAlpha' ).name('Автоматично');
+		
+
+			// позиция
+			var p = new THREE.Vector3( 0, 30, 0 );
+			
+			// пилон
+			scene.add( pillar(p,ground.material) );
+			
+			// въртящ се обект
+			var group = new THREE.Group();
+			group.position.y = 30;
+			scene.add( group );
+			
+			// връзка до пилона
+			var wire = new THREE.Mesh(
+				new THREE.CylinderBufferGeometry( 1, 1, 50 ),
+				ground.material
+			);
+			wire.position.y = 25;
+			wire.castShadow = true;
+			
+			// позиция на обекта в групата (в края на връзката)
+			object.position.y = 50;
+			object.scale.set( 5, 0.2, 1 );
+			
+			scene.remove( object );
+			group.add( wire, object );
+			
+	
+			var q = new THREE.Quaternion();
+			
+			
+			var dAlpha = 0;
+			var axisX = new THREE.Vector3( 1, 0, 0 );
+			var axisY = new THREE.Vector3( 0, 1, 0 );
+			
+			function animate( t )
+			{
+				// нулираме кватерниона на групата - всеки път въртим наново
+				group.quaternion.set( 0, 1, 0, 0 );
+				
+				if( angles.autoAlpha )
+				{
+					dAlpha += 10;
+				}
+				
+				// освео въртене - въртим около Y за въртенето на самата перка
+				q.setFromAxisAngle( axisY, THREE.Math.degToRad(angles.alpha+dAlpha) );
+				group.applyQuaternion( q );
+
+				// вертикално въртене - въртим около X за наклона на групата
+				q.setFromAxisAngle( axisX, THREE.Math.degToRad(angles.beta) );
+				group.applyQuaternion( q );
+
+				// хоризонтално въртене - въртим пак около Y на групата около вертикала (т.е. Y)
+				q.setFromAxisAngle( axisY, THREE.Math.degToRad(angles.gamma) );
+				group.applyQuaternion( q );
+					
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

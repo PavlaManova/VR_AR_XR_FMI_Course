@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0503: DOF=2</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// позиция
+			var p = new THREE.Vector3( 0, 50, 0 );
+			
+			// пилон
+			scene.add( pillar(p,ground.material) );
+			
+			// първа връзка - върти се хоризонтално
+			var group1 = new THREE.Group();
+			var wire1 = new THREE.Mesh(
+				new THREE.CylinderGeometry( 1, 1, 50 ),
+				ground.material
+			);
+			wire1.position.set( 0, 25, 0 );
+			wire1.castShadow = true;
+			group1.add( wire1 );
+			group1.position.y = 50;
+			scene.add( group1 );
+			
+			// втора връзка в края на първата
+			// оставям на вас
+
+			object.position.y = 50;
+			group1.add( object );
+						
+	
+			function animate( t )
+			{
+				// движение на подвижната връзка
+				group1.rotation.set( Math.PI/2, t, 0, 'YXZ' );
+				
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

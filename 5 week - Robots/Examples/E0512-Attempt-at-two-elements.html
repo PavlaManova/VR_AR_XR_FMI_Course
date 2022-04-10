@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0512: Опит за два елемента</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			scene.background = new THREE.Color( 'beige' );
+			
+			// интерактивно контролиране на ъглите
+			var gui = new lil.GUI();
+			var pose = {
+				ax: 0,
+				ay: 0,
+				bx: 0,
+			};
+			var guip = gui.addFolder('Елемент A');
+			guip.add( pose, 'ax', -90, 90 ).name('Ротация около X').step(1);
+			guip.add( pose, 'ay', -360, 360 ).name('Ротация около Y').step(1);
+			var guip = gui.addFolder('Елемент B');
+			guip.add( pose, 'bx', -90, 90 ).name('Ротация около X').step(1);
+			
+			
+			// геометрия и материал на елемент на робот
+			var robotGeometry = new THREE.BoxBufferGeometry( 1, 1, 1 ),
+				robotMaterial = new THREE.MeshPhongMaterial( {color: 'tomato', shininess: 100} );
+				
+			// нагласяваме елемента да е с център (0,0,0) в долния край
+			robotGeometry.translate( 0, 0.5, 0 );
+			
+			// функция за елемент на робот
+			function robotElement( sizeX, sizeY, sizeZ, parent )
+			{
+				var object = new THREE.Mesh( robotGeometry, robotMaterial );
+				object.scale.set( sizeX, sizeY, sizeZ );
+					
+				// ако има родител, регистрира елемента като негов подобект
+				if( parent )
+				{
+					parent.add( object );
+				}
+				
+				return object;
+			}
+
+
+			// първи елемент на робот
+			var a = robotElement( 10, 25, 5 );
+			a.position.y = -40;
+			scene.add( a );
+
+			// втори елемент
+			var b = robotElement( 8, 20, 5, a );
+			
+			
+			function animate()
+			{
+				a.rotation.set(
+					THREE.Math.degToRad(pose.ax),
+					THREE.Math.degToRad(pose.ay),
+					0
+				);
+				b.rotation.set(
+					THREE.Math.degToRad(pose.bx),
+					0,
+					0
+				);
+			}
+		</script>
+	</body>
+</html>
+
+

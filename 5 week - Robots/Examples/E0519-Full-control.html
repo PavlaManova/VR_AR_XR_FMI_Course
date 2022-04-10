@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0519: Пълен контрол</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="lil-gui.umd.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			scene.remove( object );
+			
+			scene.background = new THREE.Color( 'beige' );
+			
+			// пилони
+			var p = pillar( new THREE.Vector3(0,30,50), new THREE.MeshPhongMaterial({color:'white'}) );
+			p.scale.y = 0.75;
+			scene.add( p );
+			var p = pillar( new THREE.Vector3(0,30,-50), new THREE.MeshPhongMaterial({color:'gold'}) );
+			p.scale.y = 1;
+			scene.add( p );
+			var p = pillar( new THREE.Vector3(50,30,0), new THREE.MeshPhongMaterial({color:'cornflowerblue'}) );
+			p.scale.y = 1.25;
+			scene.add( p );
+			var p = pillar( new THREE.Vector3(-50,30,0), new THREE.MeshPhongMaterial({color:'hotpink'}) );
+			p.scale.y = 0.5;
+			scene.add( p );
+				
+			
+			// интерактивно контролиране на ъглите
+			var gui = new lil.GUI();
+			var cmd = {
+				s: 0, // сцена
+			};
+			gui.add( cmd, 's', -360, 360 ).name('Сцена').step(1);
+			gui.open();
+			
+			var pose0 =  [  0,   0,   0,   0,   0,  180, 120 ];
+			var pose  =  [  45, -45,   45,   45,   0,  90, 160 ];
+			var poses = [ [   0, -14,  -39,  -50, -81,  65, 117 ],
+						  [  90, -49,   23, -105, -81,  95,  92 ],
+						  [ 180,  -7, -100,   23, -81,  62, 115 ],
+						  [ 270, -47,  -43,   61, -81, 117,  72 ]
+						 ];
+			
+			// елемент на робот
+			var robotMaterial = new THREE.MeshPhongMaterial( {color: 'tomato', shininess: 100} );
+				
+			// клас за елемент на робот
+			function robotElement( sizeX, sizeY, sizeZ, parent )
+			{
+				var robotGeometry = new THREE.BoxBufferGeometry( sizeX, sizeY, sizeZ );
+				robotGeometry.translate( 0, sizeY/2, 0 );
+				
+				var object = new THREE.Mesh( robotGeometry, robotMaterial );
+				object.castShadow = true;
+					
+				// ако има родител, регистрира елемента като негов подобект
+				if( parent )
+				{
+					object.position.set( 0, parent.geometry.parameters.height, 0 );
+					parent.add( object );
+				}
+				
+				return object;
+			}
+
+
+			// първи елемент на робот
+			var a = robotElement( 10, 25, 5 );
+			a.position.y = 0;
+			scene.add( a );
+
+			// втори елемент
+			var b = robotElement( 8, 20, 5, a );
+
+			// трети елемент
+			var c = robotElement( 7, 17, 4, b );
+
+			// единия клон на щипците
+			var d1 = robotElement( 6, 13, 3, c );
+			var e1 = robotElement( 6, 8, 2, d1 );
+			
+			// другия клон на щипците
+			var d2 = robotElement( 6, 13, 3, c );
+			var e2 = robotElement( 6, 8, 2, d2 );
+			
+
+			var fromTime = -10,
+				toTime = -10,
+				fromIndex = 0,
+				toIndex = 0;
+			
+			function animate( t )
+			{
+				scene.rotation.y = THREE.Math.degToRad(cmd.s);
+
+				// дали сме във фаза на избор на ново движение?
+				if( toTime <= t )
+				{
+					// начало на движение
+					fromTime = t;
+					fromIndex = toIndex;
+					
+					// край на движение след 2 до 3 секунди
+					toTime = t + THREE.Math.randFloat( 2, 3 );
+					
+					// следващ индекс на поза
+					toIndex += THREE.Math.randInt( 1, 3 );
+					toIndex = toIndex%4;
+				}
+				
+				
+				// дали сме във фаза на движение?
+				if( fromTime<=t && t<=toTime )
+				{
+					// коефициент за преход между една поза и друга поза
+					var k = (t-fromTime)/(toTime-fromTime);
+					
+					// косинусова гърбица
+					var k2 = 0.5+0.5*Math.cos( k*2*Math.PI-Math.PI );
+					
+					k = k*k;
+					for( var i=0; i<7; i++)	
+						pose[i] = THREE.Math.lerp( pose[i], poses[toIndex][i], k );
+					
+					for( var i=1; i<7; i++)	
+						pose[i] = THREE.Math.lerp( pose[i], pose0[i], k2 );
+					
+					a.rotation.set(
+						THREE.Math.degToRad(pose[1]),
+						THREE.Math.degToRad(pose[0]),
+						0,
+						'YXZ'
+					);
+					
+					b.rotation.x = THREE.Math.degToRad(pose[2]);
+					c.rotation.x = THREE.Math.degToRad(pose[3]);
+					
+					// разпереност
+					d1.rotation.set(
+						THREE.Math.degToRad(pose[5]/2),
+						THREE.Math.degToRad(pose[4]),
+						0,
+						'YXZ'
+					);
+					d2.rotation.set(
+						-THREE.Math.degToRad(pose[5]/2),
+						THREE.Math.degToRad(pose[4]),
+						0,
+						'YXZ'
+					);
+					
+					// отвореност
+					e1.rotation.x = -THREE.Math.degToRad(180-pose[6]);
+					e2.rotation.x = +THREE.Math.degToRad(180-pose[6]);
+				}
+			}
+		</script>
+	</body>
+</html>
+
+

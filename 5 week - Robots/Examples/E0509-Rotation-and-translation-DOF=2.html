@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0509: Ротация и транслация и DOF=2</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			// позиция
+			var p = new THREE.Vector3( 0, 50, 0 );
+			
+			// пилон
+			var q = pillar(p,ground.material);
+			scene.add( q );
+			
+			// въртящ се обект
+			var group = new THREE.Group();
+			group.position.y = 50;
+			scene.add( group );
+			
+			// връзка до пилона
+			var wire = new THREE.Mesh(
+				new THREE.CylinderBufferGeometry( 1, 1, 50 ),
+				ground.material
+			);
+			wire.position.x = 25;
+			wire.rotation.z = Math.PI/2;
+			
+			// позиция на обекта в групата (в края на връзката)
+			object.position.x = 50;
+			
+			// добавяме връзката и обекта към въртящия се обект
+			scene.remove( object );
+			group.add( wire, object );
+			
+	
+			function animate( t )
+			{
+				// движение DOF=1
+				group.rotation.y = -13*t;
+				group.position.y = 40+30*Math.sin(t);
+				
+				q.scale.y = group.position.y/50;
+				
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+
