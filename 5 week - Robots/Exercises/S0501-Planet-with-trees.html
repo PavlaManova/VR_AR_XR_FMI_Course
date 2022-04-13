@@ -4,25 +4,53 @@
 	<head>
 		<title>S0501: Планета с дървета</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
 			vaxInit();
 
-			
+
 			// планета
 			var planet = new THREE.Mesh(
 				new THREE.SphereGeometry( 35 ),
 				new THREE.MeshLambertMaterial( {color: 'brown'} )
 			);
 			scene.add( planet );
-			
+
+			var tree = new THREE.Group();
+			//scene.add(tree);
+			var crownGeometry = new THREE.IcosahedronGeometry(5,0);
+			var crownMaterial = new THREE.MeshLambertMaterial({color:'green'});
+			var crown = new THREE.Mesh(crownGeometry,crownMaterial);
+			tree.add(crown);
+
+			var stemGeometry = new THREE.CylinderGeometry(1,2.5,10,20,20);
+			var stemMaterial = new THREE.MeshLambertMaterial({color:'brown'});
+			var stem = new THREE.Mesh(stemGeometry, stemMaterial);
+			tree.add(stem);
+			stem.position.y-=7,5;
+			var groupTree = new THREE.Group();
+			groupTree.add(tree);
+			tree.position.y=45;
+			scene.add(groupTree);
+			var tree2 = tree.clone();
+			tree2.position.y = -45;
+			tree2.rotation.set(0,0,Math.PI);
+			groupTree.add(tree2);
+
+			var treesCount = THREE.Math.randInt(20,40);
+			for(var i=0; i<treesCount; i++)
+			{
+				var treeN = groupTree.clone();
+				treeN.rotation.set(THREE.Math.randFloat(0,2*Math.PI),THREE.Math.randFloat(0,2*Math.PI),THREE.Math.randFloat(0,2*Math.PI));
+				planet.add(treeN);
+			}
 
 			function animate( t )
 			{
@@ -32,5 +60,3 @@
 		</script>
 	</body>
 </html>
-
-
