@@ -1,12 +1,76 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
-<head>
-	<meta charset="utf-8">
-</head>
+<html>
+	<head>
+		<title>S0504: Клякащ стол</title>
+		<meta charset="utf-8">
 
-<body>
-	Еко. Спестявам прехвърлянето
-	на код, който вече го имате.
-</body>
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxSceneInit();
+			scene.remove( object );
+
+			// шарнир
+			var joint = new THREE.Mesh( new THREE.CylinderGeometry(3,3,6,24), new THREE.MeshPhongMaterial( {color:'black', shininess:200}) );
+			joint.rotation.x = Math.PI/2;
+			joint.position.y = 30;
+
+			// седалка
+			var seat = robotElement( 60, 5, 60 );
+			seat.position.y = 60;
+			scene.add( seat );
+
+			// първи крак
+			var legA1 = robotElement( 5, 30, 5, seat );
+			var legA2 = robotElement( 5, 30, 5, legA1 );
+			legA1.rotation.x = Math.PI;
+			legA1.position.set( 25, 0, 0 );
+
+			// втори крак
+			var legB1 = robotElement( 5, 30, 5, seat );
+			var legB2 = robotElement( 5, 30, 5, legB1 );
+			legB1.rotation.x = Math.PI;
+			legB1.position.set( -25, 0, 0 );
+
+			legA1.add( joint.clone() );
+			legA2.add( joint.clone() );
+			legB1.add( joint.clone() );
+			legB2.add( joint.clone() );
+
+			function animate( t )
+			{
+				var c = Math.sin(Math.PI*5/12)
+				var phi = c/2+c/2*Math.sin(2*t);
+				var vibe =0;
+				//var y = 30+60*Math.abs(Math.cos( 3*t ));
+				//alert(y);
+				var y=80-1.5*Math.sqrt(1800*(1-Math.cos(phi/2)))
+				if(y>78)
+				{
+					vibe = (y-0)/370;
+					vibe *= vibe;
+					legA1.rotation.z= -phi/2- vibe*Math.sin(60*t);
+					legB1.rotation.z= phi/2+ vibe*Math.sin(60*t);
+			  }
+				else{
+					legA1.rotation.z= -phi/2;
+					legB1.rotation.z= phi/2;
+				}
 
 
+				legA2.rotation.z= phi;
+				legB2.rotation.z= -phi;
+
+				seat.position.y = 80-1.5*Math.sqrt(1800*(1-Math.cos(phi/2)));
+
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
