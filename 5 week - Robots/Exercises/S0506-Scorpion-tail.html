@@ -4,13 +4,13 @@
 	<head>
 		<title>S0506: Опашка на скорпион</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
 			vaxSceneInit();
@@ -22,13 +22,31 @@
 			scorpion.rotation.z = -Math.PI/2;
 			scorpion.position.set( -50, 1, 50 );
 			scene.add( scorpion );
-			
+
+			var partsCount = 50;
+			var previousPart = scorpion;
+			var parts =[];
+			parts[0]=scorpion;
+			for( var i=0; i<partsCount; i++)
+			{
+				size*=0.95;
+				var scorpionN = robotElement( 1*size, 6*size, 8*size, previousPart );
+				previousPart=scorpionN;
+				parts[i+1] = scorpionN;
+			}
+
+
 			function animate( t )
 			{
+				//ограничаваме ъгъла на въртене да е от 0 до 45 градуса (0,8 радиана)
+				//много е 45 градуса намаляваме до 0,6 радиана
+				var phi = 0.3 + 0.3*Math.sin(t);
 				scene.rotation.y = t/10;
+				for(var i=1; i<partsCount+1; i++)
+				{
+				 parts[i].rotation.z =phi;
+			 }
 			}
 		</script>
 	</body>
 </html>
-
-
