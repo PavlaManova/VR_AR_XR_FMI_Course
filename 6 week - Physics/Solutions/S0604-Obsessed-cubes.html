@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0604: Обсебени кубчета</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// светлина и сенки
+			renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.castShadow = true;
+
+			scene.add( new THREE.AmbientLight( 'yellow', 0.3 ) );
+			
+			camera.position.set( 0, 20, 350 );
+			//camera.lookAt( new THREE.Vector3() );
+			
+			
+			// прозрачен куб
+			var geometry = new THREE.BoxGeometry( 200, 1, 200 ),
+				material = Physijs.createMaterial( new THREE.MeshNormalMaterial({transparent:true, opacity:0.2}), 0.3, 0 );
+
+			// долна страна
+			var cube = new Physijs.BoxMesh( geometry, material, 0 );
+				cube.position.set( 0, -100, 0 );
+				
+			// горна страна
+			var	side = new Physijs.BoxMesh( geometry, material, 0 );
+				side.position.set( 0, 200, 0 );
+				cube.add( side );
+				
+			// лява страна
+			var	side = new Physijs.BoxMesh( geometry, material, 0 );
+				side.position.set( -100, 100, 0 );
+				side.rotation.z = Math.PI/2;
+				cube.add( side );
+				
+			// дясна страна
+			var	side = new Physijs.BoxMesh( geometry, material, 0 );
+				side.position.set( 100, 100, 0 );
+				side.rotation.z = Math.PI/2;
+				cube.add( side );
+				
+			// предна страна
+			var	side = new Physijs.BoxMesh( geometry, material, 0 );
+				side.position.set( 0, 100, 100 );
+				side.rotation.x = Math.PI/2;
+				cube.add( side );
+				
+			// задна страна
+			var	side = new Physijs.BoxMesh( geometry, material, 0 );
+				side.position.set( 0, 100, -100 );
+				side.rotation.x = Math.PI/2;
+				cube.add( side );
+				
+			scene.add( cube );
+			
+			// кубчета
+			var geometry = new THREE.BoxGeometry( 30, 30, 30 );
+				
+			var cubes = [];
+			for( var i=0; i<10; i++ )
+			{
+				var material = Physijs.createMaterial( new THREE.MeshLambertMaterial({
+					color:'orange'}), 1, 0.5 );
+				var cube = new Physijs.BoxMesh( geometry, material );
+					cube.position.set( THREE.Math.randFloat(-60,60), THREE.Math.randFloat(-60,60), THREE.Math.randFloat(-60,60) );
+					cube.receiveShadow = true;
+					cube.castShadow = true;
+				cubes.push( cube );
+				scene.add( cube );
+			}
+
+			setInterval( randomGravity, 1500 );
+
+			var gravity = new THREE.Mesh(
+				new THREE.IcosahedronGeometry( 10, 2 ),
+				new THREE.MeshBasicMaterial({color:'black'}),
+			);
+			scene.add( gravity );
+			
+			var f = new THREE.Vector3( 0, 0, 1 );
+			function randomGravity()
+			{
+				var g = new THREE.Vector3(
+					Math.sign( THREE.Math.randFloat(-10,10) ),
+					Math.sign( THREE.Math.randFloat(-10,10) ),
+					Math.sign( THREE.Math.randFloat(-10,10) ) );
+
+				g.setLength( 85 );
+				gravity.position.copy( g );
+				gravity.position.multiplyScalar(2);
+				
+				scene.setGravity( g );
+				
+			}
+			
+			function animate( t )
+			{
+				scene.simulate( 1/20 );
+				
+				light.position.setFromSphericalCoords( 150, Math.PI/2, -t/10 );
+				scene.rotation.y = t/10;
+			}
+		</script>
+	</body>
+</html>
+
+

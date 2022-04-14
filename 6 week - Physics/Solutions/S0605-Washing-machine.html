@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0605: Пералня</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// по-добра позиция на камерата
+			camera.position.set( 0, 0, 350 );
+			camera.lookAt( new THREE.Vector3() );
+			
+			var invisible = new THREE.MeshNormalMaterial( {transparent:true, opacity:0.2} );
+			
+			// долна основа
+			var geometry = new THREE.CylinderGeometry( 150, 150, 2, 32 ),
+				material = Physijs.createMaterial( invisible );
+			var ground = new Physijs.CylinderMesh( geometry, material, 0 );
+				ground.position.set( 0, -100, 0 );
+			scene.add( ground );
+				
+			// горна основа
+			var ground2 = new Physijs.CylinderMesh( geometry, material, 0 );
+				ground2.position.set( 0, 200, 0 );
+			ground.add( ground2 );
+				
+			// долна преграда
+			var geometry = new THREE.BoxGeometry( 280, 10, 2 ),
+				material = Physijs.createMaterial( invisible );
+			var bar = new Physijs.BoxMesh( geometry, material, 0 );
+				bar.position.set( 0, 10, 0 );
+			ground.add( bar );
+			var bar = new Physijs.BoxMesh( geometry, material, 0 );
+				bar.position.set( 0, 10, 0 );
+				bar.rotation.y = Math.PI/2;
+			ground.add( bar );
+				
+			// ограничители
+			geometry = new THREE.BoxGeometry( 30, 200, 3 );
+			material = Physijs.createMaterial( invisible );
+			for( var i=0; i<20; i++)
+			{
+				var angle = i/20*2*Math.PI;
+				var barrier = new Physijs.BoxMesh( geometry, material, 0 );
+				barrier.position.set( 140*Math.cos(angle), 100,  140*Math.sin(angle) );
+				barrier.rotation.set( 0, -angle+Math.PI/2, 0 );
+				ground.add( barrier );
+			}
+				
+			scene.add( ground );
+			
+			var geometry = new THREE.IcosahedronGeometry( 10 );
+				
+			for( var i=0; i<32; i++ )
+			{
+				var angle = (i+0.5)/32*2*Math.PI;
+				
+				var material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'cornflowerblue', shininess:100}), 1, 1 );
+				var ball = new Physijs.SphereMesh( geometry, material, 1 );
+					ball.position.set( 110*Math.cos(angle), -87, 110*Math.sin(angle) );
+				material.color = new THREE.Color( ['crimson','seagreen','orange','cornflowerblue'][i>>3]);
+				scene.add( ball );
+			}
+			
+			var dRot = 0;
+			function animate( t )
+			{
+				scene.simulate( 1/10 );
+				
+				dRot += 0.1*Math.sin( t/5 );
+				ground.rotation.y = dRot;
+				ground.__dirtyRotation = true;
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0607: Триене</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+	
+			scene.remove( ground );
+			scene.remove( object );
+			
+			// земя
+			ground = new Physijs.BoxMesh(
+				new THREE.BoxGeometry( 500, 4, 100 ),
+				new THREE.MeshPhongMaterial( {color:'lightgreen'} ),
+				0
+			);
+			ground.position.set( 0, -2, 0 );
+			ground.receiveShadow = true;
+			scene.add( ground );
+
+			var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+			
+			// обект 1
+			material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'gray', shininess:50}), 0.3, 0 );
+			object1 = new Physijs.BoxMesh( geometry, material, 10 );
+				object1.position.set( 0, 15, 33 );
+				object1.castShadow = true;
+			scene.add( object1 );
+			
+			// обект 2
+			material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'gray', shininess:50}), 0.5, 0 );
+			object2 = new Physijs.BoxMesh( geometry, material, 10 );
+				object2.position.set( 0, 15, 0 );
+				object2.castShadow = true;
+			scene.add( object2 );
+			
+			// обект 3
+			material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'gray', shininess:50}), 0.7, 0 );
+			object3 = new Physijs.BoxMesh( geometry, material, 10 );
+				object3.position.set( 0, 15, -33 );
+				object3.castShadow = true;
+			scene.add( object3 );
+			
+			window.addEventListener( 'mousemove', onMouseMove, false );
+
+			var pos = 0;
+			function onMouseMove(event)
+			{
+				// относителна хоризонтална позиция на мишката
+				pos = event.clientX/window.innerWidth-0.5;
+			}
+			
+			function animate( )
+			{
+				scene.simulate( 1/20 );
+				
+				if( Math.abs(object1.getLinearVelocity().x)<0.1 )
+					object1.applyCentralForce( new THREE.Vector3(0,1,0) );
+					
+				if( Math.abs(object2.getLinearVelocity().x)<0.1 )
+					object2.applyCentralForce( new THREE.Vector3(0,1,0) );
+					
+				if( Math.abs(object3.getLinearVelocity().x)<0.1 )
+					object3.applyCentralForce( new THREE.Vector3(0,1,0) );
+					
+					
+				ground.rotation.z = THREE.Math.lerp( ground.rotation.z, pos, 0.1 );
+				ground.__dirtyRotation = true;
+			}
+		</script>
+	</body>
+</html>
+
+

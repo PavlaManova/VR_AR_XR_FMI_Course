@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0609: Лабиринт</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+			
+			scene.remove( ground );
+			scene.remove( object );
+
+			scene.setGravity( new THREE.Vector3( 0, -30, 0 ) );
+			
+			camera.position.set( 0, 50, 200 );
+			camera.lookAt( new THREE.Vector3(0,0,0) );
+			
+			// земя
+			ground = new Physijs.BoxMesh(
+				new THREE.BoxGeometry( 204, 4, 204 ),
+				Physijs.createMaterial(new THREE.MeshPhongMaterial(),1,0),
+				0
+			);
+			ground.position.set( 0, -2, 0 );
+			ground.receiveShadow = true;
+			
+			// капак
+			material = Physijs.createMaterial(new THREE.MeshPhongMaterial({color:'cornflowerblue',transparent:true,opacity:0.3,depthWrite:false}),1,0)
+			cover = new Physijs.BoxMesh(
+				new THREE.BoxGeometry( 200, 1, 200 ),
+				material,
+				0
+			);
+			cover.position.set( 0, 24, 0 );
+			ground.add( cover );
+			
+			// преграда ляво-дясно
+			function barX( x0, x1, z )
+			{
+				var bar = new Physijs.BoxMesh(
+					new THREE.BoxGeometry( x1-x0, 24, 2 ),
+					material,
+					0
+				);
+				bar.position.set( (x1+x0)/2, 12, z );
+				ground.add( bar );
+			}
+			
+			// преграда напред-назад
+			function barZ( x, z0, z1 )
+			{
+				var bar = new Physijs.BoxMesh(
+					new THREE.BoxGeometry( 2, 24, z1-z0 ),
+					material,
+					0
+				);
+				bar.position.set( x, 12, (z1+z0)/2 );
+				ground.add( bar );
+			}
+			
+			// външни стени
+			barX( -100, 100, -100 );
+			barX( -100, 100, +100 );
+			barZ( -100, -100, 100 );
+			barZ( 100, -100, 100 );
+			
+			// вътрешни прегради
+			barX( -20, 100, -20 );
+			barX( -60, -20, 20 );
+			barX( -60, -20, 60 );
+			barZ( -60, -100, 20 );
+			barZ( -20, -100, -60 );
+			barZ( -20, 60, 100 );
+			barZ( 20, -60, 60 );
+			barZ( 60, -100, -60 );
+			barZ( 60, 20, 100 );
+			
+			
+			scene.add( ground );
+
+			// топка
+			var geometry = new THREE.OctahedronGeometry( 9, 2 );
+			material = Physijs.createMaterial( new THREE.MeshPhongMaterial({color:'crimson', shininess:150, flatShading: true}), 0.3, 1 );
+			ball = new Physijs.SphereMesh( geometry, material, 10 );
+				ball.position.set( 85, 15, -85 );
+				ball.castShadow = true;
+			scene.add( ball );
+
+			window.addEventListener( 'mousemove', onMouseMove, false );
+
+			var posX = 0,
+				posY = 0;
+			function onMouseMove(event)
+			{
+				// относителна хоризонтална позиция на мишката
+				posX = event.clientX/window.innerWidth-0.5;
+
+				// относителна вертикална позиция на мишката
+				posY = event.clientY/window.innerHeight-0.5;
+			}
+			
+			function animate()
+			{
+				scene.simulate( 1/20 );
+				
+				// ако заспи, побутваме за събуждане
+				if( Math.abs(ball.getLinearVelocity().x)<0.1 )
+					ball.applyCentralForce( new THREE.Vector3(0,1,0) );
+					
+					
+				var rot = new THREE.Vector3( ground.rotation.x, 0, ground.rotation.z );
+				rot = rot.lerp( new THREE.Vector3(posY,0,-posX), 0.05 );
+				ground.rotation.set( rot.x, 0, rot.z, 'ZYX' );
+				ground.__dirtyRotation = true;
+			}
+		</script>
+	</body>
+</html>
+
+
