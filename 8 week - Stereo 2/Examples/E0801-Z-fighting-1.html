@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0801: Z-борба 1</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var geometry = new THREE.BoxGeometry( 60, 10, 60 ),
+				materialA = new THREE.MeshBasicMaterial( {color: 'cornflowerblue'} ),
+				materialB = new THREE.MeshBasicMaterial( {color: 'orange'} ),
+				materialC = new THREE.MeshBasicMaterial( {color: 'crimson'} );
+			
+			// обекти
+			objectA = new THREE.Mesh( geometry, materialA );
+			objectA.position.set( 15, 0, 0 );
+			scene.add( objectA );
+			
+			objectB = new THREE.Mesh( geometry, materialB );
+			objectB.position.set( -15, 0, 0 );
+			scene.add( objectB );
+				
+			objectC = new THREE.Mesh( geometry, materialC );
+			objectC.position.set( 0, 0, 0 );
+			scene.add( objectC );
+				
+			camera.position.set(0,100,0);		
+			camera.lookAt( objectC.position );
+				
+			function animate( t )
+			{
+				objectA.rotation.y = t;
+				objectB.rotation.y = t;
+				objectC.rotation.y = t;
+			}
+		</script>
+	</body>
+</html>
+
+

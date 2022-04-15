@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0805: Първа анаглифна графика</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="AnaglyphEffect.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			// инициализираме в режим на анаглифна графика
+			vaxInitAnaglyph();
+			
+			var cube = new THREE.Mesh(
+				new THREE.BoxGeometry( 30, 30, 30 ),
+				new THREE.MeshStandardMaterial( {color:'yellow'} )
+			);
+			scene.add( cube );
+
+	
+			function animate( t )
+			{
+				cube.rotation.set( t, t/2, 0);
+			}
+		</script>
+	</body>
+</html>
+
+

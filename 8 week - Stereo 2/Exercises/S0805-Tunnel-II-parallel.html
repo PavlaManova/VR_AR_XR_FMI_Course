@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0805: Тунел II право гледане</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit( );
+
+			// тунел от квадратни пръстени
+			var geometry = new THREE.TorusGeometry( 30, 6, 4, 4 ),
+				material = new THREE.MeshLambertMaterial( {color:'gold'} );
+			var torus = new THREE.Mesh( geometry, material );
+				scene.add( torus );
+			
+			light.position.set( 0, 0, 250 );
+	
+			function animate( t )
+			{
+				
+			}
+			
+		</script>
+	</body>
+</html>
+
+

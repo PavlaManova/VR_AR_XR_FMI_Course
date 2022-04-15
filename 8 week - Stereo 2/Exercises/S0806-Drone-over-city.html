@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0806: Дрон над град</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit( );
+
+			camera.position.set( 0, 10, 30 );
+			camera.lookAt( scene.position );
+			
+			// черен фон и мъгла, която да затъмнява основите на сградите
+			scene.background = new THREE.Color( 'black' );
+			scene.fog = new THREE.Fog( 'black', 0, 100 );
+			
+			// квадратна мрежа от NxN небостъргача
+			var n = 20;
+			var geometry = new THREE.BoxGeometry( 1.8, 1.8, 1.8 ),
+				material = new THREE.MeshLambertMaterial( {color: 'cornflowerblue'} );
+				
+			// градът е групов обект от всички сгради
+			var city = new THREE.Group();
+			scene.add( city );
+			
+			for( var x=0; x<n; x++ )
+			for( var z=0; z<n; z++ )
+			{
+				var building = new THREE.Mesh( geometry, material );
+					building.position.set( 2*x-(n-1), 0, 2*z-(n-1) );
+					
+				city.add( building );
+			}
+
+			function animate( t )
+			{
+				scene.rotation.y = t/10;
+			}
+			
+		</script>
+	</body>
+</html>
+
+

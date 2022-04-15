@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0810: В червата</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		</head>
+	
+	<body>
+		<script>
+			vaxSceneInit( );
+
+			// махаме вече излишния обект
+			scene.remove( object );
+
+			// траектория на червата
+			class CustomCurve extends THREE.Curve
+			{
+				getPoint ( t )
+				{
+					var angle = 2*Math.PI * t;
+				
+					return new THREE.Vector3( 
+						50*Math.sin(angle), 
+						55, 
+						50*Math.cos(angle)
+					);
+				};
+			}
+
+			// траектория
+			var curve = new CustomCurve( );
+
+			// самият тунел - плътната част
+			var geometry = new THREE.TubeGeometry( curve, 400, 5, 50, false ),
+				material = new THREE.MeshPhongMaterial( { 
+					map: new THREE.TextureLoader().load( 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAACCAMAAAAOwC77AAAABlBMVEUAAAD/1iGA9P/lAAAAEElEQVQIW2NkQAOMBPgYAgAA5gAF95+gaQAAAABJRU5ErkJggg==' ),
+					shininess: 100				
+				} ),
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.castShadow = true;
+
+			material.map.repeat = new THREE.Vector2( 100, 1 );
+			material.map.wrapS = THREE.RepeatWrapping;
+
+			scene.add( mesh );
+
+			function animate( t )
+			{
+				scene.rotation.y = t/3;
+			}
+			
+		</script>
+	</body>
+</html>
+
+

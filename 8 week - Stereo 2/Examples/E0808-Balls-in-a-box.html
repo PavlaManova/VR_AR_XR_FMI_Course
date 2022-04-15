@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0808: Топки в кутия</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="BoxLineGeometry.js"></script>
+		<script src="OrbitControls.js"></script>
+		<script src="AnaglyphEffect.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInitAnaglyph( );
+			camera.focus = 3;
+			
+			// орбитална навигация
+			var control = new THREE.OrbitControls( camera, renderer.domElement );
+
+			// закопчаваме светлината към камерата, става като фенерче на
+			// миньорска каска, така където и да сме, от нас струи светлина
+			camera.add( light );
+			scene.add( camera );
+
+			var balls = [];
+			var n = 60;
+			
+			var geometry = new THREE.DodecahedronGeometry( 5 );
+			
+			for (var i=0; i<n; i++)
+			{
+				balls[i] = new THREE.Mesh(
+					geometry,
+					new THREE.MeshLambertMaterial( {
+						color: THREE.Math.randInt( 0, 0xFFFFFF ),
+					} )
+				);
+				balls[i].position.set( THREE.Math.randFloat(-50,50),THREE.Math.randFloat(-50,50),THREE.Math.randFloat(-50,50) );
+				balls[i].offset = THREE.Math.randFloat( 0, 10 );
+				balls[i].speed = THREE.Math.randFloat( 0.7, 1.3 );
+				balls[i].height = THREE.Math.randFloat( 50, 100 );
+				scene.add( balls[i] );
+			}
+	
+			var box = new THREE.LineSegments(
+				new THREE.BoxLineGeometry( 101, 101, 101, 10, 10, 10 ),
+				new THREE.LineBasicMaterial( { color: 'black' } )
+			);
+			scene.add( box );
+			
+			function animate( t )
+			{
+				// въртене на обекта
+				for (var i=0; i<n; i++)
+				{
+					balls[i].rotation.set( t+i, t/2-i, i);
+					balls[i].position.y = -50+balls[i].height*Math.abs(Math.cos(t*balls[i].speed+balls[i].offset));
+				}
+
+				control.update();
+			}
+		</script>
+	</body>
+</html>
+
+

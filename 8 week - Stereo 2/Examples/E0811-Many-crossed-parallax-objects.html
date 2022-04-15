@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0811: Много кръстосано паралаксни обекти</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="StereoEffect.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInitParallax( -1 );
+			
+			var dodecs = [];
+			var n = 30;
+			for (var i=0; i<n; i++)
+			{
+				dodecs[i] = new THREE.Mesh(
+					new THREE.DodecahedronGeometry( 10 ),
+					new THREE.MeshLambertMaterial( {color:'orange'} )
+				);
+				dodecs[i].position.set( THREE.Math.randFloat(-40,40),THREE.Math.randFloat(-50,50),THREE.Math.randFloat(-100,100) );
+				scene.add( dodecs[i] );
+			}
+	
+			function animate( t )
+			{
+				// въртене на обектите
+				for (var i=0; i<n; i++)
+					dodecs[i].rotation.set( t+i, t/2-i, i);
+			}
+		</script>
+	</body>
+</html>
+
+
