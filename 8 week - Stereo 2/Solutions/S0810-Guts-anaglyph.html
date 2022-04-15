@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0810: В червата</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="AnaglyphEffect.js"></script>
+		</head>
+	
+	<body>
+		<script>
+			vaxSceneInit( vaxInitAnaglyph );
+			camera.focus = 1;
+
+			// махаме вече излишния обект
+			scene.remove( object );
+
+			// траектория на червата
+			class CustomCurve extends THREE.Curve
+			{
+				getPoint ( t )
+				{
+					var angle = 2*Math.PI * t;
+				
+					return new THREE.Vector3( 
+						70*Math.sin(2*angle) - 40*Math.cos(3*angle), 
+						55 + 20*Math.sin(7*angle) + 30*Math.sin(4*angle), 
+						70*Math.cos(3*angle) + 40*Math.sin(2*angle)
+					);
+				};
+			}
+
+			// траектория
+			var curve = new CustomCurve( );
+
+			// самият тунел - плътната част
+			var geometry = new THREE.TubeGeometry( curve, 400, 5, 50, false ),
+				material = new THREE.MeshPhongMaterial( { 
+					map: new THREE.TextureLoader().load( 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAACCAMAAAAOwC77AAAABlBMVEUAAAD/1iGA9P/lAAAAEElEQVQIW2NkQAOMBPgYAgAA5gAF95+gaQAAAABJRU5ErkJggg==' ),
+					side: THREE.BackSide,
+					shininess: 100				
+				} ),
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.castShadow = true;
+
+			material.map.repeat = new THREE.Vector2(300,1);
+			material.map.wrapS = THREE.RepeatWrapping;
+
+			scene.add( mesh );
+
+			var pos = tan = new THREE.Vector3( 0, 1, 0 );
+			
+			function animate( t )
+			{
+				// позицията на камерата
+				pos = curve.getPoint( (t/100)%1 );
+				camera.position.copy( pos );
+				
+				// светлина малко напред
+				light.position.copy( curve.getPoint( (t/100+0.1)%1 ) );
+				
+				// посока на гледане на камерата в линейна комбинация
+				// с предходната посока, за да има гладко въртене
+				tan = tan.lerp( curve.getTangent( (t/100+0.02)%1 ), 0.02);
+				camera.lookAt( pos.add(tan) );				
+			}
+			
+		</script>
+	</body>
+</html>
+
+

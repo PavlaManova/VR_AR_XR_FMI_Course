@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0805: Тунел II кръстосано гледане</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="StereoEffect.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInitParallax( -3 );
+
+			// тунел от квадратни пръстени
+			var n = 20;
+			var geometry = new THREE.TorusGeometry( 10, 1, 4, 4 ),
+				material = new THREE.MeshLambertMaterial( {color:'gold'} );
+			var torii = [];
+			
+			for( var i=0; i<n; i++ )
+			{
+				torii[i] = new THREE.Mesh( geometry, material );
+				torii[i].position.z = 14*i-150 	;
+				scene.add( torii[i] );
+			}
+
+			light.position.set( 0, 0, 250 );
+	
+			function animate( t )
+			{
+				for( var i=0; i<n; i++ )
+				{
+					torii[i].rotation.z = 3*Math.sin(t/3+i/10);
+				}
+			}
+			
+		</script>
+	</body>
+</html>
+
+

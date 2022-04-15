@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0802: Дълбочина и перспектива</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="OrbitControls.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxSceneInit();
+
+			// орбитална навигация
+			var control = new THREE.OrbitControls( camera, renderer.domElement );
+	
+			// координати на началната точка на движението
+			var p = new THREE.Vector3( -80, 20+80*Math.random(), -80 );
+			
+			// координати на крайната точка на движението
+			var q = new THREE.Vector3( 80, 20+80*Math.random(), 80 );
+			
+			ground.material = new THREE.MeshDepthMaterial();
+			
+			// два пилона 
+			scene.add( pillar(p,ground.material) );
+			scene.add( pillar(q,ground.material) );
+			
+			object.material = ground.material;
+	
+
+			function animate( t )
+			{
+				// движение по k
+				var k = 0.5+0.5*Math.sin(3*t);
+				object.position.lerpVectors( p, q, k );
+
+				// въртене на обекта
+				object.rotation.y = -5*t;
+				
+				// движение на гледната точка
+				control.update();
+			}
+		</script>
+	</body>
+</html>
+
+

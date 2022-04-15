@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0809: Скоростно влакче</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="StereoEffect.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxSceneInit( vaxInitParallax, 1 );
+
+			camera.position.set( 0, 80, 100 );
+			camera.lookAt( new THREE.Vector3(0,50,0) );
+
+			// малко мъгла
+			//scene.fog = new THREE.Fog('white',100,250);
+
+			// подменяме кубчето със сфера
+			object.geometry = new THREE.IcosahedronGeometry( 7, 4 );
+
+			// траектория на тунела на влакчето
+			class CustomCurve extends THREE.Curve
+			{
+				getPoint ( t )
+				{
+					var angle = 2*Math.PI * t;
+
+					return new THREE.Vector3(
+						70*Math.sin(2*angle) - 40*Math.cos(3*angle),
+						55 + 20*Math.sin(7*angle) + 30*Math.sin(4*angle),
+						70*Math.cos(3*angle) + 40*Math.sin(2*angle)
+					);
+				};
+			}
+
+			// траектория
+			var curve = new CustomCurve( );
+
+			// самият тунел
+			var geometry = new THREE.TubeGeometry( curve, 600, 5, 20, false ),
+				material = new THREE.MeshPhongMaterial( { color: 'silver', emissive: 'crimson', emissiveIntensity: 0.5, shininess: 60 } ),
+				mesh = new THREE.Mesh( geometry, material );
+				mesh.receiveShadow = true;
+				mesh.castShadow = true;
+			scene.add( mesh );
+
+			// подпори на тунела - поредица от пилони
+			for (var i=0; i<16; i++)
+			{
+				var p = pillar( curve.getPointAt((i+0.1)/16), ground.material );
+					p.scale.set( 0.4, 0.95, 0.4 );
+					p.receiveShadow = true;
+					p.castShadow = true;
+				scene.add( p );
+			}
+
+			function animate( t )
+			{
+				renderer.domElement.style.width = 'calc(100% - 8em)';
+   renderer.domElement.style.margin = '0 4em';
+	 
+				object.position.copy( curve.getPoint( (t/20)%1 ) );
+
+				scene.rotation.y = t/3;
+				spotLight.position.setFromSphericalCoords( 200, Math.PI/5, -t/3 );
+
+			}
+
+		</script>
+	</body>
+</html>
