@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Зарчета</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="physi.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+
+      //shadows
+      renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.position.set( -150, 200, 100 );
+      light.castShadow = true;
+
+      /*renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.position.set( -150, 300, -50 );
+			light.intensity = 0.8;
+
+			light = light.clone();
+			light.intensity = 0.4;
+			light.castShadow = true;
+			scene.add( light );*/
+
+			scene.add( new THREE.AmbientLight( 'yellow', 0.2 ) );
+
+			camera.position.set( 0, 200, 350 );
+      camera.lookAt( new THREE.Vector3() );
+
+      function createRect(pos)
+      {
+        var geometry = new THREE.BoxGeometry(300,10,500);
+        var material = Physijs.createMaterial( new THREE.MeshLambertMaterial({color: new THREE.Color(0xB88452)}));
+        var bottom = new Physijs.BoxMesh(geometry, material, 0);
+
+        //barriers
+        geometry = new THREE.BoxGeometry(300,30,10);
+        var topBarrier = new Physijs.BoxMesh(geometry, material, 0);
+        topBarrier.position.set(0,15,-245 );
+        bottom.add(topBarrier);
+
+        var bottomBarrier = new Physijs.BoxMesh(geometry, material, 0);
+        bottomBarrier.position.set(0,15,245);
+        bottom.add(bottomBarrier);
+
+        geometry = new THREE.BoxGeometry(10,30,480);
+        var leftBarrier = new Physijs.BoxMesh(geometry, material, 0);
+        leftBarrier.position.set(-145,15,0);
+        bottom.add(leftBarrier);
+
+        var rightBarrier = new Physijs.BoxMesh(geometry, material, 0);
+        rightBarrier.position.set(145,15,0);
+        bottom.add(rightBarrier);
+
+        bottom.castShadow=true;
+        bottom.receiveShadow = true;
+        bottom.scale.set(0.5,0.5,0.5);
+
+        bottom.position.copy(pos);
+
+        scene.add(bottom);
+      }
+
+      var pos1 = new THREE.Vector3(-100-0.5,0,0);
+      createRect(pos1);
+      var pos2 = new THREE.Vector3(50+0.5,0,0);
+      createRect(pos2);
+
+      geometry = new THREE.CylinderGeometry(1,1,20);
+      material = Physijs.createMaterial( new THREE.MeshLambertMaterial({color: new THREE.Color(0xA09B9C)}));
+      var hinge1 = new Physijs.CylinderMesh(geometry, material, 0);
+      hinge1.position.set(-24.5,15,50);
+      hinge1.rotation.x = Math.PI/2;
+
+      var hinge2 = new Physijs.CylinderMesh(geometry, material, 0);
+      hinge2.position.set(-24.5,15,-50);
+      hinge2.rotation.x = Math.PI/2;
+
+      scene.add(hinge1);
+      scene.add(hinge2);
+
+      //dices
+      geometry = new THREE.BoxGeometry(10,10,10);
+      material = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({color: new THREE.Color(0xFEFAEC)}),
+      1,1);
+      var dice1 = new Physijs.BoxMesh(geometry, material);
+      dice1.position.set(0,150,0);
+
+      var dice2 = new Physijs.BoxMesh(geometry, material);
+      dice2.position.set(-5,150,0);
+
+      scene.add(dice1);
+      scene.add(dice2);
+
+			function animate( t )
+			{
+        scene.simulate(1/10);
+        scene.rotation.y = t/5;
+        light.rotation.set(t/2,t/3,t/5);
+			}
+		</script>
+	</body>
+</html>
