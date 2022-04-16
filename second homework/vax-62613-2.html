@@ -22,53 +22,47 @@
 			light.position.set( -150, 200, 100 );
       light.castShadow = true;
 
-      /*renderer.shadowMap.enabled = true;
-			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
-			light.position.set( -150, 300, -50 );
-			light.intensity = 0.8;
-
-			light = light.clone();
-			light.intensity = 0.4;
-			light.castShadow = true;
-			scene.add( light );*/
-
 			scene.add( new THREE.AmbientLight( 'yellow', 0.2 ) );
 
-			camera.position.set( 0, 200, 350 );
+			camera.position.set( 0, 200, 320 );
       camera.lookAt( new THREE.Vector3() );
 
       function createRect(pos)
       {
-        var geometry = new THREE.BoxGeometry(300,10,500);
+        var geometry = new THREE.BoxGeometry(150,5,250);
         var material = Physijs.createMaterial( new THREE.MeshLambertMaterial({color: new THREE.Color(0xB88452)}));
         var bottom = new Physijs.BoxMesh(geometry, material, 0);
-
-        //barriers
-        geometry = new THREE.BoxGeometry(300,30,10);
-        var topBarrier = new Physijs.BoxMesh(geometry, material, 0);
-        topBarrier.position.set(0,15,-245 );
-        bottom.add(topBarrier);
-
-        var bottomBarrier = new Physijs.BoxMesh(geometry, material, 0);
-        bottomBarrier.position.set(0,15,245);
-        bottom.add(bottomBarrier);
-
-        geometry = new THREE.BoxGeometry(10,30,480);
-        var leftBarrier = new Physijs.BoxMesh(geometry, material, 0);
-        leftBarrier.position.set(-145,15,0);
-        bottom.add(leftBarrier);
-
-        var rightBarrier = new Physijs.BoxMesh(geometry, material, 0);
-        rightBarrier.position.set(145,15,0);
-        bottom.add(rightBarrier);
-
         bottom.castShadow=true;
         bottom.receiveShadow = true;
-        bottom.scale.set(0.5,0.5,0.5);
-
         bottom.position.copy(pos);
-
         scene.add(bottom);
+
+        //barriers
+        geometry = new THREE.BoxGeometry(150,15,5);
+        var topBarrier = new Physijs.BoxMesh(geometry, material, 0);
+        topBarrier.position.set(pos.x,pos.y+7.5,pos.z-122.5 );
+        topBarrier.castShadow=true;
+        topBarrier.receiveShadow = true;
+        scene.add(topBarrier);
+
+        var bottomBarrier = new Physijs.BoxMesh(geometry, material, 0);
+        bottomBarrier.position.set(pos.x,pos.y+7.5,pos.z+122.5 );
+        bottomBarrier.castShadow=true;
+        bottomBarrier.receiveShadow = true;
+        scene.add(bottomBarrier);
+
+        geometry = new THREE.BoxGeometry(5,15,240);
+        var leftBarrier = new Physijs.BoxMesh(geometry, material, 0);
+        leftBarrier.position.set(pos.x-72.5,pos.y+7.5, 0 );
+        leftBarrier.castShadow=true;
+        leftBarrier.receiveShadow = true;
+        scene.add(leftBarrier);
+
+        var rightBarrier = new Physijs.BoxMesh(geometry, material, 0);
+        rightBarrier.position.set(pos.x+72.5,pos.y+7.5, 0 );
+        rightBarrier.castShadow=true;
+        rightBarrier.receiveShadow = true;
+        scene.add(rightBarrier);
       }
 
       var pos1 = new THREE.Vector3(-100-0.5,0,0);
@@ -90,24 +84,153 @@
       scene.add(hinge2);
 
       //dices
-      geometry = new THREE.BoxGeometry(10,10,10);
-      material = Physijs.createMaterial(
-      new THREE.MeshLambertMaterial({color: new THREE.Color(0xFEFAEC)}),
-      1,1);
-      var dice1 = new Physijs.BoxMesh(geometry, material);
-      dice1.position.set(0,150,0);
+      var diceSide=15;
 
-      var dice2 = new Physijs.BoxMesh(geometry, material);
-      dice2.position.set(-5,150,0);
+      function makeDice(pos)
+      {
+        geometry = new THREE.BoxGeometry(diceSide,diceSide,diceSide);
+        material = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({color: new THREE.Color(0xFEFAEC)}),
+        1,1);
+        var dice = new Physijs.BoxMesh(geometry, material, 1);
+        dice.position.copy(pos);
 
+        geometry = new THREE.RingGeometry(0,1,35);
+        material = new THREE.MeshBasicMaterial({color: 'black'});
+        var dot = new THREE.Mesh(geometry,material);
+        dot.material.side = THREE.DoubleSide;
+
+        //side 1
+        dot.position.set(0,0,diceSide/2+0.1);
+        dice.add(dot);
+
+        //side 6
+        var dot2 = dot.clone();
+        dot2.position.set(-diceSide/4,diceSide/4,-diceSide/2-0.1);
+        dice.add(dot2);
+        var dot3 = dot.clone();
+        dot3.position.set(-diceSide/4,-diceSide/4,-diceSide/2-0.1);
+        dice.add(dot3);
+        var dot4 = dot.clone();
+        dot4.position.set(diceSide/4,diceSide/4,-diceSide/2-0.1);
+        dice.add(dot4);
+        var dot5 = dot.clone();
+        dot5.position.set(diceSide/4,-diceSide/4,-diceSide/2-0.1);
+        dice.add(dot5);
+        var dot6 = dot.clone();
+        dot6.position.set(-diceSide/4,0,-diceSide/2-0.1);
+        dice.add(dot6);
+        var dot7 = dot.clone();
+        dot7.position.set(diceSide/4,0,-diceSide/2-0.1);
+        dice.add(dot7);
+
+        //side 2
+        var dot8 = dot.clone();
+        dot8.rotation.y = Math.PI/2;
+        dot8.position.set(-diceSide/2-0.1,-diceSide/4,-diceSide/4);
+        dice.add(dot8);
+        var dot9 = dot8.clone();
+        dot9.position.set(-diceSide/2-0.1,diceSide/4,diceSide/4);
+        dice.add(dot9);
+
+        //side 5
+        var dot10 = dot8.clone();
+        dot10.position.set(diceSide/2+0.1,diceSide/4,diceSide/4);
+        dice.add(dot10);
+        var dot11 = dot8.clone();
+        dot11.position.set(diceSide/2+0.1,diceSide/4,-diceSide/4);
+        dice.add(dot11);
+        var dot12 = dot8.clone();
+        dot12.position.set(diceSide/2+0.1,0,0);
+        dice.add(dot12);
+        var dot13 = dot8.clone();
+        dot13.position.set(diceSide/2+0.1,-diceSide/4,diceSide/4);
+        dice.add(dot13);
+        var dot14 = dot8.clone();
+        dot14.position.set(diceSide/2+0.1,-diceSide/4,-diceSide/4);
+        dice.add(dot14);
+
+        //side 3
+        var dot15 = dot.clone();
+        dot15.rotation.x=Math.PI/2;
+        dot15.position.set(-diceSide/4,diceSide/2+0.1,diceSide/4);
+        dice.add(dot15);
+        var dot16 = dot15.clone();
+        dot16.position.set(0,diceSide/2+0.1,0);
+        dice.add(dot16);
+        var dot17 = dot15.clone();
+        dot17.position.set(diceSide/4,diceSide/2+0.1,-diceSide/4);
+        dice.add(dot17);
+
+        //side 4
+        var dot18 = dot15.clone();
+        dot18.position.set(-diceSide/4,-diceSide/2-0.1,diceSide/4);
+        dice.add(dot18);
+        var dot19 = dot15.clone();
+        dot19.position.set(-diceSide/4,-diceSide/2-0.1,-diceSide/4);
+        dice.add(dot19);
+        var dot20 = dot15.clone();
+        dot20.position.set(diceSide/4,-diceSide/2-0.1,diceSide/4);
+        dice.add(dot20);
+        var dot21 = dot15.clone();
+        dot21.position.set(diceSide/4,-diceSide/2-0.1,-diceSide/4);
+        dice.add(dot21);
+
+        return dice;
+      }
+
+      var dice1 = makeDice(new THREE.Vector3(THREE.Math.randFloat(-50,-120),250,100));
+      var dice2 = makeDice(new THREE.Vector3(THREE.Math.randFloat(-50,-120),240,-100));
       scene.add(dice1);
       scene.add(dice2);
+
+      dice1.applyImpulse( new THREE.Vector3( 0,0, -15), new THREE.Vector3( 0, -1,-1 ) );
+      dice2.applyImpulse( new THREE.Vector3( 0,0, 15 ), new THREE.Vector3( 0, -1, -1 ) );
+
+      //decoration
+      geometry = new THREE.CylinderGeometry(12,12,0.2,3);
+      var lightMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(0xCEA77A)});
+      var darkMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(0x403730)});
+
+      for(var i=0; i<6;i++)
+      {
+        if(i%2==0){
+          var triangle = new THREE.Mesh(geometry,lightMaterial);
+          var triangle3 = new THREE.Mesh(geometry,lightMaterial);
+        }
+        else {
+          var triangle = new THREE.Mesh(geometry,darkMaterial);
+          var triangle3 = new THREE.Mesh(geometry,darkMaterial);
+
+        }
+        scene.add(triangle);
+        scene.add(triangle3);
+        triangle.position.set(-160+i*23+0.5,2.6,-120+30);
+        triangle3.position.set(-5+i*23+0.5,2.6,-120+30);
+        triangle.scale.set(1,1,5);
+        triangle3.scale.set(1,1,5);
+        var triangle2  = triangle.clone();
+        scene.add(triangle2);
+        triangle2.rotation.y=Math.PI;
+        triangle2.position.z=120-30;
+        var triangle4  = triangle3.clone();
+        scene.add(triangle4);
+        triangle4.rotation.y=Math.PI;
+        triangle4.position.z=120-30;
+        if(i%2==0){
+          triangle2.material =darkMaterial;
+          triangle4.material =darkMaterial;
+        }
+        else {
+          triangle2.material =lightMaterial;
+          triangle4.material =lightMaterial;
+        }
+      }
 
 			function animate( t )
 			{
         scene.simulate(1/10);
-        scene.rotation.y = t/5;
-        light.rotation.set(t/2,t/3,t/5);
+        scene.rotation.y = t/3;
 			}
 		</script>
 	</body>
