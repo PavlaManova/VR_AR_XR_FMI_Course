@@ -4,14 +4,14 @@
 	<head>
 		<title>S0604: Обсебени кубчета</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="physi.js"></script>
 		<script src="vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
 			vaxInit();
@@ -22,58 +22,56 @@
 			light.castShadow = true;
 
 			scene.add( new THREE.AmbientLight( 'yellow', 0.3 ) );
-			
+
 			camera.position.set( 0, 20, 350 );
-			//camera.lookAt( new THREE.Vector3() );
-			
-			
+
 			// прозрачен куб
 			var geometry = new THREE.BoxGeometry( 200, 1, 200 ),
-				material = new THREE.MeshNormalMaterial({transparent:true, opacity:0.2});
+				material =Physijs.createMaterial( new THREE.MeshNormalMaterial({transparent:true, opacity:0.2}));
 
 			// долна страна
-			var cube = new THREE.Mesh( geometry, material, 0 );
+			var cube = new Physijs.BoxMesh( geometry, material, 0 );
 				cube.position.set( 0, -100, 0 );
-				
+
 			// горна страна
-			var	side = new THREE.Mesh( geometry, material, 0 );
+			var	side = new Physijs.BoxMesh( geometry, material, 0 );
 				side.position.set( 0, 200, 0 );
 				cube.add( side );
-				
+
 			// лява страна
-			var	side = new THREE.Mesh( geometry, material, 0 );
+			var	side = new Physijs.BoxMesh( geometry, material, 0 );
 				side.position.set( -100, 100, 0 );
 				side.rotation.z = Math.PI/2;
 				cube.add( side );
-				
+
 			// дясна страна
-			var	side = new THREE.Mesh( geometry, material, 0 );
+			var	side = new Physijs.BoxMesh( geometry, material, 0 );
 				side.position.set( 100, 100, 0 );
 				side.rotation.z = Math.PI/2;
 				cube.add( side );
-				
+
 			// предна страна
-			var	side = new THREE.Mesh( geometry, material, 0 );
+			var	side = new Physijs.BoxMesh( geometry, material, 0 );
 				side.position.set( 0, 100, 100 );
 				side.rotation.x = Math.PI/2;
 				cube.add( side );
-				
+
 			// задна страна
-			var	side = new THREE.Mesh( geometry, material, 0 );
+			var	side = new Physijs.BoxMesh( geometry, material, 0 );
 				side.position.set( 0, 100, -100 );
 				side.rotation.x = Math.PI/2;
 				cube.add( side );
-				
+
 			scene.add( cube );
-			
+
 			// кубчета
 			var geometry = new THREE.BoxGeometry( 30, 30, 30 ),
-				material = new THREE.MeshLambertMaterial( {color: 'orange'} );
-				
+				material = Physijs.createMaterial(new THREE.MeshLambertMaterial( {color: 'orange'} ));
+
 			var cubes = [];
 			for( var i=0; i<10; i++ )
 			{
-				var cube = new THREE.Mesh( geometry, material );
+				var cube = new Physijs.BoxMesh( geometry, material );
 					cube.position.set( THREE.Math.randFloat(-60,60), THREE.Math.randFloat(-60,60), THREE.Math.randFloat(-60,60) );
 					cube.receiveShadow = true;
 					cube.castShadow = true;
@@ -81,15 +79,40 @@
 				scene.add( cube );
 			}
 
+			var geometry = new THREE.SphereGeometry(10,60,60);
+			var material = new THREE.MeshLambertMaterial();
+			var ball = new THREE.Mesh( geometry, material,0 );
+			scene.add(ball);
+
+			var edges =[];
+			edges[0] = new THREE.Vector3(-100,-100,-100);
+			edges[1] = new THREE.Vector3(100,100,100);
+			edges[2] = new THREE.Vector3(-100,-100,100);
+			edges[3] = new THREE.Vector3(100,100,-100);
+			edges[4] = new THREE.Vector3(-100,100,-100);
+			edges[5] = new THREE.Vector3(100,-100,100);
+			edges[6] = new THREE.Vector3(100,-100,-100);
+			edges[7] = new THREE.Vector3(-100,100,100);
+
+			var time = 0;
+
+			setInterval( randomGravity, 1500 );
+
+			function randomGravity()
+			{
+				var index = THREE.Math.randInt(0,7);
+				ball.position.copy(edges[index]);
+				scene.setGravity(edges[index]);
+			}
+
 			function animate( t )
 			{
 				scene.simulate( 1/20 );
-				
+
 				light.position.setFromSphericalCoords( 150, Math.PI/2, -t/10 );
+
 				scene.rotation.y = t/10;
 			}
 		</script>
 	</body>
 </html>
-
-
