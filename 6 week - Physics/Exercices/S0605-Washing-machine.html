@@ -20,25 +20,27 @@
 			camera.position.set( 0, 0, 350 );
 			camera.lookAt( new THREE.Vector3() );
 
-			var material = new THREE.MeshNormalMaterial( {transparent:true, opacity:0.2} );
+			var material = Physijs.createMaterial(
+				new THREE.MeshNormalMaterial( {transparent:true, opacity:0.2} )
+			);
 
 			// долна основа
 			var geometry = new THREE.CylinderGeometry( 150, 150, 2, 32 ),
-				ground = new THREE.Mesh( geometry, material );
+				ground = new Physijs.CylinderMesh(geometry, material, 0 );
 				ground.position.set( 0, -100, 0 );
 			scene.add( ground );
 
 			// горна основа
-			var ground2 = new THREE.Mesh( geometry, material );
+			var ground2 = new Physijs.CylinderMesh(geometry, material, 0 );
 				ground2.position.set( 0, 200, 0 );
 			ground.add( ground2 );
 
 			// долна преграда
 			var geometry = new THREE.BoxGeometry( 280, 10, 2 ),
-				bar = new THREE.Mesh( geometry, material );
+				bar = new Physijs.BoxMesh( geometry, material,0 );
 				bar.position.set( 0, 10, 0 );
 			ground.add( bar );
-				bar = new THREE.Mesh( geometry, material );
+			var	bar = new Physijs.BoxMesh( geometry, material,0 );
 				bar.position.set( 0, 10, 0 );
 				bar.rotation.y = Math.PI/2;
 			ground.add( bar );
@@ -48,7 +50,7 @@
 			for( var i=0; i<20; i++)
 			{
 				var angle = i/20*2*Math.PI;
-				var barrier = new THREE.Mesh( geometry, material, 0 );
+				var barrier = new Physijs.BoxMesh( geometry, material,0 );
 				barrier.position.set( 140*Math.cos(angle), 100,  140*Math.sin(angle) );
 				barrier.rotation.set( 0, -angle+Math.PI/2, 0 );
 				ground.add( barrier );
@@ -62,9 +64,11 @@
 			{
 				var angle = (i+0.5)/32*2*Math.PI;
 
-				var material = new THREE.MeshPhongMaterial({color:'cornflowerblue', shininess:100}),
-					ball = new THREE.Mesh( geometry, material, 1 );
-					ball.position.set( 110*Math.cos(angle), -100, 110*Math.sin(angle) );
+				var material = Physijs.createMaterial(
+					 new THREE.MeshPhongMaterial({color:'cornflowerblue', shininess:100}),1,1
+				 );
+				var	ball = new Physijs.SphereMesh( geometry, material, 1	 );
+					ball.position.set( 110*Math.cos(angle), -80, 110*Math.sin(angle) );
 				material.color = new THREE.Color( ['crimson','seagreen','orange','cornflowerblue'][i>>3]);
 				scene.add( ball );
 			}
@@ -76,6 +80,7 @@
 
 				dRot += 0.1*Math.sin( t/5 );
 				ground.rotation.y = dRot;
+				ground.__dirtyRotation = true;
 			}
 		</script>
 	</body>
