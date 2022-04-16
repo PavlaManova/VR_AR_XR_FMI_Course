@@ -181,6 +181,7 @@
 
       var dice1 = makeDice(new THREE.Vector3(THREE.Math.randFloat(-50,-120),250,100));
       var dice2 = makeDice(new THREE.Vector3(THREE.Math.randFloat(-50,-120),240,-100));
+      dice2.rotation.x = THREE.Math.randFloat(-2*Math.PI,2*Math.PI);
       scene.add(dice1);
       scene.add(dice2);
 
