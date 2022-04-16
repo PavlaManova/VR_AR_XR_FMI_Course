@@ -4,21 +4,21 @@
 	<head>
 		<title>S0602: Ветровит ден</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="physi.js"></script>
 		<script src="vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
 			vaxSceneInit();
 
 			scene.background = new THREE.Color( 'navy' );
 			scene.remove( object );
-			
+
 			// земя
 			ground = new THREE.Mesh(
 				new THREE.BoxGeometry( 300, 4, 300 ),
@@ -31,7 +31,7 @@
 			// два пилона с въже между тях
 			scene.add( pillar( new THREE.Vector3( -60, 70, 0 ), ground.material ) );
 			scene.add( pillar( new THREE.Vector3( +60, 70, 0 ), ground.material ) );
-			
+
 			var wire = new THREE.Mesh(
 				new THREE.CylinderGeometry( 1/3, 1/3, 120, 4, 1, true ),
 				new THREE.MeshPhongMaterial( {color:'black', shininess:100} )
@@ -40,42 +40,89 @@
 			wire.position.y = 70;
 			wire.rotation.z = Math.PI/2;
 			scene.add( wire );
-			
-			
+
+
 			// пране 1
 			var geometry = new THREE.BoxGeometry( 20, 30, 1 ),
-				material = new THREE.MeshPhongMaterial( {color: 'white'} );
-				
-			laundry1 = new THREE.Mesh( geometry, material );
+				material = Physijs.createMaterial(new THREE.MeshPhongMaterial( {color: 'white'} ));
+
+			laundry1 = new Physijs.BoxMesh( geometry, material, 10 );
 				laundry1.position.set( -10, 55, 0 );
 				laundry1.castShadow = true;
 			scene.add( laundry1 );
-				
+
+			var constraint1 = new Physijs.HingeConstraint(
+				laundry1,
+				null,
+				new THREE.Vector3( 0,70, 0 ),
+				new THREE.Vector3( 1, 0, 0 )
+			);
+			scene.addConstraint( constraint1 );
+
+
 			// пране 2
 			var geometry = new THREE.BoxGeometry( 20, 40, 1 ),
-				material = new THREE.MeshLambertMaterial( {color: 'tomato'} );
-				
-			laundry2 = new THREE.Mesh( geometry, material, 10 );
+				material = Physijs.createMaterial(new THREE.MeshLambertMaterial( {color: 'tomato'} ));
+
+			laundry2 = new Physijs.BoxMesh( geometry, material, 10 );
 				laundry2.position.set( -40, 50, 0 );
 				laundry2.castShadow = true;
 			scene.add( laundry2 );
-				
+
+			var constraint2 = new Physijs.HingeConstraint(
+				laundry2,
+				null,
+				new THREE.Vector3( 0, 70, 0 ),
+				new THREE.Vector3( 1, 0, 0 )
+			);
+			scene.addConstraint( constraint2 );
+
 			// пране 3
 			var geometry = new THREE.BoxGeometry( 40, 30, 1 ),
-				material = new THREE.MeshPhongMaterial( {color: 'cornflowerblue' });
-				
-			laundry3 = new THREE.Mesh( geometry, material, 10 );
+				material =Physijs.createMaterial( new THREE.MeshPhongMaterial( {color: 'cornflowerblue' }));
+
+			laundry3 = new Physijs.BoxMesh( geometry, material, 10 );
 				laundry3.position.set( 30, 55, 0 );
 				laundry3.castShadow = true;
 			scene.add( laundry3 );
-			
+
+			var constraint3 = new Physijs.HingeConstraint(
+				laundry3,
+				null,
+				new THREE.Vector3( 0, 70, 0 ),
+				new THREE.Vector3( 1, 0, 0 )
+			);
+			scene.addConstraint( constraint3 );
+
+				var nextT1 = 1;
+				var nextT2 = 1;
+				var nextT3 = 1;
 			function animate( t )
 			{
+				laundry1.setAngularVelocity( laundry1.getAngularVelocity().multiplyScalar(0.95) );
+				laundry2.setAngularVelocity( laundry2.getAngularVelocity().multiplyScalar(0.95) );
+				laundry3.setAngularVelocity( laundry3.getAngularVelocity().multiplyScalar(0.95) );
+
 				scene.simulate( 1/10 );
+				if( nextT1<t )
+				{
+					laundry1.applyCentralForce( new THREE.Vector3(0,0,2000) );
+					nextT1 = t+THREE.Math.randFloat(2,10);
+				}
+				if( nextT2<t )
+				{
+					laundry2.applyCentralForce( new THREE.Vector3(0,0,2000) );
+					nextT2 = t+THREE.Math.randFloat(2,10);
+				}
+				if( nextT3<t )
+				{
+					laundry3.applyCentralForce( new THREE.Vector3(0,0,2000) );
+					nextT3 = t+THREE.Math.randFloat(2,10);
+				}
+
 				scene.rotation.y = t/10;
+
 			}
 		</script>
 	</body>
 </html>
-
-
