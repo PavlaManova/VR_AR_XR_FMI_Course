@@ -14,14 +14,16 @@
 
 	<body>
 		<script>
-			//vaxSceneInit( vaxInitParallax, -1 );
-      vaxSceneInit();
+			vaxSceneInit( vaxInitParallax, -3 );
+      //vaxSceneInit();
 
       renderer.shadowMap.enabled = true;
-			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.shadow.mapSize = new THREE.Vector2( 1024*3, 1024*3 );
 			light.castShadow = true;
-      camera.position.set( 0, 80, 250 );
+      camera.position.set( 0, 80, -250 );
+			light.position.set(0,100,230);
 			camera.lookAt( new THREE.Vector3(0,20,0) );
+			scene.remove(spotLight);
 
       scene.remove(object);
       scene.remove(ground);
@@ -147,7 +149,8 @@
         cabinsGroup.position.y-=13;
         for(var i=0; i<10; i++)
         {
-          var material = new THREE.MeshPhongMaterial({color: new THREE.Color(Math.random()+0.5,Math.random(),Math.random()+0.1), side: THREE.DoubleSide});
+          var material = new THREE.MeshPhongMaterial({color: new THREE.Color(Math.random()+0.5,Math.random(),Math.random()+0.1), side: THREE.DoubleSide,
+					depthWrite:true});
           var cabin = new THREE.Mesh(geometry, material);
           cabin.rotation.x = Math.PI/2;
           cabin.position.setFromSphericalCoords(torusOutterR+torusInnerR,2*Math.PI/10*i,Math.PI/2);
@@ -160,6 +163,7 @@
           cabin.add(constraint);
           cabins.push(cabin);
           cabin.castShadow = true;
+					cabin.receiveShadow = true;
           cabinsGroup.add(cabin);
         }
       }
@@ -336,19 +340,34 @@
 				scene.add(booth1,booth2,booth3, booth4, booth5, booth6);
 			}
 
+
+
+
+			var sun = new THREE.Mesh(
+				new THREE.IcosahedronGeometry( 1.5, 1 ),
+				new THREE.MeshBasicMaterial( {color: 'gold'} )
+			);
+			sun.position.set(0, 80, -250);
+			light.position.copy(sun.position);
+			scene.add( sun );
+
+
 			makeFerrisWheel();
 			makePaths();
 			placeBooths();
 
 			function animate( t )
 			{
-        scene.rotation.y = t/2;
+        scene.rotation.y = t/10;
         ringA.rotation.z = -t/5;
         ringB.rotation.z = -t/5;
         for(var i=0; i<10; i++)
         {
           cabins[i].position.setFromSphericalCoords(torusOutterR+torusInnerR,2*Math.PI/10*i+t/5,Math.PI/2);
         }
+				sun.position.setFromSphericalCoords( 250, /*Math.PI/2+Math.sin(t/5)*/Math.PI/3, -t/3 );
+				//alert(sun.position.z);
+				light.position.copy( sun.position );
 			}
 
 		</script>
