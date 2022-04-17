@@ -46,7 +46,7 @@
       var ringB;
       var cabins = [];
 
-      var wheelMaterial = new THREE.MeshPhongMaterial({color: new THREE.Color(0xF4E2B6)});
+      var wheelMaterial = new THREE.MeshPhongMaterial({color: new THREE.Color(0xF4E2B6), shininess:80});
 
       //ferris wheel
       function makeFerrisWheel()
@@ -90,18 +90,10 @@
         for(var i=0;i<5; i++)
         {
           geometry = new THREE.CylinderGeometry(pillonsR/3, pillonsR/3, torusOutterR*2,30);
-          var segment = new Physijs.CylinderMesh(
-            geometry,
-            Physijs.createMaterial(new THREE.MeshPhongMaterial({color: new THREE.Color(0xF4E2B6)})),
-            0
-          );
+          var segment = new THREE.Mesh(geometry, wheelMaterial);
           segment.rotation.z = i*Math.PI/5;
 
-          var segment2 = new Physijs.CylinderMesh(
-            geometry,
-            Physijs.createMaterial(new THREE.MeshPhongMaterial({color: new THREE.Color(0xF4E2B6)})),
-            0
-          );
+          var segment2 = segment.clone();
           segment2.rotation.z = i*Math.PI/5;
           ringA.add(segment);
           ringB.add(segment2);
@@ -111,7 +103,7 @@
         for(var i=0; i<10; i++)
         {
           geometryP = new THREE.CylinderGeometry(0.5,0.5,furrow/2);
-          var bar = new THREE.Mesh(geometryP, new THREE.MeshPhongMaterial({color: new THREE.Color(0xF4E2B6)}));
+          var bar = new THREE.Mesh(geometryP, wheelMaterial);
           bar.position.setFromSphericalCoords(torusOutterR+torusInnerR,2*Math.PI/10*i,Math.PI/2);
           bar.rotation.x=Math.PI/2;
           bar.position.z+=furrow/4;
@@ -137,13 +129,12 @@
         for(var i=0; i<10; i++)
         {
           var material = Physijs.createMaterial(
-          new THREE.MeshPhongMaterial({color: new THREE.Color(Math.random()+0.5,Math.random(),Math.random()+0.1), side: THREE.DoubleSide}));
+          new THREE.MeshPhongMaterial({color: new THREE.Color(Math.random()+0.5,Math.random(),Math.random()+0.1), shininess:100, side: THREE.DoubleSide}));
           var cabin = new THREE.Mesh(geometry, material);
           cabin.rotation.x = Math.PI/2;
           cabin.position.setFromSphericalCoords(torusOutterR+torusInnerR,2*Math.PI/10*i,Math.PI/2);
-          var geometryP = new THREE.TorusGeometry(2*cabinR-0.5,0.5,8,5, Math.PI);
-          var materialP = new THREE.MeshPhongMaterial({color: new THREE.Color(0xF4E2B6)});
-          var constraint = new THREE.Mesh(geometryP, materialP);
+          var geometryC = new THREE.TorusGeometry(2*cabinR-0.5,0.5,8,5, Math.PI);
+          var constraint = new THREE.Mesh(geometryC, wheelMaterial);
           constraint.scale.set(0.5,0.7,1);
           constraint.rotation.x = -Math.PI/2;
           cabin.add(constraint);
@@ -151,7 +142,9 @@
           cabinsGroup.add(cabin);
         }
       }
-       makeFerrisWheel();
+
+      makeFerrisWheel();
+
 			function animate( t )
 			{
         scene.simulate(1/10);
