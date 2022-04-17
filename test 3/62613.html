@@ -9,7 +9,6 @@
 
 		<script src="three.min.js"></script>
 		<script src="vax.js"></script>
-    <script src="physi.js"></script>
 		<script src="StereoEffect.js"></script>
 	</head>
 
@@ -18,7 +17,9 @@
 			//vaxSceneInit( vaxInitParallax, -1 );
       vaxSceneInit();
 
-      //light.position.z-=800;
+      renderer.shadowMap.enabled = true;
+			light.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
+			light.castShadow = true;
       camera.position.set( 0, 80, 250 );
 			camera.lookAt( new THREE.Vector3(0,20,0) );
 
@@ -36,10 +37,15 @@
       const torusInnerR = 2;
       const torusOutterR = 60;
       const cabinR = pillonsR*4;
+      const boothX = 40;
+      const boothY = 30;
+      const boothZ = 20;
 
       var geometry = new THREE.BoxGeometry(groundX,groundY,groundZ);
-      var ground = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshPhongMaterial({color:'lightgreen'})),0);
+      var ground = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color:'lightgreen'}));
       ground.position.y-=groundY/2;
+      ground.receiveShadow = true;
+      ground.castShadow = true;
       scene.add(ground);
 
       var ringA;
@@ -55,7 +61,11 @@
         var support = new THREE.Group();
         geometry = new THREE.CylinderGeometry(pillonsR, pillonsR, pillonHaight,30);
         var pillonA = new THREE.Mesh(geometry, wheelMaterial);
+        pillonA.receiveShadow = true;
+        pillonA.castShadow = true;
         var pillonB = pillonA.clone();
+        pillonB.receiveShadow = true;
+        pillonB.castShadow = true;
         pillonA.rotation.z = -Math.PI/9;
         var temp = pillonHaight*Math.sin(Math.PI/9)/2+1;
         var temp2 = pillonHaight*Math.cos(Math.PI/9)/2-1;
@@ -74,6 +84,8 @@
         var center = new THREE.Mesh(geometry, wheelMaterial);
         center.position.set(0,temp2*2+5,groundZ/2-furrow+5);
         center.rotation.x = Math.PI/2;
+        center.receiveShadow = true;
+        center.castShadow = true;
 
         //toruses
         geometry = new THREE.TorusGeometry(torusOutterR, torusInnerR,30, 60);
@@ -81,10 +93,14 @@
 
         ringA.position.copy(center.position);
         ringA.position.z-=furrow/2-pillonsR*3+0.5;
+        ringA.receiveShadow = true;
+        ringA.castShadow = true;
 
         ringB = ringA.clone();
         ringB.position.copy(ringA.position);
         ringB.position.z=center.position.z+furrow/2-pillonsR*3+0.5;
+        ringB.receiveShadow = true;
+        ringB.castShadow = true;
 
         //segments
         for(var i=0;i<5; i++)
@@ -92,7 +108,8 @@
           geometry = new THREE.CylinderGeometry(pillonsR/3, pillonsR/3, torusOutterR*2,30);
           var segment = new THREE.Mesh(geometry, wheelMaterial);
           segment.rotation.z = i*Math.PI/5;
-
+          segment.receiveShadow = true;
+          segment.castShadow = true;
           var segment2 = segment.clone();
           segment2.rotation.z = i*Math.PI/5;
           ringA.add(segment);
@@ -107,6 +124,8 @@
           bar.position.setFromSphericalCoords(torusOutterR+torusInnerR,2*Math.PI/10*i,Math.PI/2);
           bar.rotation.x=Math.PI/2;
           bar.position.z+=furrow/4;
+          bar.receiveShadow = true;
+          bar.castShadow = true;
           ringA.add(bar);
         }
 
@@ -128,8 +147,7 @@
         cabinsGroup.position.y-=13;
         for(var i=0; i<10; i++)
         {
-          var material = Physijs.createMaterial(
-          new THREE.MeshPhongMaterial({color: new THREE.Color(Math.random()+0.5,Math.random(),Math.random()+0.1), shininess:100, side: THREE.DoubleSide}));
+          var material = new THREE.MeshPhongMaterial({color: new THREE.Color(Math.random()+0.5,Math.random(),Math.random()+0.1), side: THREE.DoubleSide});
           var cabin = new THREE.Mesh(geometry, material);
           cabin.rotation.x = Math.PI/2;
           cabin.position.setFromSphericalCoords(torusOutterR+torusInnerR,2*Math.PI/10*i,Math.PI/2);
@@ -137,17 +155,130 @@
           var constraint = new THREE.Mesh(geometryC, wheelMaterial);
           constraint.scale.set(0.5,0.7,1);
           constraint.rotation.x = -Math.PI/2;
+          constraint.receiveShadow = true;
+          constraint.castShadow = true;
           cabin.add(constraint);
           cabins.push(cabin);
+          cabin.castShadow = true;
           cabinsGroup.add(cabin);
         }
       }
 
+      function makeSquareBooth()
+      {
+          var geometry = new THREE.BoxGeometry(boothX,boothY,boothZ);
+          var randColor = new THREE.Color(Math.random()+0.9,Math.random()-0.2,Math.random());
+          var material = new THREE.MeshLambertMaterial({color: randColor});
+          var base = new THREE.Mesh(geometry, material);
+          base.receiveShadow = true;
+          base.castShadow = true;
+
+          //pillons
+          var pillonH = 20;
+          geometry = new THREE.CylinderGeometry(0.5,0.5,pillonH,30);
+          var woodMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(0x7E4B22)});
+          var pillonA = new THREE.Mesh(geometry, woodMaterial);
+          pillonA.position.set(-boothX/2,boothY/2+pillonH/2,0);
+          pillonA.receiveShadow = true;
+          pillonA.castShadow = true;
+          var pillonB = pillonA.clone();
+          pillonB.position.x+=boothX;
+          base.add(pillonA);
+          base.add(pillonB);
+
+          //canopy - навес
+          var linesCount = 6;
+          var lineSide = boothX/linesCount;
+          geometry = new THREE.BoxGeometry(lineSide,0.5,boothZ);
+          var circleGeometry = new THREE.CylinderGeometry(lineSide/2,lineSide/2,0.5,30,1,false,-Math.PI/2,Math.PI);
+          var whiteMaterial = new THREE.MeshLambertMaterial({color: 'white'});
+          var firstX = base.position.x+lineSide/2-(linesCount/2)*lineSide;
+          for(var i=0; i<linesCount; i++)
+          {
+            if(i%2==0)
+            {
+              var line = new THREE.Mesh(geometry, material);
+              var circleFront = new THREE.Mesh(circleGeometry, material);
+            }
+            else {
+              var line = new THREE.Mesh(geometry, whiteMaterial);
+              var circleFront = new THREE.Mesh(circleGeometry, whiteMaterial);
+            }
+            line.position.y+=boothY/2+pillonH;
+            line.position.x = firstX+i*lineSide;
+            line.receiveShadow = true;
+            line.castShadow = true;
+
+            circleFront.rotation.x = Math.PI/2;
+            circleFront.position.set(firstX+i*lineSide,boothY/2+pillonH,boothZ/2-0.5);
+            circleFront.receiveShadow = true;
+            circleFront.castShadow = true;
+            circleBack = circleFront.clone();
+            circleBack.position.z = -circleFront.position.z;
+            base.add(line);
+            base.add(circleFront);
+            base.add(circleBack);
+          }
+          //add bottles
+          var bottlesCount = THREE.Math.randInt(10,25);
+          for(var i=0;i<bottlesCount;i++)
+          {
+            var bottle = makeWaterBottle();
+						var scaleParam = THREE.Math.randFloat(0.7,0.9);
+            bottle.position.set(
+              THREE.Math.randFloat(-boothX/2+1,boothX/2-1),
+              boothY/2+scaleParam*2.5,
+              THREE.Math.randFloat(-boothZ/2+1,boothZ/2-1)
+            );
+						if(i%2==0)
+						bottle.material.color = new THREE.Color(Math.random()+0.4,0.8,0.1);
+						bottle.scale.set(scaleParam,scaleParam,scaleParam);
+            base.add(bottle);
+          }
+
+					return base;
+      }
+
+      function makeWaterBottle()
+      {
+        var bottleR =1;
+        geometry = new THREE.CylinderGeometry(bottleR,bottleR,5,10);
+        material = new THREE.MeshPhongMaterial({color: new THREE.Color(0.1,0.5,Math.random()+0.5)});
+        var bottle = new THREE.Mesh(geometry, material);
+        bottle.castShadow = true;
+        bottle.receiveShadow = true;
+        geometry = new THREE.SphereGeometry(2*bottleR,10,12);
+        var sphere = new THREE.Mesh(geometry,material);
+        sphere.scale.set(0.5,0.7,0.5);
+        sphere.position.y+=5/2;
+        sphere.castShadow = true;
+        sphere.receiveShadow = true;
+        bottle.add(sphere);
+        bottle.scale.set(5,4,5);
+        //label
+        geometry = new THREE.CylinderGeometry(bottleR+0.02,bottleR+0.02,1,10);
+        material = new THREE.MeshPhongMaterial({color: new THREE.Color(Math.random()+0.7,0.1,0.4)});
+        var label = new THREE.Mesh(geometry, material);
+        label.position.set(0,0,0);
+        label.receiveShadow = true;
+        bottle.add(label);
+        //cap
+        var cap = label.clone();
+        cap.scale.set(0.5,0.5,0.5);
+        cap.receiveShadow = true;
+        cap.castShadow = true;
+        cap.position.copy(sphere.position);
+        cap.position.y += 0.7*2*bottleR;
+        bottle.add(cap);
+        return bottle;
+      }
+
       makeFerrisWheel();
+			var booth1 = makeSquareBooth();
+			scene.add(booth1);
 
 			function animate( t )
 			{
-        scene.simulate(1/10);
         scene.rotation.y = t/2;
         ringA.rotation.z = -t/5;
         ringB.rotation.z = -t/5;
@@ -155,7 +286,6 @@
         {
           cabins[i].position.setFromSphericalCoords(torusOutterR+torusInnerR,2*Math.PI/10*i+t/5,Math.PI/2);
         }
-        scene.__dirtyRotation = true;
 			}
 
 		</script>
