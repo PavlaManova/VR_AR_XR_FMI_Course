@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Лунапарк</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+    <script src="physi.js"></script>
+		<script src="StereoEffect.js"></script>
+	</head>
+
+	<body>
+		<script>
+			//vaxSceneInit( vaxInitParallax, -1 );
+      vaxSceneInit();
+
+      //light.position.z-=800;
+      camera.position.set( 0, 80, 250 );
+			camera.lookAt( new THREE.Vector3(0,20,0) );
+
+      scene.remove(object);
+      scene.remove(ground);
+      scene.background = new THREE.Color(0xAAC9DE);
+
+      //constants
+      const groundX=400;
+      const groundY = 8;
+      const groundZ = 250;
+      const pillonsR = 2.5;
+      const pillonHaight = 90;
+      const furrow = 30;
+      const torusInnerR = 2;
+      const torusOutterR = 60;
+      const cabinR = pillonsR*4;
+
+      var geometry = new THREE.BoxGeometry(groundX,groundY,groundZ);
+      var ground = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshPhongMaterial({color:'lightgreen'})),0);
+      ground.position.y-=groundY/2;
+      scene.add(ground);
+
+      var ringA;
+      var ringB;
+      var cabins = [];
+
+      var wheelMaterial = new THREE.MeshPhongMaterial({color: new THREE.Color(0xF4E2B6)});
+
+      //ferris wheel
+      function makeFerrisWheel()
+      {
+        //pillons
+        var support = new THREE.Group();
+        geometry = new THREE.CylinderGeometry(pillonsR, pillonsR, pillonHaight,30);
+        var pillonA = new THREE.Mesh(geometry, wheelMaterial);
+        var pillonB = pillonA.clone();
+        pillonA.rotation.z = -Math.PI/9;
+        var temp = pillonHaight*Math.sin(Math.PI/9)/2+1;
+        var temp2 = pillonHaight*Math.cos(Math.PI/9)/2-1;
+        pillonA.position.set(-temp, temp2, groundZ/2-10);
+        pillonB.rotation.z = Math.PI/9;
+        pillonB.position.set(temp, temp2, groundZ/2-10);
+
+        support.add(pillonA);
+        support.add(pillonB);
+
+        var support2 = support.clone();
+        support2.position.z-=furrow;
+
+        var h = furrow+2*pillonsR;
+        geometry = new THREE.CylinderGeometry(pillonsR*2, pillonsR*2, h,30);
+        var center = new THREE.Mesh(geometry, wheelMaterial);
+        center.position.set(0,temp2*2+5,groundZ/2-furrow+5);
+        center.rotation.x = Math.PI/2;
+
+        //toruses
+        geometry = new THREE.TorusGeometry(torusOutterR, torusInnerR,30, 60);
+        ringA = new THREE.Mesh(geometry,wheelMaterial);
+
+        ringA.position.copy(center.position);
+        ringA.position.z-=furrow/2-pillonsR*3+0.5;
+
+        ringB = ringA.clone();
+        ringB.position.copy(ringA.position);
+        ringB.position.z=center.position.z+furrow/2-pillonsR*3+0.5;
+
+        //segments
+        for(var i=0;i<5; i++)
+        {
+          geometry = new THREE.CylinderGeometry(pillonsR/3, pillonsR/3, torusOutterR*2,30);
+          var segment = new Physijs.CylinderMesh(
+            geometry,
+            Physijs.createMaterial(new THREE.MeshPhongMaterial({color: new THREE.Color(0xF4E2B6)})),
+            0
+          );
+          segment.rotation.z = i*Math.PI/5;
+
+          var segment2 = new Physijs.CylinderMesh(
+            geometry,
+            Physijs.createMaterial(new THREE.MeshPhongMaterial({color: new THREE.Color(0xF4E2B6)})),
+            0
+          );
+          segment2.rotation.z = i*Math.PI/5;
+          ringA.add(segment);
+          ringB.add(segment2);
+        }
+
+        //bars
+        for(var i=0; i<10; i++)
+        {
+          geometryP = new THREE.CylinderGeometry(0.5,0.5,furrow/2);
+          var bar = new THREE.Mesh(geometryP, new THREE.MeshPhongMaterial({color: new THREE.Color(0xF4E2B6)}));
+          bar.position.setFromSphericalCoords(torusOutterR+torusInnerR,2*Math.PI/10*i,Math.PI/2);
+          bar.rotation.x=Math.PI/2;
+          bar.position.z+=furrow/4;
+          ringA.add(bar);
+        }
+
+
+        scene.add(support);
+        scene.add(support2);
+        scene.add(center);
+        scene.add(ringA);
+        scene.add(ringB);
+
+        //cabins
+        geometry = new THREE.CylinderGeometry(cabinR, cabinR, furrow/3,
+                                              30,1, false, -Math.PI/2, Math.PI);
+
+        var cabinsGroup = new THREE.Group();
+        cabinsGroup.position.copy(ringA.position);
+        scene.add(cabinsGroup);
+        cabinsGroup.position.z+=8;
+        cabinsGroup.position.y-=13;
+        for(var i=0; i<10; i++)
+        {
+          var material = Physijs.createMaterial(
+          new THREE.MeshPhongMaterial({color: new THREE.Color(Math.random()+0.5,Math.random(),Math.random()+0.1), side: THREE.DoubleSide}));
+          var cabin = new THREE.Mesh(geometry, material);
+          cabin.rotation.x = Math.PI/2;
+          cabin.position.setFromSphericalCoords(torusOutterR+torusInnerR,2*Math.PI/10*i,Math.PI/2);
+          var geometryP = new THREE.TorusGeometry(2*cabinR-0.5,0.5,8,5, Math.PI);
+          var materialP = new THREE.MeshPhongMaterial({color: new THREE.Color(0xF4E2B6)});
+          var constraint = new THREE.Mesh(geometryP, materialP);
+          constraint.scale.set(0.5,0.7,1);
+          constraint.rotation.x = -Math.PI/2;
+          cabin.add(constraint);
+          cabins.push(cabin);
+          cabinsGroup.add(cabin);
+        }
+      }
+       makeFerrisWheel();
+			function animate( t )
+			{
+        scene.simulate(1/10);
+        scene.rotation.y = t/2;
+        ringA.rotation.z = -t/5;
+        ringB.rotation.z = -t/5;
+        for(var i=0; i<10; i++)
+        {
+          cabins[i].position.setFromSphericalCoords(torusOutterR+torusInnerR,2*Math.PI/10*i+t/5,Math.PI/2);
+        }
+        scene.__dirtyRotation = true;
+			}
+
+		</script>
+	</body>
+</html>
