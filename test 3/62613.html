@@ -14,7 +14,7 @@
 
 	<body>
 		<script>
-			vaxSceneInit( vaxInitParallax, -3 );
+			vaxSceneInit( vaxInitParallax, -2 );
       //vaxSceneInit();
 
       renderer.shadowMap.enabled = true;
@@ -28,6 +28,9 @@
       scene.remove(object);
       scene.remove(ground);
       scene.background = new THREE.Color(0xAAC9DE);
+
+			//rendering double sided material better
+			light.shadow.bias = - 0.001;
 
       //constants
       const groundX=400;
@@ -243,6 +246,82 @@
 					return base;
       }
 
+			function makeRoundBooth()
+      {
+          var geometry = new THREE.CylinderGeometry(boothX,boothX,2*boothY,30,1, true);
+          var randColor = new THREE.Color(Math.random(),Math.random(),Math.random());
+          var material = new THREE.MeshLambertMaterial({color: randColor, side:THREE.DoubleSide});
+          var base = new THREE.Mesh(geometry, material);
+          base.receiveShadow = true;
+          base.castShadow = true;
+
+					var base2 = base.clone();
+					base2.receiveShadow=true;
+					base2.castShadow=true;
+					base2.scale.set(0.5,1,0.5);
+					base.add(base2);
+
+					geometry = new THREE.RingGeometry(0.5*boothX,boothX,30);
+					var top = new THREE.Mesh(geometry, material);
+					top.position.y+=boothY;
+					top.receiveShadow=true;
+					top.castShadow=true;
+					top.rotation.x=Math.PI/2;
+					base.add(top);
+
+          //pillons
+          var pillonH = 40;
+          geometry = new THREE.CylinderGeometry(1,1,pillonH,30);
+          var woodMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(0x7E4B22)});
+          var pillonA = new THREE.Mesh(geometry, woodMaterial);
+          pillonA.position.set(-boothX+1,boothY+pillonH/2,0);
+          pillonA.receiveShadow = true;
+          pillonA.castShadow = true;
+          var pillonB = pillonA.clone();
+          pillonB.position.x+=boothX*2-2;
+          base.add(pillonA);
+          base.add(pillonB);
+
+          //canopy - навес
+					geometry = new THREE.CylinderGeometry(boothX,boothX,2*boothY,30,1, true);
+					var whiteMaterial = new THREE.MeshLambertMaterial({color: 'white'});
+					var canopy =new THREE.Mesh(geometry,whiteMaterial);
+					canopy.receiveShadow = true;
+					canopy.castShadow = true;
+					canopy.scale.set(1,0.1,1);
+					canopy.position.y+=pillonH+boothY;
+					geometry = new THREE.RingGeometry(0,boothX,30);
+					var canopyTop = new THREE.Mesh(geometry, material);
+					canopyTop.position.y+=pillonH+boothY+0.1*boothY;
+					canopyTop.receiveShadow = true;
+					canopyTop.castShadow = true;
+					canopyTop.rotation.x=Math.PI/2;
+					base.add(canopy);
+					base.add(canopyTop);
+
+					//cotton pool
+					geometry = new THREE.RingGeometry(0,boothX/2,30);
+					var candyMaterial = new THREE.MeshPhongMaterial({color: new THREE.Color(0x5A49EC)});
+					var pool = new THREE.Mesh(geometry,candyMaterial);
+					pool.position.y+=boothY-5;
+					pool.receiveShadow = true;
+					pool.castShadow = true;
+					pool.rotation.x=-Math.PI/2;
+					base.add(pool);
+
+          //add cotton candies
+          var cottons = THREE.Math.randInt(4,10);
+          for(var i=0;i<cottons;i++)
+          {
+            var cotton = makeCottonCandy();
+            cotton.position.setFromSphericalCoords(boothX-3,Math.PI/2,THREE.Math.randFloat(-2*Math.PI,2*Math.PI));
+						cotton.position.y+=boothY+10;
+            base.add(cotton);
+          }
+
+					return base;
+      }
+
       function makeWaterBottle()
       {
         var bottleR =1;
@@ -277,6 +356,27 @@
         return bottle;
       }
 
+			function makeCottonCandy()
+      {
+        var geometry = new THREE.SphereGeometry(5,40,40);
+				var material = new THREE.MeshNormalMaterial({opacity:0.9});
+				var cotton = new THREE.Mesh(geometry, material);
+				var randY=THREE.Math.randFloat(1,1.3);
+				cotton.scale.set(THREE.Math.randFloat(0.6,1),randY,THREE.Math.randFloat(0.7,1));
+				cotton.receiveShadow=true;
+				cotton.castShadow = true;
+
+				var pillonH = 10;
+				geometry = new THREE.CylinderGeometry(0.5,0.5,pillonH,30);
+				var woodMaterial = new THREE.MeshLambertMaterial({color: new THREE.Color(0x7E4B22)});
+				var pillonA = new THREE.Mesh(geometry, woodMaterial);
+				pillonA.position.y-=randY*5;
+				pillonA.receiveShadow = true;
+				pillonA.castShadow = true;
+				cotton.add(pillonA);
+        return cotton;
+      }
+
 			function makePaths()
 			{
 				//главна улица
@@ -301,7 +401,6 @@
 				verticalPath.position.y+=0.03;
 				scene.add(verticalPath);
 			}
-
 
 			function placeBooths()
 			{
@@ -337,11 +436,20 @@
 				booth6.position.x+=30;
 				booth6.position.z-=40;
 
-				scene.add(booth1,booth2,booth3, booth4, booth5, booth6);
+				var booth7 = makeRoundBooth();
+				var randParam = THREE.Math.randFloat(0.4,0.6);
+				booth7.scale.set(randParam,0.7,randParam);
+				booth7.position.x+=100;
+				booth7.position.z-=40;
+
+				var booth8 = makeRoundBooth();
+				var randParam = THREE.Math.randFloat(0.4,0.6);
+				booth8.scale.set(randParam,0.7,randParam);
+				booth8.position.x-=100;
+				booth8.position.z-=40;
+
+				scene.add(booth1,booth2,booth3, booth4, booth5, booth6, booth7, booth8);
 			}
-
-
-
 
 			var sun = new THREE.Mesh(
 				new THREE.IcosahedronGeometry( 1.5, 1 ),
@@ -355,6 +463,7 @@
 			makeFerrisWheel();
 			makePaths();
 			placeBooths();
+			makeRoundBooth();
 
 			function animate( t )
 			{
@@ -365,8 +474,7 @@
         {
           cabins[i].position.setFromSphericalCoords(torusOutterR+torusInnerR,2*Math.PI/10*i+t/5,Math.PI/2);
         }
-				sun.position.setFromSphericalCoords( 250, /*Math.PI/2+Math.sin(t/5)*/Math.PI/3, -t/3 );
-				//alert(sun.position.z);
+				sun.position.setFromSphericalCoords( 250, Math.PI/3, -t/3 );
 				light.position.copy( sun.position );
 			}
 
