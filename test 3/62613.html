@@ -14,8 +14,8 @@
 
 	<body>
 		<script>
-			//vaxSceneInit( vaxInitParallax, -2 );
-      vaxSceneInit();
+			vaxSceneInit( vaxInitParallax, 2 );
+      //vaxSceneInit();
 
       renderer.shadowMap.enabled = true;
 			light.shadow.mapSize = new THREE.Vector2( 1024*3, 1024*3 );
@@ -467,6 +467,8 @@
 
 			function animate( t )
 			{
+				renderer.domElement.style.width = 'calc(100% - 8em)';
+   			renderer.domElement.style.margin = '0 4em';
         scene.rotation.y = t/10;
         ringA.rotation.z = -t/5;
         ringB.rotation.z = -t/5;
