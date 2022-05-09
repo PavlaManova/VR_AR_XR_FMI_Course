@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>VR куб</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+
+			camera.position.set(0,0,0);
+			var sideMaterial = new THREE.MeshLambertMaterial({color:new THREE.Color(Math.random(),Math.random(),Math.random()), side:THREE.DoubleSide});
+
+			function makeCubeSide(size)
+			{
+				var geometry = new THREE.PlaneGeometry(size,size);
+				//var sideMaterial = new THREE.MeshLambertMaterial({color:new THREE.Color(Math.random(),Math.random(),Math.random())});
+
+				var base = new THREE.Mesh(geometry, sideMaterial);
+				var side = new THREE.Group();
+				side.add(base);
+				geometry = new THREE.ConeGeometry(3,10,36);
+				for (var i=0; i<300; i++)
+				{
+					var cone = new THREE.Mesh(geometry,
+																		new THREE.MeshPhongMaterial(
+																			{color: new THREE.Color(Math.random(),Math.random(),Math.random())}));
+					cone.position.set(THREE.Math.randFloatSpread(size),THREE.Math.randFloatSpread(size),0);
+					side.add(cone);
+				}
+				return side;
+			}
+
+			function makeCubeLid(size)
+			{
+				var geometry = new THREE.PlaneGeometry(size,size);
+				//var sideMaterial = new THREE.MeshLambertMaterial({color:new THREE.Color(Math.random(),Math.random(),Math.random())});
+
+				var base = new THREE.Mesh(geometry, sideMaterial);
+				base.rotation.x = -Math.PI/2;
+				var side = new THREE.Group();
+				side.add(base);
+				geometry = new THREE.ConeGeometry(3,10,36);
+				for (var i=0; i<300; i++)
+				{
+					var cone = new THREE.Mesh(geometry,
+																		new THREE.MeshPhongMaterial(
+																			{color: new THREE.Color(Math.random(),Math.random(),Math.random())}));
+					cone.position.set(THREE.Math.randFloatSpread(size),0+THREE.Math.randFloatSpread(0.02),THREE.Math.randFloatSpread(size));
+					side.add(cone);
+				}
+				return side;
+			}
+
+			var sideSize = 100;
+			var side1=makeCubeSide(sideSize);
+			side1.position.set(0,0,-sideSize/2);
+
+			var side2 = makeCubeSide(sideSize);
+			side2.position.set(0,0,sideSize/2);
+			side2.rotation.y = Math.PI;
+
+			var side3 = makeCubeSide(sideSize);
+			side3.rotation.y = Math.PI/2;
+			side3.position.set(-sideSize/2,0,0);
+
+			var side4 = makeCubeSide(sideSize);
+			side4.position.set(sideSize/2,0,0);
+			side4.rotation.y = -Math.PI/2;
+
+			scene.add(side1, side2, side3, side4);
+
+			var top1Side = makeCubeLid(sideSize);
+			top1Side.position.y= -sideSize/2;
+			scene.add(top1Side);
+
+			var top2Side = makeCubeLid(sideSize);
+			top2Side.position.y= sideSize/2;
+
+			scene.add(top1Side,top2Side);
+
+
+			function animate( t )
+			{
+				camera.rotation.x = -t;
+				light.position.copy(camera.position);
+				/*renderer.domElement.style.width = 'calc(100% - 8em)';
+   			renderer.domElement.style.margin = '0 4em';*/
+			}
+
+		</script>
+	</body>
+</html>
