@@ -86,10 +86,21 @@
 
 			scene.add(top1Side,top2Side);
 
+			window.addEventListener( "deviceorientation", deviceOrientation, true);
+
+			function deviceOrientation( event )
+			{
+				var alpha = THREE.Math.degToRad( event.alpha ),
+					beta = THREE.Math.degToRad( event.beta ),
+					gamma = THREE.Math.degToRad( event.gamma );
+
+				camera.rotation.set( beta, alpha, -gamma, 'YXZ' );
+			}
+
 
 			function animate( t )
 			{
-				camera.rotation.x = -t;
+				//camera.rotation.x = -t;
 				light.position.copy(camera.position);
 				/*renderer.domElement.style.width = 'calc(100% - 8em)';
    			renderer.domElement.style.margin = '0 4em';*/
