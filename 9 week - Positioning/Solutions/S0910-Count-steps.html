@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0910: Броене на крачки</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	
+	<body>
+		<div id="steps" style="text-align: center; font-size:10em;">0</steps>
+		
+		<script>
+			window.addEventListener( "devicemotion", deviceMotion, true);
+
+			var dataElem = document.getElementById('steps'),
+				steps = 0,
+				time = 0,
+				oldTime = 0;
+				
+			function deviceMotion( event )
+			{
+				time = Date.now();
+				
+				if( event.acceleration.y > 1 && time-oldTime > 500 )
+				{
+					steps++;
+					oldTime = time;
+					dataElem.innerHTML = steps;
+				}
+			}
+		</script>
+	</body>
+</html>
+
+

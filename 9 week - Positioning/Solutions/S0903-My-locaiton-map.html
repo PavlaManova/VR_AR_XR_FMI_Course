@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0903: Карта с моето положение</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+	</head>
+	
+	<body>
+		<script>
+		
+		// функция, която поисква геолокацията
+		function getLocation()
+		{
+			var result = document.getElementById( 'result' );
+			
+			// има ли я тази функционалност
+			if (navigator.geolocation)
+			{
+				navigator.geolocation.getCurrentPosition( geoSuccess );
+			}
+			else
+			{ 
+				result.innerHTML = "Браузърът не поддържа геолокация.";
+			}
+		}
+		
+		
+		// функция, която показва данните от геолокационен обект
+		function geoSuccess( position )
+		{
+			window.open( 'https://www.openstreetmap.org/#map=18/' + position.coords.latitude + '/' + position.coords.longitude );			 
+		}
+		
+		</script>
+		
+		<button onclick="getLocation()">Къде съм?</button>
+		<hr>
+		<div id="result" style="boder:solid 1px black"></div>
+	</body>
+</html>
+
+

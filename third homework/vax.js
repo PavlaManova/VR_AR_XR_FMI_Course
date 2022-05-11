@@ -35,14 +35,14 @@ function vaxInit()
 	document.body.appendChild( renderer.domElement );
 	document.body.style.margin = 0;
 	document.body.style.overflow = 'hidden';
-	
+
 	// включва статистика, само ако е дефиниран Stats
 	if( typeof Stats != 'undefined'	)
 	{
 		stats = new Stats();
 		document.body.appendChild( stats.dom );
 	}
-	
+
 	if( typeof Physijs != 'undefined' )
 		scene = new Physijs.Scene();
 	else
@@ -56,15 +56,15 @@ function vaxInit()
 		camera = new THREE.OrthographicCamera( -window.innerWidth/2, window.innerWidth/2, window.innerHeight/2, -window.innerHeight/2, 1, 1000 );
 
 	camera.position.set( 0, 0, 100 );
-	camera.lookAt( new THREE.Vector3(0,0,0) );
-	
+	//camera.lookAt( new THREE.Vector3(0,0,0) );
+
 	light = new THREE.PointLight();
 	light.position.set( 0, 150, 300 );
 	scene.add( light );
-	
+
 	window.addEventListener( 'resize', onWindowResize, false );
 	onWindowResize();
-	
+
 	renderer.setAnimationLoop( frame );
 }
 
@@ -75,7 +75,7 @@ function vaxInitAnaglyph( )
 	document.body.appendChild( renderer.domElement );
 	document.body.style.margin = 0;
 	document.body.style.overflow = 'hidden';
-	
+
 	if( typeof Stats != 'undefined'	)
 	{
 		stats = new Stats();
@@ -91,21 +91,21 @@ function vaxInitAnaglyph( )
 
 	camera = new THREE.PerspectiveCamera( 60, 1, 1, 10000 );
 	camera.focus = 10;
-				
+
 	camera.position.set( 0, 0, 100 );
 	camera.lookAt( new THREE.Vector3(0,0,0) );
-	
+
 	light = new THREE.PointLight();
 	light.position.set( 0, 150, 300 );
 	scene.add( light );
 
 	effect = new THREE.AnaglyphEffect( renderer );
 	effect.setSize( window.innerWidth, window.innerHeight );
-				
-				
+
+
 	window.addEventListener( 'resize', onWindowResizeAnaglyph, false );
 	onWindowResizeAnaglyph();
-	
+
 	renderer.setAnimationLoop( frameAnaglyph );
 }
 
@@ -116,7 +116,7 @@ function vaxInitParallax( eyeSep = 1 )
 	document.body.appendChild( renderer.domElement );
 	document.body.style.margin = 0;
 	document.body.style.overflow = 'hidden';
-	
+
 	if( typeof Stats != 'undefined'	)
 	{
 		stats = new Stats();
@@ -132,10 +132,10 @@ function vaxInitParallax( eyeSep = 1 )
 
 	camera = new THREE.PerspectiveCamera( 60, 1, 1, 10000 );
 	camera.focус = 10;
-				
+
 	camera.position.set( 0, 0, 100 );
 	camera.lookAt( new THREE.Vector3(0,0,0) );
-	
+
 	light = new THREE.PointLight();
 	light.position.set( 0, 150, 300 );
 	scene.add( light );
@@ -143,11 +143,11 @@ function vaxInitParallax( eyeSep = 1 )
 	effect = new THREE.StereoEffect( renderer );
 	effect.setSize( window.innerWidth, window.innerHeight );
 	effect.setEyeSeparation( eyeSep );
-				
-				
+
+
 	window.addEventListener( 'resize', onWindowResizeAnaglyph, false ); // преизползваме анаглифния случай
 	onWindowResizeAnaglyph();
-	
+
 	renderer.setAnimationLoop( frameAnaglyph ); // преизползваме анаглифния случай
 }
 
@@ -159,7 +159,7 @@ function onWindowResize( event )
 	camera.updateProjectionMatrix();
 
 	renderer.setSize( window.innerWidth, window.innerHeight, true );
-}			
+}
 
 
 function onWindowResizeAnaglyph( event )
@@ -168,7 +168,7 @@ function onWindowResizeAnaglyph( event )
 	camera.updateProjectionMatrix();
 
 	effect.setSize( window.innerWidth, window.innerHeight, true );
-}			
+}
 
 
 var oldTime = 0;
@@ -182,13 +182,13 @@ function frame( time )
 	oldTime = time;
 	if( accTime < 1000/60 ) return;
 	accTime = 0;
-	
+
 	if( animate ) animate( time/1000, (time-setTime)/1000 );
-	
+
 	setTime = time;
-	
+
 	stats?.update();
-	
+
 	renderer.render( scene, camera );
 }
 
@@ -203,11 +203,11 @@ function frameAnaglyph( time )
 	accTime = 0;
 
 	if( animate ) animate( time/1000, (time-setTime)/1000 );
-	
+
 	setTime = time;
-	
+
 	stats?.update();
-	
+
 	effect.render( scene, camera );
 }
 
@@ -216,21 +216,21 @@ function frameAnaglyph( time )
 function vaxSceneInit( vax = vaxInit, vatInitParam = 0 )
 {
 	vax( vatInitParam );
-	
+
 	// включваме сенки
 	renderer.shadowMap.enabled = true;
-				
+
 	// фиксирана гледна точка
 	camera.position.set( 0, 100, 150 );
 	camera.lookAt( new THREE.Vector3(0,20,0) );
 
 	// наличната светлина я правим по-слаба
 	light.intensity = 0.75;
-	
+
 	// околна светлина за по-бледи сенки
 	ambientLight = new THREE.AmbientLight('gold',0.25);
 	scene.add( ambientLight );
-	
+
 	// прожекторна светлина за сенки
 	spotLight = new THREE.SpotLight('white',0.5,0,1.0,1.0);
 	spotLight.shadow.mapSize = new THREE.Vector2( 1024*2, 1024*2 );
@@ -263,13 +263,13 @@ function pillar( center, material )
 {
 	var height = center.y;
 	center = new THREE.Vector3( center.x, 0, center.z );
-	
-	var spline = new THREE.QuadraticBezierCurve( 
+
+	var spline = new THREE.QuadraticBezierCurve(
 		new THREE.Vector3( Math.max(1+height/1.5,10), 0, 0 ),
 		new THREE.Vector3( -3, 0, 0 ),
 		new THREE.Vector3( 4, height-4, 0 )
 	);
-	
+
 	var points = [];
 	for ( var i = 0; i <= 32; i ++ )
 	{
@@ -277,7 +277,7 @@ function pillar( center, material )
 		points.push( new THREE.Vector2(p.x,p.y) );
 	}
 
-	var spline = new THREE.CubicBezierCurve( 
+	var spline = new THREE.CubicBezierCurve(
 		new THREE.Vector3( 4, height-4, 0 ),
 		new THREE.Vector3( 4+6*4/(height-4), height, 0 ),
 		new THREE.Vector3( 6, height+5, 0 ),
@@ -295,7 +295,7 @@ function pillar( center, material )
 	);
 	pillar.castShadow = true;
 	pillar.receiveShadow = true;
-	pillar.position.copy( center );	
-	
+	pillar.position.copy( center );
+
 	return pillar;
 }

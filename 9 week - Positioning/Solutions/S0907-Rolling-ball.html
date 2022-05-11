@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0907: Търкаляща се топка</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			scene.background = new THREE.Color( 'white' );
+
+			light.position.set( 100, 200, -50 );
+			
+			camera.position.set( 0, 120, 0 );
+			camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+			
+			// жълто поле
+			var geometry = new THREE.BoxGeometry( 50, 1, 100 ),
+				material = new THREE.MeshPhongMaterial( {color: 'yellow'} ),
+				board = new THREE.Mesh( geometry, material );
+			scene.add( board );
+			
+			// топка
+			var geometry = new THREE.SphereGeometry( 5, 32 ),
+				material = new THREE.MeshPhongMaterial( {color: 'crimson'} ),
+				ball = new THREE.Mesh( geometry, material );
+			
+			scene.add( ball );
+			
+			// наклон
+			var slopeX = 0,
+				slopeY = 0;
+				
+				
+			// слушаме за събитието на ориентацията на устройство
+			window.addEventListener( "deviceorientation", deviceOrientation, true);
+
+			// функция, която търкаля топката според наклона на устройството
+			function deviceOrientation( event )
+			{
+				slopeX = event.beta;
+				slopeY = event.gamma;
+			}
+			
+			function animate( t, dT )
+			{
+				ball.position.x = THREE.Math.clamp( ball.position.x+3*slopeY * dT, -20, 20 );
+				ball.position.z = THREE.Math.clamp( ball.position.z+3*slopeX * dT, -45, 45 );
+			}
+			
+		</script>
+	</body>
+</html>
+
+

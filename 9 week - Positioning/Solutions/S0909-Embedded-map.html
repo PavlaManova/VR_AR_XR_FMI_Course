@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0909: Вградена карта</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<style>
+			iframe {
+				width: 100%;
+			}
+		</style>
+		
+		<script>
+		function done()
+		{
+			if (navigator.geolocation)
+			{
+				navigator.geolocation.getCurrentPosition( function( position )
+					{
+						var latitude  = position.coords.latitude,
+							longitude = position.coords.longitude,
+							iframe = document.getElementById('map');
+							
+						// за дебъг цели -- Петте кьошета
+						//latitude = 42.68947;
+						//longitude = 23.31398;
+						
+						iframe.innerHTML = '<iframe id="map" width="800" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox='+(longitude-0.001)+','+(latitude-0.001)+','+(longitude+0.001)+','+(latitude+0.001)+'&layer=hot&marker='+latitude+','+longitude+'" style="border: 1px solid black;"></iframe>';
+					}
+				);
+			}
+		}	
+		</script>
+	</head>
+	
+	<body onload="done()">
+		Тук сме ... приблизително:<br>
+		<div id="map"></div>
+	</body>
+</html>
+
+

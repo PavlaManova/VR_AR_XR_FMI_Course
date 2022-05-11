@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0903: Грешка при GPS координати</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+	</head>
+	
+	<body>
+		<noscript>
+			Бразърът не поддържа геолокация.
+		</noscript>
+		
+		<script>
+		
+		// функция, която поисква геолокацията
+		function getLocation()
+		{
+			var result = document.getElementById( 'result' );
+			
+			// има ли я тази функционалност
+			if (navigator.geolocation)
+			{
+				navigator.geolocation.getCurrentPosition( geoSuccess, geoFailure );
+			}
+			else
+			{ 
+				result.innerHTML = "Браузърът не поддържа геолокация.";
+			}
+		}
+		
+		
+		// функция, която показва данните от геолокационен обект
+		function geoSuccess( position )
+		{
+			var result = document.getElementById( 'result' );
+			 
+			result.innerHTML += '<br>Географска ширина: ' + position.coords.latitude;
+			result.innerHTML += '<br>Географска дължина: ' + position.coords.longitude;
+			result.innerHTML += '<br>Вероятност: 95%';
+			result.innerHTML += '<br>Точност: ' + position.coords.accuracy + ' метра';
+		}
+		
+		
+		// функция, която показва грешка
+		function geoFailure( error )
+		{
+			var result = document.getElementById( 'result' );
+	
+			if( error.code == error.POSITION_UNAVAILABLE )
+				result.innerHTML = 'Геолокацията е недостъпна.';
+			else if( error.code == error.PERMISSION_DENIED )
+				result.innerHTML = 'Потребителят не се е съгласил да сподели геолокацията си.';
+			else if( error.code == error.TIMEOUT )
+				result.innerHTML = 'Времето за извличане на данните е изтече.';
+			else if( error.code == error.UNKNOWN_ERROR )
+				result.innerHTML = 'Неизвестна грешка при извличане на геолокацията.';
+		}
+		
+		</script>
+		
+		<button onclick="getLocation()">Мои координати</button>
+		<hr>
+		<div id="result" style="boder:solid 1px black"></div>
+	</body>
+</html>
+
+

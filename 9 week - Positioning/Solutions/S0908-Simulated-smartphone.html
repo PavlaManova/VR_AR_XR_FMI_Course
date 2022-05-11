@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0908: Симулиран смартфон</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			scene.background = new THREE.Color( 'white' );
+
+			camera.position.set( 0, 0, 20 );
+			camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+			
+			// смартфон
+			var smartphone = new THREE.Group();
+			
+			// корпус
+			var geometry = new THREE.BoxGeometry( 7, 0.8, 15 ),
+				material = new THREE.MeshPhongMaterial( {color: 'black', shininess: 50} ),
+				board = new THREE.Mesh( geometry, material );
+				
+			// екран
+			var geometry = new THREE.BoxGeometry( 6.5, 0.8, 14.5 ),
+				material = new THREE.MeshPhongMaterial( {color: 'aliceblue', shininess: 50} ),
+				screen = new THREE.Mesh( geometry, material );
+				screen.position.y = 0.05;
+				
+			// USB
+			var geometry = new THREE.BoxGeometry( 0.8, 0.2, 0.1 ),
+				material = new THREE.MeshPhongMaterial( {color: 'gray', shininess: 50} ),
+				usb = new THREE.Mesh( geometry, material );
+				usb.position.z = 7.5;
+			
+				
+			smartphone.add( board, screen, usb );
+			scene.add( smartphone );
+			
+			// слушаме за събитието на ориентацията на устройство
+			window.addEventListener( "deviceorientation", deviceOrientation, true);
+
+			// функция, която търкаля топката според наклона на устройството
+			function deviceOrientation( event )
+			{
+				var alpha = THREE.Math.degToRad( event.alpha ),
+					beta = THREE.Math.degToRad( event.beta ),
+					gamma = THREE.Math.degToRad( event.gamma );
+					
+				smartphone.rotation.set( beta, alpha, -gamma, 'YXZ' );
+			}
+			
+		</script>
+	</body>
+</html>
+
+

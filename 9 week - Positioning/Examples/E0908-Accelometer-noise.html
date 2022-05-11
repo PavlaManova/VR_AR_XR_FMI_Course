@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0908: Шум на акселометъра</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			var O = new THREE.Vector3( 0, 0, 0 );
+			
+			camera.position.set( 50, 40, 150 );
+			camera.lookAt( O );
+			
+			// координатна система
+			scene.add( new THREE.ArrowHelper( new THREE.Vector3( 1,0,0), O, 80, 'red' ) );
+			scene.add( new THREE.ArrowHelper( new THREE.Vector3(-1,0,0), O, 80, 'red' ) );
+			scene.add( new THREE.ArrowHelper( new THREE.Vector3(0, 1,0), O, 80, 'green' ) );
+			scene.add( new THREE.ArrowHelper( new THREE.Vector3(0,-1,0), O, 80, 'green' ) );
+			scene.add( new THREE.ArrowHelper( new THREE.Vector3(0,0, 1), O, 80, 'blue' ) );
+			scene.add( new THREE.ArrowHelper( new THREE.Vector3(0,0,-1), O, 80, 'blue' ) );
+			
+			// слушаме за събитието на ориентацията на устройство
+			setTimeout( function() {window.addEventListener( "devicemotion", deviceMotion, true)}, 2000 );
+			
+			// точки
+			var n = 100,
+				k = 80, // мащаб
+				data = [];
+			
+			// функция, която показва данните на движението
+			function deviceMotion( event )
+			{
+				if( n>0 )
+				{
+					data.push( k*event.acceleration.x, k*event.acceleration.y, k*event.acceleration.z );
+					n--;
+				}
+				else
+				{
+					var geometry = new THREE.BufferGeometry();
+					geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( data, 3 ) );
+					
+					var material = new THREE.PointsMaterial( { color:'black', size:3 } );
+					var points = new THREE.Points( geometry, material );
+					scene.add( points );
+					
+					n--;
+				}
+			}
+			
+			function animate( t )
+			{
+				scene.rotation.y = t/2;
+			}
+			
+		</script>
+	</body>
+</html>
+
+

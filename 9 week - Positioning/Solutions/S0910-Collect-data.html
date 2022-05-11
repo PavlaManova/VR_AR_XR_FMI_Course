@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S0910: Събиране на данни</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			perspective = false;
+			vaxInit();
+
+			var V_SCALE = 30,
+				H_SCALE = 1;
+			
+			function segment( x1, y1, x2, y2, color )
+			{
+				var geometry = new THREE.BufferGeometry().setFromPoints( [
+						new THREE.Vector3(x1,y1*V_SCALE,0),
+						new THREE.Vector3(x2,y2*V_SCALE,0),
+					] );
+				var material = new THREE.LineBasicMaterial( {color: color} );
+				scene.add( new THREE.Line( geometry, material ) );
+			}
+			
+			segment( -2000,  0.00, 2000,  0.00, 'black' );
+			segment( -2000,  0.01, 2000,  0.01, 'black' );
+			segment( -2000, -0.01, 2000, -0.01, 'black' );
+			
+			segment( -2000, 0.5, 2000, 0.5, 'lightgray' );
+			segment( -2000, 1.0, 2000, 1.0, 'dimgray' );
+			segment( -2000, 1.5, 2000, 1.5, 'lightgray' );
+			segment( -2000, 2.0, 2000, 2.0, 'dimgray' );
+			segment( -2000, 2.5, 2000, 2.5, 'lightgray' );
+			segment( -2000, 3.0, 2000, 3.0, 'dimgray' );
+			
+			segment( -2000, -0.5, 2000, -0.5, 'lightgray' );
+			segment( -2000, -1.0, 2000, -1.0, 'dimgray' );
+			segment( -2000, -1.5, 2000, -1.5, 'lightgray' );
+			segment( -2000, -2.0, 2000, -2.0, 'dimgray' );
+			segment( -2000, -2.5, 2000, -2.5, 'lightgray' );
+			segment( -2000, -3.0, 2000, -3.0, 'dimgray' );
+
+			var x=-600,
+				q = 0;
+				
+			function addPoint( y )
+			{
+				segment( x, q, x+H_SCALE, y, 'crimson' );
+				q = y;
+				x += H_SCALE;
+			}
+			
+			window.addEventListener( "devicemotion", deviceMotion, true);
+
+			function deviceMotion( event )
+			{
+				addPoint( event.acceleration.y );
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0904: Географска карта</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+	</head>
+	
+	<body>
+		Изберете град. Отваря се в нова страница.
+		<br>
+		<br>
+		<button onclick="showLocation(0)">Токио</button>
+		<button onclick="showLocation(1)">Виена</button>
+		<button onclick="showLocation(2)">Торонто</button>
+		<button onclick="showLocation(3)">Източен Лондон</button>
+
+		<script>
+			var coordinates = [
+				[35.6719, 139.7440], // Токио
+				[48.1976,  16.3693], // Виена 
+				[43.6888, -79.4593], // Торонто
+				[-32.9927, 27.9032], // Източен Лондон 
+			]
+				
+			function showLocation( townIndex )
+			{
+				var latitude  = coordinates[townIndex][0],
+					longitude = coordinates[townIndex][1]
+					
+				window.open( 'https://www.openstreetmap.org/#map=12/' + latitude + '/' + longitude );
+			}
+		</script>
+	</body>
+</html>
+
+

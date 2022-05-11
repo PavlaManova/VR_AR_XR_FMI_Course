@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E0907: Движение на устройство</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+	</head>
+	
+	<body>
+		<h3>acceleration <span id="acceleration1"></span></h3>
+		<h3>acc + gravity <span id="acceleration2"></span></h3>
+
+		<script>
+			// слушаме за събитието на ориентацията на устройство
+			window.addEventListener( "devicemotion", deviceMotion, true);
+
+			function format( x )
+			{
+				if( x === null ) return 'null';
+				return x.toFixed(1);
+			}
+			
+			function xyz( v )
+			{
+				return 'X='+format(v.x)+' Y='+format(v.y)+' Z='+format(v.z);
+			}
+			
+			// функция, която показва данните на движението
+			function deviceMotion( event )
+			{
+				console.log( event );
+	
+				document.getElementById('acceleration1').innerHTML = xyz( event.acceleration );
+				document.getElementById('acceleration2').innerHTML = xyz( event.accelerationIncludingGravity );
+			}
+		</script>
+	</body>
+</html>
+
+
