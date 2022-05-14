@@ -58,7 +58,7 @@ function vaxInit( rendererOptions = {antialias:true} )
 	}
 
 	if(	perspective )
-		camera = new THREE.PerspectiveCamera( 30, 1, 400, 3000 );
+		camera = new THREE.PerspectiveCamera( 60, 1, 1, 1000 );
 	else
 		camera = new THREE.OrthographicCamera( -window.innerWidth/2, window.innerWidth/2, window.innerHeight/2, -window.innerHeight/2, 1, 1000 );
 

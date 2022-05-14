@@ -16,6 +16,7 @@
 		<script>
 			vaxInit();
 			onWindowResize();
+			camera.fov = 30;
 			camera.position.set(0,0,0);
 
 			 var textureCube = new THREE.CubeTextureLoader().load( [
@@ -44,7 +45,7 @@
 					randY = THREE.Math.randFloatSpread(window.innerHeight/2)
 					crystal.position.set(randX,
 					 randY,
-					 THREE.Math.randFloatSpread(1000));
+					 THREE.Math.randFloatSpread(2000));
 
 					crystals.push(crystal);
 					scene.add(crystal);
