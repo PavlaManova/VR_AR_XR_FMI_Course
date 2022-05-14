@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1113: Кубична текстура</title>
+		<meta charset="utf-8">
+
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="OrbitControls.js"></script>
+	</head>
+
+	<body>
+		<script>
+			vaxInit();
+			onWindowResize();
+
+			 var textureCube = new THREE.CubeTextureLoader().load( [
+				'cube/posx.jpg', 'cube/negx.jpg',
+				'cube/posy.jpg', 'cube/negy.jpg',
+				'cube/posz.jpg', 'cube/negz.jpg' ] );
+
+				textureCube.mapping = THREE.CubeRefractionMapping;
+				scene.background = textureCube;
+
+				var elementsCount = 100;
+				var geometry = new THREE.IcosahedronGeometry(20,0 ),
+					material = new THREE.MeshBasicMaterial(
+						{
+							envMap: textureCube,
+							refractionRatio: 0.98,
+						/*reflectivity: 1*/ }),
+				crystals=[];
+				light.position.copy(camera.position);
+
+				for(var i=0; i<elementsCount; i++)
+				{
+					var crystal = new THREE.Mesh( geometry, material );
+					var randX = THREE.Math.randFloatSpread(window.innerWidth/2),
+					randY = THREE.Math.randFloatSpread(window.innerHeight/2)
+					crystal.position.set(randX,
+					 randY,
+					 THREE.Math.randFloatSpread(1000));
+
+					crystals.push(crystal);
+					scene.add(crystal);
+				}
+
+			function animate( t )
+			{
+				for(var i=0; i<elementsCount; i++)
+				{
+					crystals[i].rotation.set(t/2,t/4,t/6);
+				}
+			}
+
+			window.addEventListener( "deviceorientation", deviceOrientation, true);
+			function deviceOrientation( event )
+			{
+				var alpha = event.alpha;
+				var	gamma = event.gamma+90;
+				var	beta = event.beta
+
+				if( alpha === null ) return;
+
+				if(beta <=-90 || beta >= 90)
+				{
+					alpha-=180;
+				}
+				else
+				{
+					gamma = 180+gamma;
+				}
+
+				alpha = THREE.Math.degToRad( alpha );
+				gamma = THREE.Math.degToRad( gamma );
+
+				camera.rotation.set( -gamma, -alpha, 0, 'YXZ' );
+			}
+
+		</script>
+
+	</body>
+</html>
