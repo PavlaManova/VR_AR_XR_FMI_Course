@@ -16,6 +16,7 @@
 		<script>
 			vaxInit();
 			onWindowResize();
+			camera.position.set(0,0,0);
 
 			 var textureCube = new THREE.CubeTextureLoader().load( [
 				'cube/posx.jpg', 'cube/negx.jpg',
@@ -31,7 +32,8 @@
 						{
 							envMap: textureCube,
 							refractionRatio: 0.98,
-						/*reflectivity: 1*/ }),
+						/*reflectivity: 1,
+					transparent: true,*/ }),
 				crystals=[];
 				light.position.copy(camera.position);
 
