@@ -9,20 +9,25 @@
 
 		<script src="three.min.js"></script>
 		<script src="vax.js"></script>
+		<script src="StereoEffect.js"></script>
 	</head>
 
 	<body>
 		<script>
-			vaxInit();
+			vaxInitParallax( );
+			//vaxInit();
 
-			camera.position.set(0,0,0);
+			camera.position.set( 0, 0, 0 );
+			camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+
+			light.position.set( 0, 0, 0 );
+
+
 			var sideMaterial = new THREE.MeshLambertMaterial({color:new THREE.Color(Math.random(),Math.random(),Math.random()), side:THREE.DoubleSide});
 
 			function makeCubeSide(size)
 			{
 				var geometry = new THREE.PlaneGeometry(size,size);
-				//var sideMaterial = new THREE.MeshLambertMaterial({color:new THREE.Color(Math.random(),Math.random(),Math.random())});
-
 				var base = new THREE.Mesh(geometry, sideMaterial);
 				var side = new THREE.Group();
 				side.add(base);
@@ -41,8 +46,6 @@
 			function makeCubeLid(size)
 			{
 				var geometry = new THREE.PlaneGeometry(size,size);
-				//var sideMaterial = new THREE.MeshLambertMaterial({color:new THREE.Color(Math.random(),Math.random(),Math.random())});
-
 				var base = new THREE.Mesh(geometry, sideMaterial);
 				base.rotation.x = -Math.PI/2;
 				var side = new THREE.Group();
@@ -53,12 +56,14 @@
 					var cone = new THREE.Mesh(geometry,
 																		new THREE.MeshPhongMaterial(
 																			{color: new THREE.Color(Math.random(),Math.random(),Math.random())}));
-					cone.position.set(THREE.Math.randFloatSpread(size),0+THREE.Math.randFloatSpread(0.02),THREE.Math.randFloatSpread(size));
+					cone.position.set(THREE.Math.randFloatSpread(size),THREE.Math.randFloatSpread(0.02),THREE.Math.randFloatSpread(size));
 					side.add(cone);
 				}
 				return side;
 			}
 
+
+			var cube = new THREE.Group();
 			var sideSize = 100;
 			var side1=makeCubeSide(sideSize);
 			side1.position.set(0,0,-sideSize/2);
@@ -75,39 +80,51 @@
 			side4.position.set(sideSize/2,0,0);
 			side4.rotation.y = -Math.PI/2;
 
-			scene.add(side1, side2, side3, side4);
+			cube.add(side1, side2, side3, side4);
 
 			var top1Side = makeCubeLid(sideSize);
 			top1Side.position.y= -sideSize/2;
-			scene.add(top1Side);
 
 			var top2Side = makeCubeLid(sideSize);
 			top2Side.position.y= sideSize/2;
 
-			scene.add(top1Side,top2Side);
+			cube.add(top1Side,top2Side);
+			cube.rotation.set(Math.PI,0,0);
+			scene.add(cube);
 
 			window.addEventListener( "deviceorientation", deviceOrientation, true);
-
 			function deviceOrientation( event )
 			{
-				var alpha = THREE.Math.degToRad( event.alpha ),
-					beta = THREE.Math.degToRad( event.beta ),
-					gamma = THREE.Math.degToRad( event.gamma );
+				var alpha = event.alpha;
 
-				//camera.rotation.set( 0, alpha, -gamma, 'XYZ'/*'YXZ'*/ );
-				//camera.rotation.set( 0, alpha, -gamma, 'XZY'/*'YXZ'*/ ); //gore dolu
-				//camera.rotation.set( 0, alpha, -gamma, 'YXZ'/*'YXZ'*/ ); //nastrani da nagore ne
-				//camera.rotation.set( 0, alpha, -gamma, 'YZX'/*'YXZ'*/ ); // nastrani da nagore ne
-				//camera.rotation.set( 0, alpha, -gamma, 'ZXY'/*'YXZ'*/ ); // nasrani i nagore sa razmeneni
-			    //camera.rotation.set( 0, alpha, -gamma, 'ZYX'/*'YXZ'*/ );
-					camera.rotation.set( 0, gamma, -alpha, 'ZYX'/*'YXZ'*/ );
+				//взимам ъгълът гама от 0 до 180
+				var	gamma = event.gamma+90;
+
+				var	beta = event.beta
+
+				if( alpha === null ) return;
+
+				if(beta <=-90 || beta >= 90) //когато ъгълът бета “играе” между 178, -178 и 1;2 градуса
+																		 //тогава телефонът се намира в полусферата над главата
+				{
+					alpha-=180; //за да се избегне прескачането от ъглите, които устройството дава
+				}
+				else
+				{
+					gamma = 180+gamma; //за да се направи пълна обиколка по окръжността около оста Х
+														 //в полусферата под главата гама от растяща става намаляваща функция
+														 //=> правим я растяща
+				}
+
+				alpha = THREE.Math.degToRad( alpha );
+				gamma = THREE.Math.degToRad( gamma );
+
+				camera.rotation.set( -gamma, -alpha, 0, 'YXZ' ); //трябваше да обърна знака на ъглите,
+																												 //не знам защо така се получи
 			}
-
 
 			function animate( t )
 			{
-				//camera.rotation.x = -t;
-				light.position.copy(camera.position);
 				/*renderer.domElement.style.width = 'calc(100% - 8em)';
    			renderer.domElement.style.margin = '0 4em';*/
 			}
