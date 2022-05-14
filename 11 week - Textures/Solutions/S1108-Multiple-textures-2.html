@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1108: Множество текстури 2</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			var texture = new THREE.TextureLoader().load( 'texture0123.jpg' ),
+				geometry = new THREE.BoxGeometry( 50, 50, 50 ),
+				material = new THREE.MeshBasicMaterial( {map: texture} ),
+				cube = new THREE.Mesh( geometry, material );
+				
+			texture.repeat.set( 1/4, 1 );
+			
+			scene.add( cube );
+			
+			function animate( t )
+			{
+				cube.material.map.offset.x = (Math.floor(t)%4)/4;
+				cube.rotation.set( t, t/2, t/3 );
+			}
+		</script>
+		
+	</body>
+</html>
+
+

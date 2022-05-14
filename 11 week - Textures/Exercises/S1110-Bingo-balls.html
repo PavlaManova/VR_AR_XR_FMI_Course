@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1110: Бинго топки</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			scene.background = new THREE.Color( 'black' );
+			
+			camera.fov = 30;
+			onWindowResize();
+			
+			var geometry = new THREE.IcosahedronGeometry( 5, 5 );
+			
+			var balls = [];
+			
+			for( var x = -44; x<=44; x+= 11 )
+			for( var y = -22; y<=22; y+= 11 )
+			{
+				var material = new THREE.MeshPhongMaterial( {color: THREE.Math.randInt(0,0xFFFFFF)} ),
+					ball = new THREE.Mesh( geometry, material );
+					ball.position.set( x, y, 0 );
+					
+				balls.push( ball );
+			}	
+			scene.add( ...balls );
+			
+			function animate( t )
+			{
+				for( var i=0; i<balls.length; i++ )
+				{
+					balls[i].rotation.set( t+i, t/2-i, t/3+i/2 );
+				}
+			}
+		</script>
+		
+	</body>
+</html>
+
+

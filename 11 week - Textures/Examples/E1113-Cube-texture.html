@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1113: Кубична текстура</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="OrbitControls.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			camera.fov = 30;
+			onWindowResize();
+	
+			var controls = new THREE.OrbitControls( camera, renderer.domElement );
+				controls.enableZoom = false;
+				controls.enablePan = false;
+				controls.enableDamping = true;
+				controls.minPolarAngle = 0.1;
+				controls.maxPolarAngle = Math.PI - 0.1;
+				controls.dampingFactor = 0.1;
+
+				
+			scene.background = new THREE.CubeTextureLoader().load( [
+				'cube/posx.jpg', 'cube/negx.jpg',
+				'cube/posy.jpg', 'cube/negy.jpg',
+				'cube/posz.jpg', 'cube/negz.jpg' ] );
+				
+
+			function animate()
+			{
+				controls.update();
+			}
+			
+		</script>
+		
+	</body>
+</html>
+
+

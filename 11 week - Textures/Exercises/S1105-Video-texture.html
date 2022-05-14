@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1105: Видео текстура</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<video id="video" src="video.mp4" autoplay loop style="display:none"></video>
+
+		<script>
+			vaxInit();
+			
+			// екран с видео
+			var geometry = new THREE.BoxGeometry( 96, 54, 3 ),
+				material = new THREE.MeshBasicMaterial( {color: 'white'} ),
+				tv = new THREE.Mesh( geometry, material );
+				
+			// черна рамка
+			var geometry = new THREE.BoxGeometry( 96+6, 54+6, 3-0.1 ),
+				material = new THREE.MeshBasicMaterial( {color: 'black'} ),
+				frame = new THREE.Mesh( geometry, material );
+				tv.add( frame );
+				
+			scene.add( tv );
+			
+			function animate( t )
+			{
+				tv.rotation.set( Math.sin(t)/4, t, Math.cos(t/2)/4 );
+			}
+		</script>
+		
+	</body>
+</html>
+
+

@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1108: Пикселизация и шум</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			var texture = new THREE.TextureLoader().load( 'stone_wall.jpg' );
+				texture.wrapS = THREE.RepeatWrapping;
+				texture.wrapT = THREE.RepeatWrapping;
+				texture.magFilter = THREE.NearestFilter;
+				texture.minFilter = THREE.NearestFilter;
+				texture.repeat.set( 50, 50 );
+				
+			var geometry = new THREE.BoxGeometry( 500, 1, 500 ),
+				material = new THREE.MeshBasicMaterial( {map: texture} ),
+				ground = new THREE.Mesh( geometry, material );
+				ground.position.y = 40;
+				
+			scene.add( ground );
+			
+			function animate( t )
+			{
+				ground.rotation.set( 0.4, t/140, 0, 'XYZ' );
+			}
+			
+		</script>
+		
+	</body>
+</html>
+
+

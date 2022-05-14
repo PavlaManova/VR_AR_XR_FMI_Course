@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1111: Прозрачна текстура</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			var texture = new THREE.TextureLoader().load( 'electronics.jpg' );
+				texture.wrapS = THREE.RepeatWrapping;
+				texture.wrapT = THREE.RepeatWrapping;
+				texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+				texture.repeat.set( 2, 2 );
+				
+			var alphaMap = new THREE.TextureLoader().load( 'electronics-alpha.jpg' );
+				alphaMap.wrapS = THREE.RepeatWrapping;
+				alphaMap.wrapT = THREE.RepeatWrapping;
+				alphaMap.anisotropy = renderer.capabilities.getMaxAnisotropy();
+				alphaMap.repeat.set( 2, 2 );
+				
+			var geometry = new THREE.BoxGeometry( 60, 60, 60 ),
+				material = new THREE.MeshBasicMaterial( {
+					map: texture,
+					alphaMap: alphaMap,
+					transparent: true,
+					side: THREE.DoubleSide,	
+				} ),
+				cube = new THREE.Mesh( geometry, material );
+				
+			scene.add( cube );
+			
+			function animate( t )
+			{
+				cube.rotation.set( t/2, t/3, t/4 );
+			}
+			
+		</script>
+		
+	</body>
+</html>
+
+

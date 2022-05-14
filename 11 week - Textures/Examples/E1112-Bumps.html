@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1112: Издутини</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			var bumpMap = new THREE.TextureLoader().load( 'electronics-alpha.jpg' );
+				bumpMap.wrapS = THREE.RepeatWrapping;
+				bumpMap.wrapT = THREE.RepeatWrapping;
+				bumpMap.anisotropy = renderer.capabilities.getMaxAnisotropy();
+				bumpMap.repeat.set( 2, 2 );
+				
+			var geometry = new THREE.BoxGeometry( 60, 60, 60 ),
+				material = new THREE.MeshPhongMaterial( {
+					bumpMap: bumpMap,
+					bumpScale: 0.15,
+					color: 'cornsilk'
+				} ),
+				cube = new THREE.Mesh( geometry, material );
+			
+			scene.add( cube );
+			
+			function animate( t )
+			{
+				cube.rotation.set( t/4, t/3, t/2 );
+			}
+			
+		</script>
+		
+	</body>
+</html>
+
+

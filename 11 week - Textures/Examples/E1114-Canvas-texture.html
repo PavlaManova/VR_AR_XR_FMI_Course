@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1114: Canvas текстура</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<canvas id="image" width="256" height="256" style="position:fixed; top: 1em; left: 1em; border: solid 1px black; z-index: 100"></canvas>
+		<script>
+			vaxInit();
+
+			// създаване на текстурата
+
+			// създаване на 2D контекст
+			var cnv = document.getElementById('image'),
+				ctx = cnv.getContext('2d');
+				
+			// фон 
+			ctx.fillStyle = 'cornsilk';
+			ctx.fillRect(0, 0, 256, 256);
+		
+			// две диагонални черти
+			ctx.lineStyle = 'chocolate';
+			ctx.lineWidth = 5;
+			ctx.beginPath();
+				ctx.moveTo( 0, 0 );
+				ctx.lineTo( 256, 256 );
+				ctx.stroke();
+			ctx.beginPath();
+				ctx.moveTo( 256, 0 );
+				ctx.lineTo( 0, 256 );
+				ctx.stroke();
+
+			// червени окръжности в ъглите
+			ctx.fillStyle = 'crimson';
+			ctx.beginPath();
+				ctx.arc( 0, 0, 50, 0, 2*Math.PI );
+				ctx.fill();
+			ctx.beginPath();
+				ctx.arc( 256, 0, 50, 0, 2*Math.PI );
+				ctx.fill();
+			ctx.beginPath();
+				ctx.arc( 0, 256, 50, 0, 2*Math.PI );
+				ctx.fill();
+			ctx.beginPath();
+				ctx.arc( 256, 256, 50, 0, 2*Math.PI );
+				ctx.fill();
+
+			// централен бял квадрат
+			ctx.fillStyle = 'white';
+				ctx.fillRect( 50, 50, 156, 156 );
+			ctx.lineStyle = 'chocolate';
+				ctx.strokeRect( 50, 50, 156, 156 );
+			
+			
+			// генериране на текстура
+			var texture = new THREE.CanvasTexture( cnv );
+				texture.anosotropy = renderer.capabilities.getMaxAnisotropy();
+					
+			var geometry = new THREE.BoxGeometry( 50, 50, 50 ),
+				material = new THREE.MeshLambertMaterial( {map: texture} ),
+				cube = new THREE.Mesh( geometry, material );
+				
+			// отместваме леко встрани
+			cube.position.x = 30;
+
+			scene.add( cube );
+			
+			function animate( t )
+			{
+				cube.rotation.set( t, t/2, t/3 );
+			}
+		</script>
+		
+	</body>
+</html>
+
+

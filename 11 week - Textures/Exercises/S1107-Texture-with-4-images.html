@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1107: Текстура с четири образа</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			camera.position.set( 0, 30, 50 );
+			camera.lookAt( new THREE.Vector3( 0, -10, 0 ) );
+			
+			var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+			
+			var texture = new THREE.TextureLoader().load( 'crosshatch.jpg' ),
+				material = new THREE.MeshBasicMaterial( {map: texture} ),
+				cube1 = new THREE.Mesh( geometry, material );
+				cube1.position.set( 15, 0, 15 );
+				
+			texture = new THREE.TextureLoader().load( 'crosshatch.jpg' );
+			material = new THREE.MeshBasicMaterial( {map: texture} ),
+			cube2 = new THREE.Mesh( geometry, material );
+			cube2.position.set( 15, 0, -15 );
+				
+			texture = new THREE.TextureLoader().load( 'crosshatch.jpg' );
+			material = new THREE.MeshBasicMaterial( {map: texture} ),
+			cube3 = new THREE.Mesh( geometry, material );
+			cube3.position.set( -15, 0, 15 );
+				
+			texture = new THREE.TextureLoader().load( 'crosshatch.jpg' );
+			material = new THREE.MeshBasicMaterial( {map: texture} ),
+			cube4 = new THREE.Mesh( geometry, material );
+			cube4.position.set( -15, 0, -15 );
+				
+			scene.add( cube1, cube2, cube3, cube4 );
+			
+			function animate( t )
+			{
+				scene.rotation.set( 0, t/2, 0 );
+			}
+		</script>
+		
+	</body>
+</html>
+
+

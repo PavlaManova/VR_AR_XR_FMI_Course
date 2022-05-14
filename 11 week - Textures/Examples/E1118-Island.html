@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1118: Остров</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="perlin.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			var light = light.clone();
+				light.position.set( 0, 30, -50 );
+				scene.add( light );
+			
+			// водна повърхност
+			var geometry = new THREE.PlaneGeometry( 95, 95, 50, 50 );
+				geometry.rotateX( -Math.PI/2 );
+			var material = new THREE.MeshPhongMaterial( {
+								color: 'steelblue',
+								shininess: 80,
+								transparent: true,
+								opacity: 0.95
+							} ),
+				water = new THREE.Mesh( geometry, material );
+				water.position.y = -11;
+				
+			scene.add( water );
+
+
+			// геометрия на терена
+			var geometry = new THREE.PlaneGeometry( 100, 100, 250, 250 );
+				geometry.rotateX( -Math.PI/2 );
+			
+			// издигане и снижаване с шум на Перлин
+			var pos = geometry.getAttribute( 'position' );
+			
+			for( var i = 0; i<pos.count; i++ )
+			{
+				var x = pos.getX( i ),
+					y = pos.getY( i ),
+					z = pos.getZ( i );
+				
+				if( Math.abs(x)>49 || Math.abs(z)>49 )
+					y = -10;
+				else
+				if( Math.abs(x)<45 && Math.abs(z)<45 )
+				{
+					y = 10+40*perlin.get( x/40, z/40 );
+					y += 5*perlin.get( x/10, z/10 );
+					y += 0.5*perlin.get( x/2, z/2 );
+					y += 0.2*perlin.get( x*4, z*4 );
+					
+					y = y * (1+Math.cos(x/60*Math.PI)) * (1+Math.cos(z/60*Math.PI)) / 4 - 5;
+				}
+					
+				pos.setY( i, y );
+			}
+			
+			geometry.computeVertexNormals();
+			
+			var material = new THREE.MeshLambertMaterial( {
+								color: 'linen',
+								side: THREE.DoubleSide
+							} ),
+				terrain = new THREE.Mesh( geometry, material );
+				terrain.position.y = -10;
+				
+			scene.add( terrain );
+				
+			
+			function animate( t )
+			{
+				var pos = water.geometry.getAttribute( 'position' );
+				
+				for( var i = 0; i<pos.count; i++ )
+				{
+					var x = pos.getX( i ),
+						y = pos.getY( i ),
+						z = pos.getZ( i );
+					
+					y = -2+0.15*Math.sin( 2*t + 2*Math.PI*perlin.get( x/0.5, z/0.5 ) );
+						
+					pos.setY( i, y );
+				}
+				pos.needsUpdate = true;
+				water.geometry.computeVertexNormals();
+				
+			
+				water.rotation.set( 0.25, t/5, 0 );
+				terrain.rotation.set( 0.25, t/5, 0 );
+			}
+		</script>
+		
+	</body>
+</html>
+
+

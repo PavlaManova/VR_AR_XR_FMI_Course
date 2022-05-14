@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1105: Правилни UV координати</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			var texture = new THREE.TextureLoader().load( 'bumps.jpg' );
+				texture.wrapS = THREE.RepeatWrapping;
+				texture.wrapT = THREE.RepeatWrapping;
+				
+			var geometry = new THREE.BoxGeometry( 90, 30, 15 ),
+				material = new THREE.MeshBasicMaterial( {map: texture} ),
+				wall = new THREE.Mesh( geometry, material );
+				
+			// промяна на UV
+			var uv = geometry.getAttribute('uv'),
+				normal = geometry.getAttribute('normal');
+				
+			for( var i=0; i<uv.count; i++ )
+			{
+				// ако нормалата има ненулева Y компонента, значи е горна (или долна) стена
+				if( Math.abs(normal.getY(i))>0.5 )
+					uv.setXY( i, 6*uv.getX(i), 1*uv.getY(i) );
+				else
+				// ако нормалата има ненулева Z компонента, значи е странична стена
+				if( Math.abs(normal.getX(i))>0.5 )
+					uv.setXY( i, 1*uv.getX(i), 2*uv.getY(i) );
+				else
+				// остава вариант само с предна (или задна) стена
+					uv.setXY( i, 6*uv.getX(i), 2*uv.getY(i) );
+			}
+			
+			scene.add( wall );
+			
+			function animate( t )
+			{
+				wall.rotation.set( 0.5, t/2, 0, 'ZXY' );
+			}
+			
+		</script>
+		
+	</body>
+</html>
+
+

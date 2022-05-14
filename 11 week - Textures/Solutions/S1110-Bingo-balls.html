@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1110: Бинго топки</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			// функция, която създава текстура за бинго топка
+			function randomBingoTexture()
+			{
+				// две случайни десетични цифри
+				function rDec()
+				{
+					return (Math.random()+'').slice(-2);
+				}
+				
+				// две случайни 16-тични цифри измежду 00, 80 и FF
+				function rHex()
+				{
+					var r = Math.random()*3;
+					if (r<1) return '00';
+					if (r<2) return '80';
+					return 'ff';
+				}
+
+				// създаване на 2D образ
+				var cnv = document.createElement('canvas');
+					cnv.width = 512;
+					cnv.height = 512;
+					//cnv.style.display = 'block';
+				var ctx = cnv.getContext('2d');
+				
+				// фон 
+				ctx.fillStyle = '#'+rHex()+rHex()+rHex();
+				ctx.fillRect(0, 0, 512, 512);
+			
+				// две дебели ивици
+				ctx.fillStyle = '#'+rHex()+rHex()+rHex();
+				ctx.fillRect(0, 100, 512, 50);
+				ctx.fillRect(0, 362, 512, 50);
+				
+				// две тънки ивици
+				ctx.fillStyle = '#'+rHex()+rHex()+rHex();
+				ctx.fillRect(0, 160, 512, 20);
+				ctx.fillRect(0, 332, 512, 20);
+				
+				// два бели кръга с черни контури
+				ctx.fillStyle = '#ffffff';
+				ctx.strokeStyle = '#000000';
+				ctx.beginPath();
+				ctx.arc(127,255,80,0,2*Math.PI);
+				ctx.fill();
+				ctx.stroke();
+				ctx.beginPath();
+				ctx.arc(385,255,80,0,2*Math.PI);
+				ctx.fill();
+				ctx.stroke();
+				
+				// две черни числа
+				ctx.fillStyle = '#000000';
+				ctx.font = '10em Arial Black';
+				ctx.textAlign="center";
+				var num=rDec();
+				ctx.fillText(num,127,290); 
+				ctx.fillText(num,385,290); 
+
+				// генериране на текстура
+				var texture = new THREE.CanvasTexture( cnv );
+					texture.repeat.set( 2, 1 );
+					texture.wrapS = THREE.RepeatWrapping;
+					texture.anosotropy = renderer.capabilities.getMaxAnisotropy();
+					
+				//cnv.style.display = 'none';
+				
+				return texture;
+			}
+			
+			scene.background = new THREE.Color( 'black' );
+			
+			camera.fov = 30;
+			onWindowResize();
+			
+			var geometry = new THREE.IcosahedronGeometry( 5, 5 );
+			
+			var balls = [];
+			
+			for( var x = -44; x<=44; x+= 11 )
+			for( var y = -22; y<=22; y+= 11 )
+			{
+				var material = new THREE.MeshPhongMaterial( {map: randomBingoTexture()} ),
+					ball = new THREE.Mesh( geometry, material );
+					ball.position.set( x, y, 0 );
+					
+				balls.push( ball );
+			}	
+			scene.add( ...balls );
+			
+			function animate( t )
+			{
+				for( var i=0; i<balls.length; i++ )
+				{
+					balls[i].rotation.set( t+i, t/2-i, t/3+i/2 );
+				}
+			}
+		</script>
+		
+	</body>
+</html>
+
+

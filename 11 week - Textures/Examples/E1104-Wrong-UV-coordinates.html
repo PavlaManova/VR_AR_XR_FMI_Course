@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1104: Грешни UV координати</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+			
+			var texture = new THREE.TextureLoader().load( 'cube.png' );
+				texture.wrapS = THREE.RepeatWrapping;
+				texture.wrapT = THREE.RepeatWrapping;
+				texture.repeat.set( 6, 2 );
+				
+			var geometry = new THREE.BoxGeometry( 90, 30, 15 ),
+				material = new THREE.MeshBasicMaterial( {map: texture} ),
+				wall = new THREE.Mesh( geometry, material );
+				
+			scene.add( wall );
+			
+			function animate( t )
+			{
+				wall.rotation.set( 0.5, 1+0*t/2, 0, 'ZXY' );
+			}
+			
+		</script>
+		
+	</body>
+</html>
+
+

@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1115: Шум</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<canvas id="image" width="256" height="256" style="position:fixed; top: 1em; left: 1em; border: solid 1px black; z-index: 100"></canvas>
+		<script>
+			vaxInit();
+
+			// създаване на текстурата
+
+			// създаване на 2D контекст
+			var cnv = document.getElementById('image'),
+				ctx = cnv.getContext('2d');
+				
+			// рисуване на шума - случаен цвят на пиксели
+			for( x=0; x<256; x++ )
+			for( y=0; y<256; y++ )
+			{
+				var R = THREE.Math.randInt(0,200),
+					G = THREE.Math.randInt(100,200),
+					B = THREE.Math.randInt(200,255);
+				ctx.fillStyle = 'rgb('+R+','+G+','+B+')';
+				ctx.fillRect( x, y, 1, 1 );
+			}
+			
+
+			
+			// генериране на текстура
+			var texture = new THREE.CanvasTexture( cnv );
+				texture.anosotropy = renderer.capabilities.getMaxAnisotropy();
+					
+			var geometry = new THREE.BoxGeometry( 50, 50, 50 ),
+				material = new THREE.MeshPhongMaterial( {map: texture, shininess: 50 } ),
+				cube = new THREE.Mesh( geometry, material );
+				
+			// отместваме леко встрани
+			cube.position.x = 30;
+
+			scene.add( cube );
+			
+			function animate( t )
+			{
+				cube.rotation.set( t, t/2, t/3 );
+			}
+		</script>
+		
+	</body>
+</html>
+
+
