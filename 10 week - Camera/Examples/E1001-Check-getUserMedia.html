@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1001: Проверка на getUserMedia</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	
+	<body>
+		<script>
+
+		function hasCamera()
+		{
+			if( navigator.mediaDevices )
+				if( navigator.mediaDevices.getUserMedia )
+					return true;
+					
+			return false;
+		}
+
+		function test()
+		{
+			var elem = document.getElementById('camera');
+			
+			if( hasCamera() )
+				elem.innerHTML = 'Има getUserMedia! &#x1F600;';
+			else
+				elem.innerHTML = 'Няма getUserMedia! &#x1F62D;';
+		}
+		</script>
+		
+		<button onclick="test()">Проверка</button>
+		<hr>
+		<h1 id="camera"></h1>
+	</body>
+</html>
+
+

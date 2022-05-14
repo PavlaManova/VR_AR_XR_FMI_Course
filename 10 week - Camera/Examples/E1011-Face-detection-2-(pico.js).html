@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1011: Разпознаване на лице 2 (pico.js)</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="pico.js"></script>
+	</head>
+	
+	<body>
+		<button onclick="detectFaces()">Търси лица</button>
+		<hr>
+		<canvas id="canvas" style="display:none"></canvas>
+		<img id="image" src="faces.jpg">
+
+		
+		<script>
+
+			function facefinder_classify_region( r, c, s, pixels, ldim )
+			{
+				return -1.0;
+			}
+			
+			// зареждане на базата данни за разпознаване на лица
+			fetch('facefinder').then( startFetching );
+			
+			function startFetching( response )
+			{
+				// зареждането е започнало
+				response.arrayBuffer().then( endFetching );
+			}
+			
+			function endFetching( buffer )
+			{
+				// всички данни са дошли
+				var bytes = new Int8Array( buffer );
+				facefinder_classify_region = pico.unpack_cascade(bytes);
+			}
+			
+			// преобразува цветна картинка в чернобяла				
+			function grayscale( data, pixelsCount)
+			{
+				var grayData = new Uint8Array( pixelsCount );
+				
+				for( var i=0,j=0; i<4*pixelsCount; i+=4,j++)
+					grayData[j] = (data[i]+data[i+1]+data[i+2])/3;
+					
+				return grayData;
+			}
+
+			// отриване на лица
+			function detectFaces()
+			{
+				var img = document.getElementById('image');
+
+				// копираме картинката в <canvas>, за да имаме достъп до данните ѝ
+				var context = document.getElementById('canvas').getContext('2d');
+				canvas.width = img.clientWidth;
+				canvas.height = img.clientHeight;
+				context.drawImage( img, 0, 0 );
+				
+				// взимаме ги
+				var data = context.getImageData(0, 0, img.clientWidth, img.clientHeight).data;
+				
+				// обект с данни за картинката (черно-бяла версия)
+				image = {
+					"pixels": grayscale( data, img.clientWidth*img.clientHeight ),
+					"nrows": img.clientHeight,
+					"ncols": img.clientWidth,
+					"ldim": img.clientWidth
+				}
+				
+				// настройки на търсенето на лица
+				params = {
+					"shiftfactor": 0.1,	// прави проба през 10% от размера на тестовата зона
+					"minsize": 30,		// минимален размер на лице
+					"maxsize": 200,		// максимален размер на лице
+					"scalefactor": 1.1	// увеличава зоната с 10% при търсене на по-голямо лице
+				}
+
+				// първи пас с прилагане на филтрите
+				var analyzedData = pico.run_cascade( image, facefinder_classify_region, params );
+				
+				// намиране на списък от лица
+				foundFaces = pico.cluster_detections( analyzedData, 0.2 ); // 0.2 е граница на разпознаваемост
+
+				// маркиране на намерените лица
+				context.lineWidth = 5;
+				context.strokeStyle = 'crimson';
+				for( var i=0; i<foundFaces.length; i++ )
+					//if( foundFaces[i][3] > 10 ) // ниво на достоверност - игнорираме го
+					{
+						var y = foundFaces[i][0], // x-координата на намереното лице
+							x = foundFaces[i][1], // y-координата на намереното лице
+							d = foundFaces[i][2]; // диаметър на зоната
+							
+						context.beginPath();
+						context.rect( x-d/2*0.8, y-d/2*1.2, d*0.8, d*1.2 );
+						context.stroke();
+					}
+					
+				// скриваме картинката
+				img.style.display = 'none';
+				document.getElementById('canvas').style.display = 'block';
+			}
+		</script>
+	</body>
+</html>
+
+

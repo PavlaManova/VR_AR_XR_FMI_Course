@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1002: Черно-бяла снимка</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+
+	<body>
+		<script>
+
+			function getVideo()
+			{
+				navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}}).then(getSnapshot);
+			}
+			
+			var video, settings;
+			
+			function onPlaying( )
+			{
+				var snapshot = document.getElementById('snapshot');
+				
+				// оразмеряване на снимката
+				snapshot.width = settings.width;
+				snapshot.height = settings.height;
+				
+				// копиране на кадър от видеото към снимката
+				snapshot.getContext('2d').drawImage( video, 0, 0 );
+				
+				// спиране на камерата
+				video.srcObject.getVideoTracks()[0].stop();
+			}
+			
+			function getSnapshot( stream )
+			{
+				video = document.createElement('video');
+				video.srcObject = stream;
+				video.play();
+				
+				settings = stream.getVideoTracks()[0].getSettings();
+				
+				video.onplaying = onPlaying;
+			}
+			
+		</script>
+			
+		<button onclick="getVideo()">Снимка</button>
+		<br>
+		<canvas id="snapshot" style="filter:grayscale(100%);"></canvas>
+	</body>
+</html>
+
+

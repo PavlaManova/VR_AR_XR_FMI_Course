@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1005: Хаар - снимка 2</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<style>
+			canvas, img {
+				border: solid 1px black;
+			}
+		</style>
+	</head>
+	
+	<body onload="convert()">
+		<script>
+
+			var data, image;
+			
+			// взима цвета на пиксел (като черно-бял)
+			function getPixel( x, y )
+			{
+				var i = 4*(x + y*image.width);
+				return Math.round( (data[i]+data[i+1]+data[i+2])/3 );
+			}
+
+			// слага цвета на пиксел червеникав
+			function setPixel( x, y )
+			{
+				var i = 4*(x + y*image.width);
+				data[i] = 220;
+				data[i+1] = 20;
+				data[i+2] = 60;
+			}
+			
+			// рисува червено правоъгълниче
+			function mark( x1, y1, x2, y2 )
+			{
+				for( var x=x1; x<=x2; x++ )
+				{
+					setPixel( x, y1 );
+					setPixel( x, y2 );
+				}
+				for( var y=y1; y<=y2; y++ )
+				{
+					setPixel( x1, y );
+					setPixel( x2, y );
+				}
+			}
+			
+			// сума от цветове на пиксели в правоъгълниче
+			function sum( label, x1, y1, x2, y2 )
+			{
+				var intensity = 0;
+				
+				for( var x=x1; x<=x2; x++ )
+				for( var y=y1; y<=y2; y++ )
+					intensity += getPixel( x, y );
+					
+				document.getElementById('info').innerHTML += label + ': <b>' + Math.round(intensity/(x2-x1+1)/(y2-y1+1)/255*100)+'%</b> ';
+			}
+			
+			function convert()
+			{
+				var img = document.getElementsByTagName('img')[0],
+					canvas = document.getElementsByTagName('canvas')[0],
+					context = canvas.getContext('2d');
+				
+				canvas.width = img.clientWidth;
+				canvas.height = img.clientHeight;
+				
+				context.drawImage( img, 0, 0 );
+				
+				// извличане на цветовете
+				image = context.getImageData( 0, 0, img.clientWidth, img.clientHeight ),
+				data = image.data;
+					
+				// пресмятане на интензитета на зони
+				sum( 'горна зона', 105, 110, 240, 155 );
+				sum( ', долна зона', 105, 156, 240, 175 );
+				sum( '<br>горна лява зона', 105, 110, 162, 155 );
+				sum( ', централна зона', 163, 110, 184, 155 );
+				sum( ', дясна зона', 185, 110, 240, 155 );
+				
+				// маркиране на зоните
+				mark( 105, 110, 240, 150 );
+				mark( 105, 151, 240, 175 );
+				mark( 105, 110, 162, 150 );
+				mark( 163, 110, 184, 150 );
+				mark( 185, 110, 240, 150 );
+				
+				// рисуване
+				context.putImageData( image, 0, 0 );
+				img.style.display = 'none';
+			}
+		
+		</script>
+		
+		<div id="info"></div>
+		<canvas></canvas>
+		<img src="face-2.jpg">
+	</body>
+</html>
+
+

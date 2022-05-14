@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1008: Разпознаване на лице във видео (tracking.js)</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="tracking-min.js"></script>
+		<script src="face-min.js"></script>
+	</head>
+	
+	<body>	
+		<button id="button" onclick="detectFaces()" style="display:block;">Старт</button>
+		<video id="video" src="..\Videos\party.mp4" loop></video>
+		<canvas id="canvas" style="display: none; position: absolute; z-index: 10"></canvas>
+
+		
+		<script>
+			function detectFaces()
+			{
+				document.getElementById('button').style.display = 'none';
+
+				var video = document.getElementById('video');
+					video.play();
+				
+				var canvas = document.getElementById('canvas');
+					canvas.width = video.clientWidth;
+					canvas.height = video.clientHeight;
+					canvas.style.left = video.offsetLeft+'px';
+					canvas.style.top = video.offsetTop+'px';
+					canvas.style.display = 'block';
+				
+				var context = canvas.getContext('2d');
+					context.globalAlpha = 0.5;
+					context.fillStyle = 'crimson';
+				
+				var objects = new tracking.ObjectTracker(['face']);
+					objects.on( 'track', onTrack );
+			
+				function onTrack( event )
+				{	// настъпило е трасиращо събитие
+					context.clearRect( 0, 0, canvas.width, canvas.height );
+					event.data.forEach( foundObject );
+				}
+
+				function foundObject( rect )
+				{	// намерен е трасиран обект
+					context.fillRect( rect.x, rect.y, rect.width, rect.height );
+				}
+				
+				tracking.track('#video', objects);
+			}
+		</script>
+	</body>
+</html>
+
+

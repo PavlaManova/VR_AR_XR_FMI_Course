@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1009: НЛО - тяло</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit( );
+			
+			light.position.set( 0, 0, 0 );
+			
+			camera = new THREE.PerspectiveCamera( 15, window.innerWidth/window.innerHeight, 10, 4000 );
+			camera.position.set( 0, 0, 0 );
+			
+
+			// НЛО
+			var spline = new THREE.SplineCurve( [
+				new THREE.Vector2(-1,-1),
+				new THREE.Vector2(1,-1),
+				new THREE.Vector2(3,-1),
+				new THREE.Vector2(6,0),
+				new THREE.Vector2(6,0.5),
+				new THREE.Vector2(2,1),
+				new THREE.Vector2(0.5,2),
+				new THREE.Vector2(0,2)
+			] );
+			
+			var points = spline.getPoints( 100 );
+			var geometry = new THREE.LatheGeometry( points, 40 );
+			var material = new THREE.MeshLambertMaterial( {color: 'white'} );
+
+			var ufo = new THREE.Mesh( geometry, material );
+				
+			ufo.position.setFromSphericalCoords( 40, 1.6, 1.5 );
+			scene.add( ufo );
+
+			camera.lookAt( ufo.position );
+			
+			function animate( t )
+			{
+				ufo.rotation.x = Math.sin(2.7*t)/3;
+				ufo.rotation.z = Math.cos(1.2*t)/3;
+			}
+			
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1006: Черно-бяло</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<style>
+			canvas, img {
+				border: solid 1px black;
+			}
+		</style>
+	</head>
+	
+	<body onload="convert()">
+		<script>
+
+		function convert()
+		{
+			var img = document.getElementsByTagName('img')[0],
+				canvas = document.getElementsByTagName('canvas')[0],
+				context = canvas.getContext('2d');
+			
+			// оразмеряване на снимката
+			canvas.width = img.clientWidth;
+			canvas.height = img.clientHeight;
+			
+			context.drawImage( img, 0, 0 );
+			
+			// извличане на цветовете
+			var image = context.getImageData( 0, 0, img.clientWidth, img.clientHeight ),
+				data = image.data;
+				
+			// преобразуване в черно-бяло
+			for( var i=0; i<data.length; i+=4 )
+			{
+				var r = data[i+0],
+					g = data[i+1],
+					b = data[i+2];
+					
+				var bw = Math.round(0.3*r+0.6*g+0.1*b);
+				
+				data[i+0] = bw;
+				data[i+1] = bw;
+				data[i+2] = bw;
+			}
+
+			// рисуване
+			context.putImageData( image, 0, 0 );
+		}
+		
+		</script>
+		
+		Оригинално изображение:<br>
+		<img src="bird.jpg"><br>
+		<hr>
+		Черно-бяло изображение:<br>
+		<canvas></canvas>
+	</body>
+</html>
+
+

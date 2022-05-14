@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1002: Медийни устройства</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	
+	<body>
+		<script>
+
+		function hasCamera()
+		{
+			if( navigator.mediaDevices )
+				if( navigator.mediaDevices.getUserMedia )
+					return true;
+					
+			return false;
+		}
+
+		function test()
+		{
+			navigator.mediaDevices.enumerateDevices().then(listDevices);
+		}
+		
+		function listDevices( devices )
+		{
+			var elem = document.getElementById('list');
+			
+			for( var i=0; i<devices.length; i++ )
+			{
+				var id = devices[i].deviceId;
+				if( id.length>20 ) id = id.substr(0,10)+'...'; // твърде дълго id
+				
+				elem.innerHTML += '<li><b>'+devices[i].kind+'</b> [ '+id+' ]</li>';
+				
+				//console.log(`[${i}] ${devices[i].kind} ${devices[i].label}`);
+			}
+		}
+		
+		</script>
+		
+		<button onclick="test()">Медийни устройства</button>
+		<hr>
+		<ol id="list"></ol>
+	</body>
+</html>
+
+

@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1004: Спиране на видео потока</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	
+	<body>
+		<script>
+
+		function getVideo()
+		{
+			navigator.mediaDevices.getUserMedia({video:true}).then(showVideo);
+		}
+		
+		function showVideo( stream )
+		{
+			document.getElementById('video').srcObject = stream;
+		}
+		
+		function stopVideo( )
+		{
+			var tracks = document.getElementById('video').srcObject.getVideoTracks();
+
+			for( var i=0; i<tracks.length; i++ )
+				tracks[i].stop();
+		}
+		
+		</script>
+		
+		<button onclick="getVideo()">Видео</button>
+		<button onclick="stopVideo()">Стоп</button>
+		<hr>
+		<video id="video" autoplay></video>
+	</body>
+</html>
+
+

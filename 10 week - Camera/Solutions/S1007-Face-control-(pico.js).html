@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1007: Контролиране с лице (pico.js)</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="pico.js"></script>
+	</head>
+	
+	<body>
+		<button id="button" onclick="getVideo()" style="position:fixed; left:0; top:0; z-index:100; ">Видео</button>
+		<video id="video" autoplay style="position:fixed; left:0; bottom:0; z-index:200; width:20em;"></video>
+		
+		<script>
+			var scale = 2; // коефициент на намаляване
+			var context, video, image, params, pixelsCount;
+			
+			function facefinder_classify_region( r, c, s, pixels, ldim )
+			{
+				return -1.0;
+			}
+			
+			// зареждане на базата данни за разпознаване на лица
+			fetch('facefinder').then( startFetching );
+			
+			function startFetching( response )
+			{
+				// зареждането е започнало
+				response.arrayBuffer().then( endFetching );
+			}
+			
+			function endFetching( buffer )
+			{
+				// всички данни са дошли
+				var bytes = new Int8Array( buffer );
+				facefinder_classify_region = pico.unpack_cascade(bytes);
+			}
+			
+			// преобразува цветна картинка в чернобяла				
+			function grayscale( grayData, data, pixelsCount)
+			{
+				for( var i=0,j=0; i<4*pixelsCount; i+=4,j++)
+					grayData[j] = (data[i]+data[i+1]+data[i+2])/3;
+			}
+			
+			function getVideo()
+			{
+				navigator.mediaDevices.getUserMedia( {video:{facingMode:"user"}} ).then(showVideo);
+			}
+			
+			function showVideo( stream )
+			{
+				// показва се видео, скрива се бутона
+				video = document.getElementById('video');
+					video.srcObject = stream;
+					video.style.display = "block";
+					video.onplaying = processVideo;
+					
+				document.getElementById('button').style.display = "none";
+			}
+
+			function processVideo()
+			{
+
+				var canvas = document.createElement( 'canvas' );
+					canvas.width = video.clientWidth/scale;
+					canvas.height = video.clientHeight/scale;
+					canvas.style.display = 'block';
+					
+				pixelsCount = video.clientWidth/scale * video.clientHeight/scale;
+				
+				context = canvas.getContext('2d');
+				
+				// обект с данни за картинката (черно-бяла версия)
+				image = {
+					"pixels": new Uint8Array( pixelsCount ),
+					"nrows": video.clientHeight/scale,
+					"ncols": video.clientWidth/scale,
+					"ldim": video.clientWidth/scale
+				}
+				
+				// настройки на търсенето на лица
+				params = {
+					"shiftfactor": 0.08,	// прави проба през 10% от размера на тестовата зона
+					"minsize": 20,		// минимален размер на лице
+					"maxsize": 100,		// максимален размер на лице
+					"scalefactor": 1.1	// увеличава зоната с 10% при търсене на по-голямо лице
+				}
+				
+				
+			}
+			
+			vaxInit( {antialias:true, alpha:!true} );
+						
+
+			// обект
+			var geometry = new THREE.BoxGeometry( 50, 50, 5 ),
+				faceNotDetected = new THREE.MeshLambertMaterial( {color: 'crimson'} ),
+				faceDetected = new THREE.MeshLambertMaterial( {color: 'green'} ),
+				
+			mainObject = new THREE.Mesh( geometry, faceNotDetected );	
+			mainObject.x = 0;
+			mainObject.y = 0;
+			scene.add( mainObject );
+
+			finalX = 0;
+			finalY = 0;
+			
+			function animate()
+			{
+				mainObject.material = faceNotDetected;
+				if( context && video )
+				{
+					context.drawImage( video, 0, 0, video.clientWidth/scale, video.clientHeight/scale );
+					
+					var data = context.getImageData(0, 0, video.clientWidth/scale, video.clientHeight/scale ).data;
+					grayscale( image.pixels, data, pixelsCount );
+					
+					var analyzedData = pico.run_cascade( image, facefinder_classify_region, params );
+					foundFaces = pico.cluster_detections( analyzedData, 0.2 );
+					
+					for( var i=0; i<foundFaces.length; i++ )
+						if( foundFaces[i][3] > 10 )
+						{
+							var y = foundFaces[i][0],
+								x = foundFaces[i][1];
+								
+							finalX = -(x-video.clientWidth/scale/2)/50;
+							finalY = (y-video.clientHeight/scale/2)/50;
+							
+							mainObject.material = faceDetected;
+					
+							break;
+						}
+				}
+				
+				mainObject.x = THREE.Math.lerp( mainObject.x, finalX, 1 );
+				mainObject.y = THREE.Math.lerp( mainObject.y, finalY, 1 );
+				mainObject.rotation.set( mainObject.y, mainObject.x, 0, 'XYZ' );
+			}
+				
+
+		</script>
+	</body>
+</html>
+
+

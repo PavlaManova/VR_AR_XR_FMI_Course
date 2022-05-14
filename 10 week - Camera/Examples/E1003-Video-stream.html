@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1003: Видео поток</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	
+	<body>
+		<script>
+
+		function getVideo()
+		{
+			navigator.mediaDevices.getUserMedia({video:true}).then(showVideo);
+		}
+		
+		function showVideo( stream )
+		{
+			document.getElementById('video').srcObject = stream;
+		}
+		
+		</script>
+		
+		<button onclick="getVideo()">Видео</button>
+		<hr>
+		<video id="video" autoplay></video>
+	</body>
+</html>
+
+

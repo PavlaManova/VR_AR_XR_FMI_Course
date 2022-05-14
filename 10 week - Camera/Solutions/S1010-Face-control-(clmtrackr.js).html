@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1010: Контролиране с лице (clmtrackr.js)</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+		<script src="clmtrackr.js"></script>
+	</head>
+	
+	<body>
+		<button id="button" onclick="getVideo()" style="position:absolute; left:0; top:0; z-index:50;">Старт</button><h3 id="score" style="position:absolute; left:0; top:0; z-index:100; text-align: center; width: 100%;"></h3>
+		<video id="video" autoplay style="position:absolute; left:0; top:0; z-index:-50; width:100%; height:100%; transform: scale(-1, 1);"></video>
+
+		
+		<script>
+			var context, video, button, ctracker;
+			
+			video = document.getElementById('video');
+			button = document.getElementById('button');
+			score = document.getElementById('score');
+
+			// включване на видеото
+			navigator.mediaDevices.getUserMedia( {video:{facingMode:"user"}} ).then(showVideo);
+			
+			function showVideo( stream )
+			{
+				video.srcObject = stream;
+			}
+
+			// инициализиране на трекера
+			ctracker = new clm.tracker();
+			ctracker.init();
+			
+			// стартиране на трекера
+			function getVideo()
+			{
+				video.setAttribute('width',video.clientWidth);
+				video.setAttribute('height',video.clientHeight);
+				ctracker.start( video );
+				
+				button.style.display = 'none';
+			}
+			
+			perspective = false;
+			vaxInit( {alias: true, alpha:!true} );
+
+			// 71 точки по лицето
+			var n = 71;
+			var objects = [],
+				geometry = new THREE.CircleGeometry( 3, 8 ),
+				material = new THREE.MeshBasicMaterial( {color: 'crimson'} );
+				
+			for( var i=0; i<n; i++ )
+			{
+				var mesh = new THREE.Mesh( geometry, material );
+				mesh.x = 0;
+				mesh.y = 0;
+				objects.push( mesh );	
+				scene.add( mesh );
+			}
+
+			// номера на свързани точки - всяка двойка е една отсечка
+			var links = [0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,14,
+				19,20,20,21,21,22,
+				15,16,16,17,17,18,
+				33,41,41,62,
+				34,35,35,36,36,42,42,37,37,43,43,38,38,39,39,40,
+				23,63,63,24,24,64,64,25,25,65,65,26,26,66,66,23,
+				30,68,68,29,29,67,67,28,28,70,70,31,31,69,69,30,
+				44,45,45,46,46,47,47,48,48,49,49,50,50,51,51,52,52,53,53,54,54,55,55,44,
+				44,61,61,60,60,59,59,50,50,58,58,57,57,56,56,44];
+			
+			// отсечки по контура на лицевите черти
+			var lines = [],
+				geometry = new THREE.PlaneGeometry( 1, 1 ),
+				material = new THREE.MeshBasicMaterial( {color: 'crimson'} );
+				
+			geometry.translate( 0, 0.5, 0 );
+			
+			for( var i=0; i<links.length/2; i++ )
+			{
+				var mesh = new THREE.Mesh( geometry, material );
+				lines.push( mesh );	
+				scene.add( mesh );
+			}
+
+
+			function animate()
+			{
+				// ако има трекер
+				if( ctracker )
+				{
+					// взимаме разпознатите точки
+					var positions = ctracker.getCurrentPosition();
+					for( var i=0; i<Math.min(positions.length,n); i++ )
+					{
+						var p = positions[i],
+							o = objects[i];
+
+						// запомняме координатите им като желани крайни
+						// положение на графичните обекти по лицето
+						o.x = -(p[0]-video.clientWidth/2);
+						o.y = -(p[1]-video.clientHeight/2);
+					}
+					
+					// показваме процента на разпознаване
+					var pertentage = Math.round(100*ctracker.getScore());
+					score.innerHTML = pertentage?pertentage+'%':'';
+				}
+
+				// на всеки кадър местим точка към нейното крайно положение
+				// със слаба линейна комбинация - постига се плавност на лицето
+				for( var i=0; i<n; i++ )
+				{
+					var o = objects[i];
+							
+					o.position.x = THREE.Math.lerp( o.position.x, o.x, 0.1 );
+					o.position.y = THREE.Math.lerp( o.position.y, o.y, 0.1 );
+				}
+
+				// преизчисляваме положението, дължината и завъртяността на всяка отсечка
+				for( var i=0; i<links.length/2; i++ )
+				{
+					var o1 = objects[links[2*i]],
+						o2 = objects[links[2*i+1]],
+						l = lines[i];
+							
+					l.scale.y = o1.position.distanceTo(o2.position);
+					l.rotation.z = -Math.atan2(  o2.position.x-o1.position.x, o2.position.y-o1.position.y );
+					l.position.copy( o1.position );
+				}
+			}
+		</script>
+	</body>
+</html>
+
+

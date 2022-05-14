@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1005: Кадър от видео</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<style>
+			video, canvas {
+				border: solid 1px black;
+			}
+			video { width: 40%; margin-right: 1em; }
+		</style>
+	</head>
+	
+	<body>
+		<script>
+
+		function getVideo()
+		{
+			navigator.mediaDevices.getUserMedia({video:true}).then(showVideo);
+		}
+		
+		function showVideo( stream )
+		{
+			document.getElementById('video').srcObject = stream;
+		}
+		
+		function stopVideo( )
+		{
+			var tracks = document.getElementById('video').srcObject.getVideoTracks();
+
+			for( var i=0; i<tracks.length; i++ )
+				tracks[i].stop();
+		}
+		
+		function getSnapshot()
+		{
+			var video = document.getElementById('video'),
+				settings = video.srcObject.getVideoTracks()[0].getSettings(),
+				snapshot = document.getElementById('snapshot');
+			
+			// оразмеряване на снимката
+			snapshot.width = settings.width;
+			snapshot.height = settings.height;
+			snapshot.style.width = '40%';
+			snapshot.style.height = 'auto';
+			
+			// копиране на кадър от видеото към снимката
+			snapshot.getContext('2d').drawImage( video, 0, 0 );
+		}
+		
+		</script>
+		
+		<button onclick="getVideo()">Видео</button>
+		<button onclick="stopVideo()">Стоп</button>
+		<button onclick="getSnapshot()">Кадър</button>
+		<hr>
+		<video id="video" autoplay></video>
+		<canvas id="snapshot"></canvas>
+	</body>
+</html>
+
+

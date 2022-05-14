@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1012: Разпознаване на лице (tracking.js)</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="tracking-min.js"></script>
+		<script src="face-min.js"></script>
+		<script src="eye-min.js"></script>
+		<script src="mouth-min.js"></script>
+	</head>
+	
+	<body onload="detectFaces()">
+		<img id="image" src="faces-2.jpg">
+		<canvas id="canvas" style="display: none"></canvas>
+
+		
+		<script>
+			function detectFaces()
+			{
+				var img = document.getElementById('image');
+				
+				var canvas = document.getElementById('canvas');
+					canvas.width = img.clientWidth;
+					canvas.height = img.clientHeight;
+				
+				var context = canvas.getContext('2d');
+					context.drawImage( img, 0, 0 );
+					context.lineWidth = 3;
+					context.strokeStyle = 'crimson';
+				
+				var objects = new tracking.ObjectTracker(['face', 'eye', 'mouth']);
+					objects.on( 'track', onTrack );
+			
+				function onTrack( event )
+				{	// настъпило е трасиращо събитие
+					event.data.forEach( foundObject );
+				}
+
+				function foundObject( rect )
+				{	// намерен е трасиран обект
+					context.strokeRect( rect.x, rect.y, rect.width, rect.height );
+				}
+				
+				tracking.track('#image', objects);
+
+				// скриваме картинката
+				img.style.display = 'none';
+				canvas.style.display = 'block';
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1007: Прозрачен canvas</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<img src="bird.jpg" style="position:fixed; left:0; top:0; z-index:-100; width: 100%;"></iframe>
+		
+		<script>
+			vaxInit( {antialias:true, alpha:true} );
+			
+			light.position.set( 0, 0, 0 );
+			
+			camera = new THREE.PerspectiveCamera( 60, 1, 1, 3000 );
+			camera.position.set( 0, 0, 0 );
+			camera.lookAt( new THREE.Vector3( 0, 0, -1 ) );
+			
+			// обекти
+			var geometry = new THREE.OctahedronGeometry( 1 );
+
+			var n = 100;
+			var objects = [];
+			for( var i=0; i<n; i++)
+			{
+				var material = new THREE.MeshLambertMaterial( {color: THREE.Math.randInt(0, 0xFFFFFF)} ),
+					mesh = new THREE.Mesh( geometry, material );
+					
+				mesh.scale.set( 50, 150, 50 );
+				mesh.position.set( THREE.Math.randFloatSpread(6000), THREE.Math.randFloat(-800,800),THREE.Math.randFloatSpread(6000) );
+				
+				objects.push( mesh );
+				scene.add( mesh );
+			}
+
+			function animate( t )
+			{
+				for( var i=0; i<n; i++ )
+					objects[i].rotation.y = t+i;
+			}
+			
+		</script>
+	</body>
+</html>
+
+
