@@ -56,7 +56,7 @@
 					var cone = new THREE.Mesh(geometry,
 																		new THREE.MeshPhongMaterial(
 																			{color: new THREE.Color(Math.random(),Math.random(),Math.random())}));
-					cone.position.set(THREE.Math.randFloatSpread(size),THREE.Math.randFloatSpread(0.02),THREE.Math.randFloatSpread(size));
+					cone.position.set(THREE.Math.randFloatSpread(size),THREE.Math.randFloatSpread(0.3),THREE.Math.randFloatSpread(size));
 					side.add(cone);
 				}
 				return side;
