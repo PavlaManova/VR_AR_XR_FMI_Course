@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1209: Разпадащ се куб</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// създаване на точки
+			var cubeGeometry = new THREE.IcosahedronGeometry( 1, 8 ),
+				pos = cubeGeometry.getAttribute( 'position' ),
+				decomposedData = [];
+				
+			// разбъркване на точките
+			for( var i=0; i<pos.count; i++ )
+			{
+				// случайна позиция вътре в куб
+				pos.setXYZ( i,
+					THREE.Math.randFloatSpread(40),
+					THREE.Math.randFloatSpread(40),
+					THREE.Math.randFloatSpread(40)
+				);
+			}
+			
+			// материал с включен морфинг на върхове
+			var material = new THREE.PointsMaterial( {
+					color: 'crimson'
+				} );
+
+			var mesh = new THREE.Points( cubeGeometry, material );
+				scene.add( mesh );
+
+			function animate( t )
+			{
+				scene.rotation.x = 0.5;
+				scene.rotation.y = t/5;
+			}
+		</script>	
+	</body>
+</html>
+
+

@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1208: SkinnedMesh 2</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+				
+			// създаване на скелет от две кости
+			var bones = [new THREE.Bone(), new THREE.Bone()],
+				skeleton = new THREE.Skeleton( bones );
+				
+			bones[0].add( bones[1] );
+			bones[0].position.y = -30;
+			bones[1].position.y = 30;
+				
+			// създаване на кожна геометрия
+			var geometry = new THREE.BoxGeometry(10,60,20,1,11,1),
+				skinIndices = [],
+				skinWeights = [];
+
+			// изчисляване на индексите и теглата на костите за всяка контролна точка
+			var pos = geometry.getAttribute( 'position' );
+			for( var i = 0; i<pos.count; i++ )
+			{
+				var y = pos.getY( i ),
+					k = THREE.Math.mapLinear( y, -30, 30, 1, 0 );
+				
+				skinIndices.push( 0, 1, 0, 0 );
+				skinWeights.push( k, 1-k, 0, 0 );
+			}
+	
+			// записване на индексите и теглата като атрибути на геометрията
+			geometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
+			geometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
+
+			// създаване на кожен обект
+			var material = new THREE.MeshPhongMaterial({color:'crimson'}),
+				mesh = new THREE.SkinnedMesh( geometry, material );
+				mesh.add( skeleton.bones[0] );
+				mesh.bind( skeleton );
+
+			scene.add( mesh );
+			
+			function animate( t )
+			{
+				bones[1].rotation.z = THREE.Math.degToRad( 60*Math.sin(3*t) );
+				mesh.rotation.y = t/3;
+			}
+		</script>
+	</body>
+</html>
+
+

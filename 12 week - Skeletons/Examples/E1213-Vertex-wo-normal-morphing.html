@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1213: Морфинг без нормали</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+				
+			// създаване на куб с много междинни върхове
+			var cubeGeometry = new THREE.BoxGeometry( 50, 50, 50, 20, 20, 20 );
+			
+			var ballPositions = [],
+				pos = cubeGeometry.getAttribute( 'position' ),
+				vec = new THREE.Vector3(); // оборотни цели
+
+			// изчисляване на върховете по сфера
+			for( var i=0; i<pos.count; i++ )
+			{
+				vec.set( pos.getX(i), pos.getY(i), pos.getZ(i) );
+
+				vec.setLength( 50 * Math.pow( 3/4/Math.PI,1/3) );
+				ballPositions.push( vec.x, vec.y, vec.z );
+			}
+			
+			// записване на върховете на сфера като морфинг атрибут на позицията
+			cubeGeometry.morphAttributes.position = [
+				new THREE.Float32BufferAttribute( ballPositions, 3 )
+			]
+			
+			var material = new THREE.MeshPhongMaterial( {
+					color: 'cornflowerblue',
+					shininess: 100
+				} );
+
+			var mesh = new THREE.Mesh( cubeGeometry, material );
+				scene.add( mesh );
+			
+			function animate( t )
+			{
+				// промяна на "силата" на морфинг върховете
+				mesh.morphTargetInfluences[ 0 ] = THREE.Math.clamp( 0.5+1.5*Math.sin(2*t), 0, 1 );
+				
+				mesh.rotation.x = t/4;
+				mesh.rotation.y = t/3;
+			}
+		</script>	
+	</body>
+</html>
+
+

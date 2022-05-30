@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>E1202: Скелет на крак</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+				
+			// кости на крак
+			var legA = new THREE.Bone(),
+				legB = new THREE.Bone(),
+				legC = new THREE.Bone();
+
+			// свързаност на костите
+			legA.add( legB );
+			legB.add( legC );
+			
+			// позиция на костите
+			legA.position.y = 20;
+			legB.position.y = 20;
+			legC.position.y = 15;
+
+			// показване на скелета
+			var helper = new THREE.SkeletonHelper( legA );
+			scene.add( helper, legA );
+			
+			function animate( t )
+			{
+				legA.rotation.z = THREE.Math.degToRad( 190 + 10*Math.sin(t) );
+				legB.rotation.z = THREE.Math.degToRad( -20 - 20*Math.sin(t) );
+				legC.rotation.z = THREE.Math.degToRad( 90 );
+			}
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1203: Клекове</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+				
+			// основна кост
+			var pelvis = new THREE.Bone();
+			
+			// кости на единия крак
+			var legA1 = new THREE.Bone(),
+				legB1 = new THREE.Bone(),
+				legC1 = new THREE.Bone(),
+				legD1 = new THREE.Bone(); // фиктивна кост
+				
+			// кости на другия крак
+			var legA2 = new THREE.Bone(),
+				legB2 = new THREE.Bone(),
+				legC2 = new THREE.Bone(),
+				legD2 = new THREE.Bone(); // фиктивна кост
+
+			// свързаност на костите
+			pelvis.add( legA1, legA2 );
+
+			legA1.add( legB1 );
+			legB1.add( legC1 );
+			legC1.add( legD1 );
+
+			legA2.add( legB2 );
+			legB2.add( legC2 );
+			legC2.add( legD2 );
+			
+			// позиция на костите
+			pelvis.position.y = 20;
+
+			legA1.position.y = -2;
+			legA1.position.z = 5;
+			legB1.position.y = 20;
+			legC1.position.y = 15;
+			legD1.position.y = 5;
+
+			legA2.position.y = -2;
+			legA2.position.z = -5;
+			legB2.position.y = 20;
+			legC2.position.y = 15;
+			legD2.position.y = 5;
+
+			// показване на скелета
+			var helper = new THREE.SkeletonHelper( pelvis );
+			scene.add( helper, pelvis );
+			
+			function animate( t )
+			{
+				var s = Math.sin(4*t);
+				
+				legA1.rotation.z = THREE.Math.degToRad( 220 + 40*s );
+				legB1.rotation.z = THREE.Math.degToRad( -80 - 80*s );
+
+				legA2.rotation.z = THREE.Math.degToRad( 220 + 40*s );
+				legB2.rotation.z = THREE.Math.degToRad( -80 - 80*s );
+				
+				scene.rotation.y = t/3;
+			}
+		</script>
+	</body>
+</html>
+
+

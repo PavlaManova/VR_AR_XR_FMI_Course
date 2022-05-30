@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1206: Морфинг на изображения</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+				
+			// създаване на едната плочка
+			var geometry = new THREE.BoxGeometry( 66, 100, 66 ),
+				material = new THREE.MeshBasicMaterial({
+					color: 'white',
+					map: new THREE.TextureLoader().load('face1.jpg')
+				}),
+				plate1 = new THREE.Mesh( geometry, material );
+				plate1.position.z = -50;
+				scene.add( plate1 );
+			
+			// създаване на другата плочка
+			var material = new THREE.MeshBasicMaterial({
+					color: 'white',
+					map: new THREE.TextureLoader().load('face2.jpg'),
+					transparent: true,
+				}),
+				plate2 = new THREE.Mesh( geometry, material );
+				plate2.position.z = -50;
+				scene.add( plate2 );
+			
+			function animate( t )
+			{
+				material.opacity = 0.5+0.5*Math.cos( 1*t );
+				
+				var q = t%7 - 6;
+				if( q>=0 )
+				{
+					plate1.rotation.y = 0.5*Math.PI*(0.5+0.5*Math.cos(Math.PI*q));
+					plate2.rotation.y = 0.5*Math.PI*(0.5+0.5*Math.cos(Math.PI*q));
+				}
+			}
+		</script>
+	</body>
+</html>
+
+

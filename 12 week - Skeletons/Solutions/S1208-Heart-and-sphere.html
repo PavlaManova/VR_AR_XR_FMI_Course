@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1208: Сърце и сфера</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			function heart( x, z, y )
+			{
+				// https://mathworld.wolfram.com/HeartSurface.html
+				return Math.pow(2*x*x+y*y+z*z-1,3)-x*x*z*z*z/10-y*y*z*z*z;
+			}
+			
+			// създаване на сърце с много междинни върхове
+			var heartGeometry = new THREE.IcosahedronGeometry( 3, 5 ),
+				pos = heartGeometry.getAttribute( 'position' ),
+				sphereData = [];
+	
+			// преобразуване до сърце с двоично търсене
+			for( var i=0; i<pos.count; i++ )
+			{
+				var x = pos.getX(i),
+					y = pos.getY(i),
+					z = pos.getZ(i);
+					
+				var k0 = 0,
+					k1 = 1;
+				
+				while( k1-k0>0.001 )
+				{
+					k = (k0+k1)/2;
+					if( heart(x*k,y*k,z*k) > 0 )
+						k1 = k;
+					else
+						k0 = k;
+				}
+
+				pos.setXYZ( i, 30*x*k, 30*y*k, 30*z*k );
+
+				// данни за сферата
+				sphereData.push( 10*x, 10*y, 10*z );
+			}
+			
+			// записване на върховете и нормалите като морфинг атрибути
+			sphereData = new THREE.Float32BufferAttribute( sphereData, 3 );
+			heartGeometry.morphAttributes.position = [sphereData];
+			
+			// материал с включен морфинг на върхове и нормали
+			var material = new THREE.MeshPhongMaterial( {
+					color: 'crimson',
+					shininess: 50,
+					flatShading: true,
+				} );
+
+			var mesh = new THREE.Mesh( heartGeometry, material );
+				scene.add( mesh );
+
+			function animate( t )
+			{
+				// туптене на сърцето
+				mesh.morphTargetInfluences[ 0 ] = THREE.Math.clamp( -0.5+1.5*Math.sin(3*t), 0, 1 );
+				
+				mesh.rotation.set( 0.5, t, 0 );
+			}
+		</script>	
+	</body>
+</html>
+
+

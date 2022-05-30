@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1205: Крака с кожа</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+				
+			// основна кост
+			var pelvis = new THREE.Bone();
+			
+			// кости на единия крак
+			var legA1 = new THREE.Bone(),
+				legB1 = new THREE.Bone(),
+				legC1 = new THREE.Bone(),
+				legD1 = new THREE.Bone(); // фиктивна кост
+				
+			// кости на другия крак
+			var legA2 = new THREE.Bone(),
+				legB2 = new THREE.Bone(),
+				legC2 = new THREE.Bone(),
+				legD2 = new THREE.Bone(); // фиктивна кост
+
+			skeleton = new THREE.Skeleton( [pelvis,legA1,legB1,legC1,legD1,legA2,legB2,legC2,legD2] );
+			
+			// свързаност на костите
+			pelvis.add( legA1, legA2 );
+
+			legA1.add( legB1 );
+			legB1.add( legC1 );
+			legC1.add( legD1 );
+
+			legA2.add( legB2 );
+			legB2.add( legC2 );
+			legC2.add( legD2 );
+			
+			// позиция на костите
+			pelvis.position.y = 20;
+
+			legA1.position.y = -2;
+			legA1.position.z = 5;
+			legB1.position.y = 20;
+			legC1.position.y = 15;
+			legD1.position.y = 5;
+
+			legA2.position.y = -2;
+			legA2.position.z = -5;
+			legB2.position.y = 20;
+			legC2.position.y = 15;
+			legD2.position.y = 5;
+
+			legA1.rotation.z = THREE.Math.degToRad( 180 );
+			legA2.rotation.z = THREE.Math.degToRad( 180 );
+
+				
+			// показване на скелета
+			var helper = new THREE.SkeletonHelper( pelvis );
+				scene.add( helper, pelvis );
+
+
+			// десен крак 
+			var geometry = new THREE.BoxGeometry( 6, 40, 6, 1, 15, 1 ).translate(0,-2,4);
+				skinIndices = [],
+				skinWeights = [];
+				
+			// изчисляване на индексите и теглата на костите за всяка контролна точка
+			var pos = geometry.getAttribute( 'position' );
+			for( var i = 0; i<pos.count; i++ )
+			{
+				var y = pos.getY( i );
+				if( y>=-2 )
+				{
+					var k = THREE.Math.mapLinear( y, -2, 18, 0, 1 );
+					skinIndices.push( 0, 1, 2, 5 );
+					skinWeights.push( k, 1, 1-k, 0*k );
+				}
+				else
+				if( y>=-18 )
+				{
+					var k = THREE.Math.mapLinear( y, -18, -2, 0, 1 );
+					skinIndices.push( 1, 2, 3, 0 );
+					skinWeights.push( k, 1, 1-k, 0 );
+				}
+				else
+				{
+					var k = THREE.Math.mapLinear( y, -22, -18, 0, 1 );
+					skinIndices.push( 2, 3, 0, 0 );
+					skinWeights.push( k, 1, 0, 0 );
+				}
+			}
+	
+			// записване на индексите и теглата като атрибути на геометрията
+			geometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
+			geometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
+
+			var mesh = new THREE.SkinnedMesh(
+				geometry,
+				new THREE.MeshPhongMaterial({color:'crimson',skinning: true})
+			);
+			mesh.add( skeleton.bones[0] );
+			mesh.bind( skeleton );
+			mesh.normalizeSkinWeights( );
+			scene.add( mesh );
+				
+	
+			// ляв крак 
+			var geometry = new THREE.BoxGeometry( 6, 40, 6, 1, 15, 1 ).translate(0,-2,-4);
+				skinIndices = [],
+				skinWeights = [];
+
+			// изчисляване на индексите и теглата на костите за всяка контролна точка
+			var pos = geometry.getAttribute( 'position' );
+			for( var i = 0; i<pos.count; i++ )
+			{
+				var y = pos.getY( i );
+				if( y>=-2 )
+				{
+					var k = THREE.Math.mapLinear( y, -2, 18, 0, 1 );
+					skinIndices.push( 0, 5, 6, 1 );
+					skinWeights.push( k, 1, 1-k, 0*k );
+				}
+				else
+				if( y>=-18 )
+				{
+					var k = THREE.Math.mapLinear( y, -18, -2, 0, 1 );
+					skinIndices.push( 5, 6, 7, 0 );
+					skinWeights.push( k, 1, 1-k, 0 );
+				}
+				else
+				{
+					var k = THREE.Math.mapLinear( y, -22, -18, 0, 1 );
+					skinIndices.push( 6, 7, 0, 0 );
+					skinWeights.push( k, 1, 0, 0 );
+				}
+			}
+	
+			// записване на индексите и теглата като атрибути на геометрията
+			geometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
+			geometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
+
+			var mesh = new THREE.SkinnedMesh(
+				geometry,
+				new THREE.MeshPhongMaterial({color:'crimson',skinning: true})
+			);
+			mesh.add( skeleton.bones[0] );
+			mesh.bind( skeleton );
+			mesh.normalizeSkinWeights( );
+			scene.add( mesh );
+				
+				
+			// тяло
+			var geometry = new THREE.BoxGeometry( 6, 20, 14, 10, 15, 10 ).translate(0,28,0);
+				skinIndices = [],
+				skinWeights = [];
+				
+			// изчисляване на индексите и теглата на костите за всяка контролна точка
+			var pos = geometry.getAttribute( 'position' );
+			for( var i = 0; i<pos.count; i++ )
+			{
+				var y = pos.getY( i );
+				var x = pos.getZ( i );
+
+				if( y>=28 )
+				{
+					skinIndices.push( 0, 0, 0, 0 );
+					skinWeights.push( 1, 0, 0, 0 );
+				}
+				else
+				{
+					var k = THREE.Math.mapLinear( y, 18, 28, 1, 0 );
+					skinIndices.push( 0, 1, 5, 0 );
+					skinWeights.push( 1, x<0?0:k, x<0?k:0, 0 );
+				}
+
+			}
+	
+			// записване на индексите и теглата като атрибути на геометрията
+			geometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
+			geometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
+
+
+			var mesh = new THREE.SkinnedMesh(
+				geometry,
+				new THREE.MeshPhongMaterial({color:'crimson',skinning: true})
+			);
+			mesh.add( skeleton.bones[0] );
+			mesh.bind( skeleton );
+			mesh.normalizeSkinWeights( );
+			scene.add( mesh );
+				
+
+			function animate( t )
+			{
+			
+				legA1.rotation.z = THREE.Math.degToRad( 210 + 30*Math.sin(4*t) );
+				legB1.rotation.z = THREE.Math.degToRad( -60 - 60*Math.sin(4*t) );
+				legC1.rotation.z = THREE.Math.degToRad( 90 );
+
+				legA2.rotation.z = THREE.Math.degToRad( 210 - 30*Math.sin(4*t) );
+				legB2.rotation.z = THREE.Math.degToRad( -60 + 60*Math.sin(4*t) );
+				legC2.rotation.z = THREE.Math.degToRad( 90 );
+
+				mesh.rotation.y = t/2;
+				
+				helper.visible = (t%6) < 3;
+			}
+		</script>
+	</body>
+</html>
+
+

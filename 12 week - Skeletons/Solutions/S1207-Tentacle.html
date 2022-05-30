@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1207: Пипало</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+				
+			// създаване на скелет от две кости
+			var bones = [new THREE.Bone(), new THREE.Bone()],
+				skeleton = new THREE.Skeleton( bones );
+				
+			bones[0].add( bones[1] );
+			bones[0].position.y = -40;
+			bones[1].position.y = 40;
+				
+			// създаване на кожна геометрия
+			var geometry = new THREE.ConeGeometry(10,80,40,200,true),
+				skinIndices = [],
+				skinWeights = [];
+
+			// изчисляване на индексите и теглата на костите за всяка контролна точка
+			var pos = geometry.getAttribute( 'position' );
+			for( var i = 0; i<pos.count; i++ )
+			{
+				var k = THREE.Math.mapLinear( pos.getY( i ), -40, 40, 1, 0 );
+				
+				skinIndices.push( 0, 1, 0, 0 );
+				skinWeights.push( k, 1-k, 0, 0 );
+			}
+	
+			// записване на индексите и теглата като атрибути на геометрията
+			geometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
+			geometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
+
+			var texture = new THREE.TextureLoader().load( 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/wAALCACAAIABAREA/8QAHAABAAICAwEAAAAAAAAAAAAAAAYHBQgBAgME/8QALBAAAQMDAwIFBAMBAAAAAAAAAQACAwQFEQYHIRIxEyIyQaFCUWGBFGJxkf/aAAgBAQAAPwDVREREREREREREREX0U9JPUECGNzvyAs5Q6RuFUM9Bb+llYNvq1/q6v+Lifb6tZ26v+LE1+k7hSjPQXfrCwk9NNAcTRub/AKF4IiIiIu8bHSPDGAucewCnGltDVFwcx8zSQfbHCu3SG2HWxg8D4Vo2bbOKFgMzGMH5Weh0Jbo/U5n6C4m0HbpPS5n7Cj962yila4xMa8fjlVXrDbHpY4eB8Kk9UaJqLa574mnA+nChb2uY4teCHDuCuqIiLvEx0kjWMGXE4AVsbc6HdVvjkljy889ls7oXQkVNCySoYGsA9wp+2Slt8fRTMa3Axn3WNqrz3w5Y996/t8rll6/t8rIUt57eZZB/8S5R9FSxpJGM+6rrXugo54XyQxhzCOCAtYNxNFPopHyRR4cPwqve0scWuGCOCF1REU72408bjWNlkYSCeOFt9tppCKmp2TysAY0Z7Kc3KvbCzojwGgYACiFzuuCfMo3WXjk+ZYuS8nJ8yRXnkeZZWivGSPMpNbLrkg9Sl1vrWVEfhy4cxwwQVXW52jo5oZJY2AscMg4Woe4VhNtrnSMZhueVDERfRQwmoq44gM9RW0Gzummv8DDB7LY+UMt9AyCPA6Rzj7qGXqvwXcqDXW4nLgDlYGWV0hy4ldEXpFM+IgtJx9lILTcTluXKc2Wvz08qXvjZc7Y+B+CSMt/1aybxaaa3x8s+/staamIwzyRnu0kLyRSPQ1IKq8sz9OFuttBa2w07JSBhrcqWX+o9XKrm/VRHVyobNIZJC4roiIvSnkMUoI7e6mthqienlWNYKj08qB7yWpr45HgDDhkLS/WFKKW8SAdncrBIpztbD13TOPqC3e21i8OyudjHlAXGoH8uVaagecu5UeRERFJdPyHLeVZen38tXx7qQ+Ja2u+7FpDuTF4d4zj3IUPRTja6boumM45C3e20l8SzOb/UFNQM9XCrS/xnLuFHkRERSXT8Z8vCsvT7OW8L4t1ZvDtjW5+haQ7kTeJeCM+5UQRSLRFZ/EvLM9nLdPZ+6tlgZGSMPbhTK/0/q4VcX6lJ6uFDZ4zHIQe3svNERetNEZZQMcBTWw0pHTwrGsFP6eFX+8l3DI5WB3DRhaYauq/5V4lcOzThYRF70cxp6mOUfSQVs3s7qZrfAw/7e62UL2XK3MnZgkjnH3UPvVBnq4UHu1tOXHCj8sL4zhwOF5ovWGB8pGAQFIbTbSC3hTmy0GOnhSyeZlrtb5nEB3Thq1f3i1M13j5f9/da3zyGaZ8h7uOV5Iim23moDba1scjyG58vK272z1jHPBHFI8FjhgjKsO4UTKiPxIsOY4ZBCiVztWc+VRuss+SfL8LFyWbn0/C5is3I8vwspRWfBHlUltlqwR5VLKGkjpYjLMQ1jRkkqstz9ZsjikjY8BjRgAFai69vpude5jHEtB5URREXZjnMcHNOHDkFWht5rZ9FJHHLIQ4cd1s7oLX0c0LGTSBzCOQSrHidR3OPqp3tJI9JPK+Kqs3fyrHvsv8AX4XLLL/X4WQpbPjHlX1zzUVri6qh7eoD0gqstf6/ZFG9kUgawDgArWHcHWj6+V8cLyXHjv2VbucXOJcck911RERdmOcxwc0kEdiFMdNa0qba5jJHHpHuro0juf0MYfH+VaVk3QY9gEkrXD8nKkMG4dFJ6mxFcT7iUUfpbGFHL5ug1jSGStaPwcKqtX7ndTHnx/lUxqTWNVc3PbG4hp98qJucXEkkknuV1REREResM8sJzFI5p/BWYotTXClGGyFw/wBWTh11Xx9yT+1xPrq4SdiR+1i63Utwqhh0haPwViJZpJjmR7nH8leaIiIiIiIiIiIiIv/Z' );
+				texture.wrapS = THREE.RepeatWrapping;
+				texture.wrapT = THREE.RepeatWrapping;
+				texture.repeat.set( 7, 14 );
+				
+			// създаване на кожен обект
+			var material = new THREE.MeshPhongMaterial({
+					color: 'crimson',
+					bumpMap: texture,
+					displacementMap: texture,
+					side: THREE.DoubleSide,
+					skinning: true }),
+				mesh = new THREE.SkinnedMesh( geometry, material );
+				mesh.add( skeleton.bones[0] );
+				mesh.bind( skeleton );
+
+			scene.add( mesh );
+			
+			function animate( t )
+			{
+				bones[0].rotation.z = THREE.Math.degToRad( 90*Math.cos(2*t) );
+				bones[1].rotation.z = THREE.Math.degToRad( 60*Math.sin(2*t) );
+				mesh.rotation.y = t/2;
+			}
+		</script>
+	</body>
+</html>
+
+

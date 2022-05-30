@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>S1209: Разпадащ се куб</title>
+		<meta charset="utf-8">
+		
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+		<script src="three.min.js"></script>
+		<script src="tween.umd.js"></script>
+		<script src="vax.js"></script>
+	</head>
+	
+	<body>
+		<script>
+			vaxInit();
+
+			// създаване на точки в куб 
+			var cubeGeometry = new THREE.IcosahedronGeometry( 1, 8 ),
+				pos = cubeGeometry.getAttribute( 'position' ),
+				decomposedData = [];
+				
+			// разбъркване на точките
+			for( var i=0; i<pos.count; i++ )
+			{
+				// случайна позиция вътре в куб
+				pos.setXYZ( i,
+					THREE.Math.randFloatSpread(40),
+					20+THREE.Math.randFloatSpread(40),
+					THREE.Math.randFloatSpread(40)
+				);
+				
+				// паднала на земята позиция
+				decomposedData.push(
+					pos.getX(i)+THREE.Math.randFloatSpread(40),
+					-20,
+					pos.getZ(i)+THREE.Math.randFloatSpread(40)
+				);
+			}
+			
+			// записване на върховете и нормалите като морфинг атрибути
+			decomposedData = new THREE.Float32BufferAttribute( decomposedData, 3 );
+			cubeGeometry.morphAttributes.position = [decomposedData];
+			
+			// материал с включен морфинг на върхове
+			var material = new THREE.PointsMaterial( {
+					color: 'crimson'
+				} );
+
+			var mesh = new THREE.Points( cubeGeometry, material );
+				mesh.position.y = 0;
+				scene.add( mesh );
+
+			var influence = {k:0};
+			
+			new TWEEN.Tween(influence)
+				.to({k:1},3000)
+				.easing(TWEEN.Easing.Bounce.Out)
+				.delay(1000)
+				.start();
+				
+			function animate( t )
+			{
+				TWEEN.update();
+
+				mesh.morphTargetInfluences[ 0 ] = influence.k;
+					
+				scene.rotation.x = 0.5;
+				scene.rotation.y = t/5;
+			}
+		</script>	
+	</body>
+</html>
+
+
