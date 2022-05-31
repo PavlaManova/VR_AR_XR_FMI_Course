@@ -4,26 +4,26 @@
 	<head>
 		<title>S1201: Гръбнак, врат, глава</title>
 		<meta charset="utf-8">
-		
+
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		
+
 		<script src="three.min.js"></script>
 		<script src="vax.js"></script>
 	</head>
-	
+
 	<body>
 		<script>
 			vaxInit();
-				
+
 			// основна кост
 			var pelvis = new THREE.Bone();
-			
+
 			// кости на единия крак
 			var legA1 = new THREE.Bone(),
 				legB1 = new THREE.Bone(),
 				legC1 = new THREE.Bone(),
 				legD1 = new THREE.Bone(); // фиктивна кост
-				
+
 			// кости на другия крак
 			var legA2 = new THREE.Bone(),
 				legB2 = new THREE.Bone(),
@@ -39,7 +39,7 @@
 			// кости на врата и главата
 			var neck = new THREE.Bone(),
 				head = new THREE.Bone();
-				
+
 			// свързаност на костите
 			pelvis.add( legA1, legA2 );
 
@@ -50,7 +50,15 @@
 			legA2.add( legB2 );
 			legB2.add( legC2 );
 			legC2.add( legD2 );
-			
+
+			pelvis.add(backA);
+			backA.add(backB);
+			backB.add(backC);
+			backC.add(backD);
+
+			backD.add(neck);
+			neck.add(head);
+
 			// позиция на костите
 			pelvis.position.y = 20;
 
@@ -66,11 +74,30 @@
 			legC2.position.y = 15;
 			legD2.position.y = 5;
 
-			
+			backA.position.y = 5;
+			backB.position.y = 5;
+			backC.position.y = 5;
+			backD.position.y = 5;
+
+			backA.rotation.z = 0.2;
+			backB.rotation.z = -0.2;
+			backC.rotation.z = -0.2;
+			backD.rotation.z =0.2;
+
+			/*backA.rotation.z = THREE.Math.degToRad( 15 );
+			backB.rotation.z = THREE.Math.degToRad( -15 );
+			backC.rotation.z = THREE.Math.degToRad( -15 );
+			backD.rotation.z = THREE.Math.degToRad( 15 );*/
+
+			neck.position.y = 2;
+			head.position.y = 4;
+
+			neck.rotation.z = -0.3;
+
 			// показване на скелета
 			var helper = new THREE.SkeletonHelper( pelvis );
 			scene.add( helper, pelvis );
-			
+
 			function animate( t )
 			{
 				legA1.rotation.z = THREE.Math.degToRad( 210 + 30*Math.sin(4*t) );
@@ -80,11 +107,9 @@
 				legA2.rotation.z = THREE.Math.degToRad( 210 - 30*Math.sin(4*t) );
 				legB2.rotation.z = THREE.Math.degToRad( -60 + 60*Math.sin(4*t) );
 				legC2.rotation.z = THREE.Math.degToRad( 90 );
-				
+
 				scene.rotation.y = t;
 			}
 		</script>
 	</body>
 </html>
-
-
