@@ -40,6 +40,18 @@
 			var neck = new THREE.Bone(),
 				head = new THREE.Bone();
 
+			//кости на едната ръка
+			var armA1 = new THREE.Bone();
+			var armB1 = new THREE.Bone();
+			var armC1 = new THREE.Bone();
+			var armD1 = new THREE.Bone();
+
+			//кости на другата ръка
+			var armA2 = new THREE.Bone();
+			var armB2 = new THREE.Bone();
+			var armC2 = new THREE.Bone();
+			var armD2 = new THREE.Bone();
+
 			// свързаност на костите
 			pelvis.add( legA1, legA2 );
 
@@ -58,6 +70,15 @@
 
 			backD.add(neck);
 			neck.add(head);
+
+			neck.add(armA1, armA2);
+			armA1.add(armB1);
+			armB1.add(armC1);
+			armC1.add(armD1);
+
+			armA2.add(armB2);
+			armB2.add(armC2);
+			armC2.add(armD2);
 
 			// позиция на костите
 			pelvis.position.y = 20;
@@ -80,19 +101,27 @@
 			backD.position.y = 5;
 
 			backA.rotation.z = 0.2;
-			backB.rotation.z = -0.2;
+			backB.rotation.z = -0.1;
 			backC.rotation.z = -0.2;
 			backD.rotation.z =0.2;
-
-			/*backA.rotation.z = THREE.Math.degToRad( 15 );
-			backB.rotation.z = THREE.Math.degToRad( -15 );
-			backC.rotation.z = THREE.Math.degToRad( -15 );
-			backD.rotation.z = THREE.Math.degToRad( 15 );*/
 
 			neck.position.y = 2;
 			head.position.y = 4;
 
-			neck.rotation.z = -0.3;
+			//neck.rotation.z = -0.3;
+
+			armA1.position.y = -1;
+			armA1.position.z = 7;
+			armB1.position.y = -12;
+			armC1.position.y = -9;
+			armD1.position.y = -5;
+
+			armA2.position.y = -1;
+			armA2.position.z = -7;
+			armB2.position.y = -12;
+			armC2.position.y = -9;
+			armD2.position.y = -5;
+
 
 			// показване на скелета
 			var helper = new THREE.SkeletonHelper( pelvis );
