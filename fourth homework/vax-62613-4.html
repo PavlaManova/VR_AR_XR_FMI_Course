@@ -86,13 +86,13 @@
 			pelvis.position.y = 20;
 
 			legA1.position.y = -2;
-			legA1.position.z = 5;
+			legA1.position.z = 3;
 			legB1.position.y = 20;
 			legC1.position.y = 15;
 			legD1.position.y = 5;
 
 			legA2.position.y = -2;
-			legA2.position.z = -5;
+			legA2.position.z = -3;
 			legB2.position.y = 20;
 			legC2.position.y = 15;
 			legD2.position.y = 5;
@@ -126,43 +126,49 @@
 			armB2.position.y = -12;
 			armC2.position.y = -9;
 			armD2.position.y = -5;
-
-			// показване на скелета
-			var helper = new THREE.SkeletonHelper( pelvis );
-				scene.add( helper, pelvis );
 }
 
-      var upperMuscleRight = createUpperThighMuscle(9);
-      var upperMuscleLeft = createUpperThighMuscle(-9);
+      var upperMuscleRight = createUpperThighMuscle(12,9);
+      var upperMuscleLeft = createUpperThighMuscle(12,-9);
 
-      var middleMuscleRight = createMiddleThighMuscle(10);
-      var middleMuscleLeft = createMiddleThighMuscle(-10);
+      var middleMuscleRight = createMiddleThighMuscle(6,10);
+      var middleMuscleLeft = createMiddleThighMuscle(6,-10);
 
-      var lowerMuscleRight = createUpperThighMusce(9);
-      var lowerMuscleLeft = createUpperThighMusce(-9);
+      var lowerMuscleRight = createLowerThighMuscle(0,7);
+      var lowerMuscleLeft = createLowerThighMuscle(0,-7);
 
-			function createUpperThighMuscle(translationZ)
+      var lowerMuscleRight2 = createLowerThighMuscle(-4,7);
+      var lowerMuscleLeft2 = createLowerThighMuscle(-4,-7);
+
+			function createUpperThighMuscle(translationY, translationZ)
       {
-        var muscleGeometry = new THREE.SphereGeometry( 6, 40, 40 ).translate(0,12,translationZ);
+        var muscleGeometry = new THREE.SphereGeometry( 6, 40, 40 ).translate(0,translationY,translationZ);
 				skinIndices = [],
 				skinWeights = [];
 
-        muscleGeometry.scale(0.7,1,0.6);
+        muscleGeometry.scale(0.8,1.1,0.7);
 
 			// изчисляване на индексите и теглата на костите за всяка контролна точка
 			var pos = muscleGeometry.getAttribute( 'position' );
 			for( var i = 0; i<pos.count; i++ )
 			{
-					skinIndices.push( 3-translationZ*2/9, 0, 0, 0 );
-					skinWeights.push( 1, 0, 0, 0 );
+          if(translationY>=0)
+          {
+            skinIndices.push( translationZ>0 ? 1 : 5, 0, 0, 0 );
+  					skinWeights.push( 1, 0, 0, 0 );
+          }
+          else {
+            skinIndices.push( translationZ>0 ? 2 : 6, 0, 0, 0 );
+  					skinWeights.push( 1, 0, 0, 0 );
+          }
 			}
 
 			// записване на индексите и теглата като атрибути на геометрията
 			muscleGeometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
 			muscleGeometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
 
-      var elongateGeometry = new THREE.SphereGeometry( 6, 40, 40 ).translate(0,19,translationZ);
-      elongateGeometry.scale(0.5,0.7,0.6);
+      var elongateGeometry = new THREE.SphereGeometry( 6, 40, 40 ).translate(0,translationY+7,translationZ);
+      elongateGeometry.scale(0.6,0.7,0.7);
 
       var ballPositions = [],
         pos = elongateGeometry.getAttribute( 'position' );
@@ -188,28 +194,35 @@
       return upperMuscle;
     }
 
-      function createMiddleThighMuscle(translationZ)
+      function createMiddleThighMuscle(translationY,translationZ)
       {
-        var muscleGeometry = new THREE.SphereGeometry( 5, 40, 40 ).translate(0,6,translationZ);
+        var muscleGeometry = new THREE.SphereGeometry( 5, 40, 40 ).translate(0,translationY,translationZ);
         skinIndices = [],
         skinWeights = [];
 
-        muscleGeometry.scale(0.6,0.7,0.5);
+        muscleGeometry.scale(0.7,0.7,0.6);
 
         // изчисляване на индексите и теглата на костите за всяка контролна точка
         var pos = muscleGeometry.getAttribute( 'position' );
         for( var i = 0; i<pos.count; i++ )
         {
-          skinIndices.push( 3-translationZ*1/5, 0, 0, 0 );
-          skinWeights.push( 1, 0, 0, 0 );
+          if(translationY>=0)
+          {
+            skinIndices.push( translationZ>0 ? 1 : 5, 0, 0, 0 );
+  					skinWeights.push( 1, 0, 0, 0 );
+          }
+          else {
+            skinIndices.push( translationZ>0 ? 2 : 6, 0, 0, 0 );
+  					skinWeights.push( 1, 0, 0, 0 );
+          }
         }
 
         // записване на индексите и теглата като атрибути на геометрията
         muscleGeometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
         muscleGeometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
 
-        var elongateGeometry = new THREE.SphereGeometry( 5, 40, 40 ).translate(0,8,translationZ);
-        elongateGeometry.scale(0.7,0.8,0.5);
+        var elongateGeometry = new THREE.SphereGeometry( 5, 40, 40 ).translate(0,translationY+2,translationZ);
+        elongateGeometry.scale(0.7,0.9,0.7);
 
         var ballPositions = [],
         pos = elongateGeometry.getAttribute( 'position' );
@@ -235,167 +248,142 @@
         return middleMuscle;
       }
 
-      function createMiddleThighMuscle(translationZ)
+      function createLowerThighMuscle(translationY,translationZ)
       {
-        var muscleGeometry = new THREE.SphereGeometry( 5, 40, 40 ).translate(0,6,translationZ);
-        skinIndices = [],
-        skinWeights = [];
+        var muscleGeometry = new THREE.SphereGeometry( 4, 40, 40 ).translate(0,translationY,translationZ);
+				skinIndices = [],
+				skinWeights = [];
 
-        muscleGeometry.scale(0.6,0.7,0.5);
+        muscleGeometry.scale(0.7,1,0.7);
 
-        // изчисляване на индексите и теглата на костите за всяка контролна точка
-        var pos = muscleGeometry.getAttribute( 'position' );
-        for( var i = 0; i<pos.count; i++ )
+			// изчисляване на индексите и теглата на костите за всяка контролна точка
+			var pos = muscleGeometry.getAttribute( 'position' );
+			for( var i = 0; i<pos.count; i++ )
+			{
+        if(translationY>=0)
         {
-          skinIndices.push( 3-translationZ*1/5, 0, 0, 0 );
+          skinIndices.push( translationZ>0 ? 1 : 5, 0, 0, 0 );
           skinWeights.push( 1, 0, 0, 0 );
         }
+        else {
+          skinIndices.push( translationZ>0 ? 2 : 6, 0, 0, 0 );
+          skinWeights.push( 1, 0, 0, 0 );
+        }
+			}
 
-        // записване на индексите и теглата като атрибути на геометрията
-        muscleGeometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
-        muscleGeometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
+			// записване на индексите и теглата като атрибути на геометрията
+			muscleGeometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
+			muscleGeometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
 
-        var elongateGeometry = new THREE.SphereGeometry( 5, 40, 40 ).translate(0,8,translationZ);
-        elongateGeometry.scale(0.7,0.8,0.5);
+      var elongateGeometry = new THREE.SphereGeometry( 4, 40, 40 ).translate(0,translationY,translationZ);
+      if(translationY<0)
+      elongateGeometry.scale(0.7,1,0.7);
+      else
+      elongateGeometry.scale(0.9,1,0.9);
 
-        var ballPositions = [],
+      var ballPositions = [],
         pos = elongateGeometry.getAttribute( 'position' );
 
-        for( var i=0; i<pos.count; i++ )
-        {
-          ballPositions.push( pos.getX(i), pos.getY(i), pos.getZ(i) );
-        }
-
-        // записване на върховете на сфера като морфинг атрибут на позицията
-        muscleGeometry.morphAttributes.position = [
-        new THREE.Float32BufferAttribute( ballPositions, 3 )
-        ]
-
-        var lowerMuscle = new THREE.SkinnedMesh(
-        muscleGeometry,
-        new THREE.MeshPhongMaterial({color:'crimson',skinning: true})
-        );
-        lowerMuscle.add( skeleton.bones[0] );
-        lowerMuscle.bind( skeleton );
-        lowerMuscle.normalizeSkinWeights( );
-        scene.add( lowerMuscle );
-        return lowerMuscle;
+      for( var i=0; i<pos.count; i++ )
+      {
+        ballPositions.push( pos.getX(i), pos.getY(i), pos.getZ(i) );
       }
 
+      // записване на върховете на сфера като морфинг атрибут на позицията
+      muscleGeometry.morphAttributes.position = [
+				new THREE.Float32BufferAttribute( ballPositions, 3 )
+			]
 
-    /*
-
-      var geometry = new THREE.SphereGeometry( 6, 40, 40 ).translate(0,0,4);
-				skinIndices = [],
-				skinWeights = [];
-
-			// изчисляване на индексите и теглата на костите за всяка контролна точка
-			var pos = geometry.getAttribute( 'position' );
-			for( var i = 0; i<pos.count; i++ )
-			{
-					skinIndices.push( 1, 0, 0, 0 );
-					skinWeights.push( 1, 0, 0, 0 );
-			}
-
-			// записване на индексите и теглата като атрибути на геометрията
-			geometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
-			geometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
-
-			var mesh = new THREE.SkinnedMesh(
-				geometry,
+			var lowerMuscle = new THREE.SkinnedMesh(
+				muscleGeometry,
 				new THREE.MeshPhongMaterial({color:'crimson',skinning: true})
 			);
-			mesh.add( skeleton.bones[0] );
-			mesh.bind( skeleton );
-			mesh.normalizeSkinWeights( );
-			scene.add( mesh );
+			lowerMuscle.add( skeleton.bones[0] );
+			lowerMuscle.bind( skeleton );
+			lowerMuscle.normalizeSkinWeights( );
+			scene.add( lowerMuscle );
+      return lowerMuscle;
+      }
 
-			// ляв крак
-			var geometry = new THREE.BoxGeometry( 6, 40, 6, 1, 15, 1 ).translate(0,-2,-4);
-				skinIndices = [],
+      var helper = new THREE.SkeletonHelper( pelvis );
+				scene.add( helper, pelvis );
+
+        var fatGeometry = new THREE.SphereGeometry( 12, 40, 40 ).translate(0,26,0);
+
+        fatGeometry.scale(1,0.8,1);
+
+        var pos = fatGeometry.getAttribute( 'position' );
+        skinIndices = [],
 				skinWeights = [];
 
-			// изчисляване на индексите и теглата на костите за всяка контролна точка
-			var pos = geometry.getAttribute( 'position' );
-			for( var i = 0; i<pos.count; i++ )
-			{
-				var y = pos.getY( i );
-				if( y>=-2 )
-				{
-					var k = THREE.Math.mapLinear( y, -2, 18, 0, 1 );
-					skinIndices.push( 0, 5, 6, 1 );
-					skinWeights.push( k, 1, 1-k, 0*k );
-				}
-				else
-				if( y>=-18 )
-				{
-					var k = THREE.Math.mapLinear( y, -18, -2, 0, 1 );
-					skinIndices.push( 5, 6, 7, 0 );
-					skinWeights.push( k, 1, 1-k, 0 );
-				}
-				else
-				{
-					var k = THREE.Math.mapLinear( y, -22, -18, 0, 1 );
-					skinIndices.push( 6, 7, 0, 0 );
-					skinWeights.push( k, 1, 0, 0 );
-				}
-			}
+        var c = 0.9;
+        var d = 1.3;
+        var f = 0.8;
+        var ballPositions = [];
+        for(var i=0; i<pos.count; i++)
+        {
+          skinIndices.push( 17, 0, 0, 0 );
+          skinWeights.push( 1, 0, 0, 0 );
+          if(pos.getY(i)>1)
+            {
+              if(pos.getX(i)>0)
+              {
+                if(pos.getZ(i)>0)
+                ballPositions.push(pos.getX(i)+d,pos.getY(i)-0.5,pos.getZ(i)-d);
+                else {
+                    ballPositions.push(pos.getX(i)+d,pos.getY(i)-0.5,pos.getZ(i)+d);
+                }
+              }
 
-			// записване на индексите и теглата като атрибути на геометрията
-			geometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
-			geometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
+             else {
+               if(pos.getZ(i)>0)
+               ballPositions.push(pos.getX(i)-d,pos.getY(i)-0.5,pos.getZ(i)+d);
+               else {
+                   ballPositions.push(pos.getX(i)-d,pos.getY(i)-0.5,pos.getZ(i)-d);
+               }
+             }
+            }
+            else if(pos.getY(i)>0)
+              {
+                if(pos.getX(i)>0)
+                {
+                  if(pos.getZ(i)>0)
+                  ballPositions.push(pos.getX(i)+f,pos.getY(i)-0.5,pos.getZ(i)-f);
+                  else {
+                      ballPositions.push(pos.getX(i)+f,pos.getY(i)-0.5,pos.getZ(i)+f);
+                  }
+                }
 
-			var mesh = new THREE.SkinnedMesh(
-				geometry,
-				new THREE.MeshPhongMaterial({color:'crimson',skinning: true})
-			);
-			mesh.add( skeleton.bones[0] );
-			mesh.bind( skeleton );
-			mesh.normalizeSkinWeights( );
-			scene.add( mesh );
-
-
-			// тяло
-			var geometry = new THREE.BoxGeometry( 6, 20, 14, 10, 15, 10 ).translate(0,28,0);
-				skinIndices = [],
-				skinWeights = [];
-
-			// изчисляване на индексите и теглата на костите за всяка контролна точка
-			var pos = geometry.getAttribute( 'position' );
-			for( var i = 0; i<pos.count; i++ )
-			{
-				var y = pos.getY( i );
-				var x = pos.getZ( i );
-
-				if( y>=28 )
-				{
-					skinIndices.push( 0, 0, 0, 0 );
-					skinWeights.push( 1, 0, 0, 0 );
-				}
-				else
-				{
-					var k = THREE.Math.mapLinear( y, 18, 28, 1, 0 );
-					skinIndices.push( 0, 1, 5, 0 );
-					skinWeights.push( 1, x<0?0:k, x<0?k:0, 0 );
-				}
-
-			}
-
-			// записване на индексите и теглата като атрибути на геометрията
-			geometry.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( skinIndices, 4 ) );
-			geometry.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( skinWeights, 4 ) );
+               else {
+                 if(pos.getZ(i)>0)
+                 ballPositions.push(pos.getX(i)-f,pos.getY(i)-0.5,pos.getZ(i)+f);
+                 else {
+                     ballPositions.push(pos.getX(i)-f,pos.getY(i)-0.5,pos.getZ(i)-f);
+                 }
+               }
+              }
+              else {
+                ballPositions.push(pos.getX(i)>0 ? pos.getX(i)-0.1 : pos.getX(i)+0.1,
+                                   pos.getY(i)-0.5,
+                                   pos.getZ(i)>0 ? pos.getZ(i)-0.1 : pos.getZ(i)+0.1);
+              }
+        }
+        // записване на върховете на сфера като морфинг атрибут на позицията
+        fatGeometry.morphAttributes.position = [
+        new THREE.Float32BufferAttribute( ballPositions, 3 )
+      ]
+      fatGeometry.rotateY(Math.PI/2);
+        var body = new THREE.SkinnedMesh(
+        fatGeometry,
+        new THREE.MeshPhongMaterial({color:'crimson',skinning: true})
+        );
+        body.add( skeleton.bones[0] );
+			body.bind( skeleton );
+		//	body.normalizeSkinWeights( );
+        scene.add( body );
 
 
-			var mesh = new THREE.SkinnedMesh(
-				geometry,
-				new THREE.MeshPhongMaterial({color:'crimson',skinning: true})
-			);
-			mesh.add( skeleton.bones[0] );
-			mesh.bind( skeleton );
-			//mesh.normalizeSkinWeights( );
-			scene.add( mesh );*/
-
-
+        var dependabilityBody = 0;
 			function animate( t )
 			{
 				var s = Math.sin(4*t);
@@ -421,6 +409,19 @@
 
         middleMuscleRight.morphTargetInfluences[ 0 ] = THREE.Math.clamp( -s, 0, 1 );
         middleMuscleLeft.morphTargetInfluences[ 0 ] = THREE.Math.clamp( s, 0, 1 );
+
+        lowerMuscleRight.morphTargetInfluences[ 0 ] = THREE.Math.clamp( -s, 0, 1 );
+        lowerMuscleLeft.morphTargetInfluences[ 0 ] = THREE.Math.clamp( s, 0, 1 );
+
+        lowerMuscleRight2.morphTargetInfluences[ 0 ] = THREE.Math.clamp( s, 0, 1 );
+        lowerMuscleLeft2.morphTargetInfluences[ 0 ] = THREE.Math.clamp( -s, 0, 1 );
+
+        if(dependabilityBody<1)
+        {
+          dependabilityBody+=0.003;
+          body.morphTargetInfluences[0]=dependabilityBody
+        }
+
 				//helper.visible = (t%6) < 3;
         pelvis.rotation.y=t/2;
 			}
