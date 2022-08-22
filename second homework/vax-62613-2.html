@@ -75,10 +75,14 @@
       var hinge1 = new Physijs.CylinderMesh(geometry, material, 0);
       hinge1.position.set(-24.5,15,50);
       hinge1.rotation.x = Math.PI/2;
+      hinge1.receiveShadow = true;
+      hinge1.castShadow = true;
 
       var hinge2 = new Physijs.CylinderMesh(geometry, material, 0);
       hinge2.position.set(-24.5,15,-50);
       hinge2.rotation.x = Math.PI/2;
+      hinge2.receiveShadow = true;
+      hinge2.castShadow = true;
 
       scene.add(hinge1);
       scene.add(hinge2);
@@ -176,12 +180,15 @@
         dot21.position.set(diceSide/4,-diceSide/2-0.1,-diceSide/4);
         dice.add(dot21);
 
+        dice.receiveShadow = true;
+        dice.castShadow = true;
+
         return dice;
       }
 
       var dice1 = makeDice(new THREE.Vector3(THREE.Math.randFloat(-50,-120),250,100));
       var dice2 = makeDice(new THREE.Vector3(THREE.Math.randFloat(-50,-120),240,-100));
-      dice2.rotation.x = THREE.Math.randFloat(-2*Math.PI,2*Math.PI);
+      dice2.rotation.x = THREE.Math.randFloat(-2*Math.PI,2*Math.PI);      
       scene.add(dice1);
       scene.add(dice2);
 
@@ -204,17 +211,28 @@
           var triangle3 = new THREE.Mesh(geometry,darkMaterial);
 
         }
+        triangle.receiveShadow = true;
+        triangle.castShadow = true;
+        triangle3.receiveShadow = true;
+        triangle3.castShadow = true;
         scene.add(triangle);
         scene.add(triangle3);
+
         triangle.position.set(-160+i*23+0.5,2.6,-120+30);
         triangle3.position.set(-5+i*23+0.5,2.6,-120+30);
         triangle.scale.set(1,1,5);
         triangle3.scale.set(1,1,5);
         var triangle2  = triangle.clone();
+        
+        triangle2.receiveShadow = true;
+        triangle2.castShadow = true;
         scene.add(triangle2);
+
         triangle2.rotation.y=Math.PI;
         triangle2.position.z=120-30;
-        var triangle4  = triangle3.clone();
+        var triangle4  = triangle3.clone();        
+        triangle4.receiveShadow = true;
+        triangle4.castShadow = true;
         scene.add(triangle4);
         triangle4.rotation.y=Math.PI;
         triangle4.position.z=120-30;
@@ -226,6 +244,8 @@
           triangle2.material =lightMaterial;
           triangle4.material =lightMaterial;
         }
+
+        
       }
 
 			function animate( t )
