@@ -14,8 +14,8 @@
 
 	<body>
 		<script>
-			vaxSceneInit( vaxInitParallax, 1 );
-      //vaxSceneInit();
+			//vaxSceneInit( vaxInitParallax, 1 );
+      vaxSceneInit();
 
       renderer.shadowMap.enabled = true;
 			light.shadow.mapSize = new THREE.Vector2( 1024*3, 1024*3 );
@@ -384,10 +384,12 @@
 				//concrete
 				var material = new THREE.MeshLambertMaterial({color: new THREE.Color(0x7D7879), side:THREE.DoubleSide});
 				var path = new THREE.Mesh(geometry, material);
+        path.receiveShadow = true;
 				path.rotation.x = Math.PI/2;
 				path.position.y+=0.02;
 
 				var smallPath = path.clone();
+        smallPath.receiveShadow = true;
 				smallPath.scale.set(0.5,1,1);
 				smallPath.position.x=-groundX/3;
 				scene.add(path, smallPath);
@@ -397,6 +399,7 @@
 
 				geometry = new THREE.PlaneGeometry(groundX,20);
 				var verticalPath = new THREE.Mesh(geometry, material);
+        verticalPath.receiveShadow = true;
 				verticalPath.rotation.x=Math.PI/2;
 				verticalPath.position.y+=0.03;
 				scene.add(verticalPath);
@@ -467,8 +470,8 @@
 
 			function animate( t )
 			{
-				renderer.domElement.style.width = 'calc(100% - 8em)';
-   			renderer.domElement.style.margin = '0 4em';
+				/*renderer.domElement.style.width = 'calc(100% - 8em)';
+   			renderer.domElement.style.margin = '0 4em';*/
         scene.rotation.y = t/10;
         ringA.rotation.z = -t/5;
         ringB.rotation.z = -t/5;
